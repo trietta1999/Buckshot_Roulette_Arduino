@@ -171,8 +171,8 @@ int WINAPI wWinMain(
     bool simulator_mode = false;
     lv_display_t* display = ::lv_windows_create_display(
         mapWstr_MODULE_NAME[MODULE_NAME::HostTimer].c_str(),
-        320,
-        240,
+        480,
+        800,
         zoom_level,
         allow_dpi_override,
         simulator_mode);
