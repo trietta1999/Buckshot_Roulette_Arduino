@@ -11,6 +11,7 @@ SET(SOURCES screens/ui_Main.c
     images/ui_img_charge_png.c
     images/ui_img_shotgun_png.c
     images/ui_img_shotgun_block_png.c
+    images/ui_img_live_png.c
     images/ui_img_metal_bullet_box_png.c
     images/ui_img_empty_bullet_png.c
     images/ui_img_hide_png.c
@@ -23,7 +24,6 @@ SET(SOURCES screens/ui_Main.c
     images/ui_img_handcuffs_png.c
     images/ui_img_handsaw_png.c
     images/ui_img_inverter_png.c
-    images/ui_img_live_png.c
     images/ui_img_load_png.c
     images/ui_img_magnifyingglass_png.c
     images/ui_img_metal_turntable_png.c

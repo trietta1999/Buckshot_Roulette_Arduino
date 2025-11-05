@@ -36,6 +36,7 @@ LV_IMG_DECLARE(ui_img_chargeback_png);    // assets/ChargeBack.png
 LV_IMG_DECLARE(ui_img_charge_png);    // assets/Charge.png
 LV_IMG_DECLARE(ui_img_shotgun_png);    // assets/Shotgun.png
 LV_IMG_DECLARE(ui_img_shotgun_block_png);    // assets/shotgun_block.png
+LV_IMG_DECLARE(ui_img_live_png);    // assets/Live.png
 LV_IMG_DECLARE(ui_img_metal_bullet_box_png);    // assets/metal_bullet_box.png
 LV_IMG_DECLARE(ui_img_empty_bullet_png);    // assets/empty_bullet.png
 LV_IMG_DECLARE(ui_img_hide_png);    // assets/hide.png
@@ -48,7 +49,6 @@ LV_IMG_DECLARE(ui_img_expiredmedicine_png);    // assets/ExpiredMedicine.png
 LV_IMG_DECLARE(ui_img_handcuffs_png);    // assets/Handcuffs.png
 LV_IMG_DECLARE(ui_img_handsaw_png);    // assets/Handsaw.png
 LV_IMG_DECLARE(ui_img_inverter_png);    // assets/Inverter.png
-LV_IMG_DECLARE(ui_img_live_png);    // assets/Live.png
 LV_IMG_DECLARE(ui_img_load_png);    // assets/Load.png
 LV_IMG_DECLARE(ui_img_magnifyingglass_png);    // assets/MagnifyingGlass.png
 LV_IMG_DECLARE(ui_img_metal_turntable_png);    // assets/metal_turntable.png

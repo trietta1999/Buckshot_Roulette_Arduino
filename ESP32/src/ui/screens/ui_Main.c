@@ -53,6 +53,8 @@ lv_obj_t * ui_lblPlayer1ChargeBack2 = NULL;
 lv_obj_t * ui_lblPlayer1ChargeBack3 = NULL;
 lv_obj_t * ui_lblPlayer1ChargeBack4 = NULL;
 lv_obj_t * ui_imgbtnShotgunInTable = NULL;
+lv_obj_t * ui_imgTrashBullet = NULL;
+lv_obj_t * ui_imgEjectedBullet = NULL;
 lv_obj_t * ui_Container7 = NULL;
 lv_obj_t * ui_Container8 = NULL;
 lv_obj_t * ui_imgBullet1 = NULL;
@@ -90,6 +92,7 @@ lv_obj_t * ui_Button1 = NULL;
 lv_obj_t * ui_Label9 = NULL;
 lv_obj_t * ui_Button2 = NULL;
 lv_obj_t * ui_Label10 = NULL;
+lv_obj_t * ui_wndShotgunShotEffect = NULL;
 lv_obj_t * ui_imgShotgunInside = NULL;
 lv_obj_t * ui_imgShotgunBullet = NULL;
 lv_obj_t * ui_imgShotgunBullet1 = NULL;
@@ -1269,6 +1272,8 @@ void ui_Main_screen_init(void)
     lv_obj_set_x(ui_imgbtnShotgunInTable, 17);
     lv_obj_set_y(ui_imgbtnShotgunInTable, 8);
     lv_obj_set_align(ui_imgbtnShotgunInTable, LV_ALIGN_CENTER);
+    lv_obj_set_flex_flow(ui_imgbtnShotgunInTable, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(ui_imgbtnShotgunInTable, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER);
     lv_obj_add_flag(ui_imgbtnShotgunInTable, LV_OBJ_FLAG_CLICKABLE);     /// Flags
     lv_obj_remove_flag(ui_imgbtnShotgunInTable,
                        LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
@@ -1281,6 +1286,34 @@ void ui_Main_screen_init(void)
     lv_obj_set_style_bg_color(ui_imgbtnShotgunInTable, lv_color_hex(0x555555), LV_PART_MAIN | LV_STATE_PRESSED);
     lv_obj_set_style_bg_opa(ui_imgbtnShotgunInTable, 255, LV_PART_MAIN | LV_STATE_PRESSED);
     lv_obj_set_style_bg_image_src(ui_imgbtnShotgunInTable, &ui_img_shotgun_block_png, LV_PART_MAIN | LV_STATE_DISABLED);
+
+    ui_imgTrashBullet = lv_image_create(ui_imgbtnShotgunInTable);
+    lv_image_set_src(ui_imgTrashBullet, &ui_img_live_png);
+    lv_obj_set_width(ui_imgTrashBullet, 48);
+    lv_obj_set_height(ui_imgTrashBullet, 25);
+    lv_obj_set_x(ui_imgTrashBullet, 70);
+    lv_obj_set_y(ui_imgTrashBullet, 67);
+    lv_obj_set_align(ui_imgTrashBullet, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_imgTrashBullet,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_image_set_inner_align(ui_imgTrashBullet, LV_IMAGE_ALIGN_TOP_LEFT);
+
+    ui_imgEjectedBullet = lv_image_create(ui_imgbtnShotgunInTable);
+    lv_image_set_src(ui_imgEjectedBullet, &ui_img_live_png);
+    lv_obj_set_width(ui_imgEjectedBullet, 75);
+    lv_obj_set_height(ui_imgEjectedBullet, 25);
+    lv_obj_set_x(ui_imgEjectedBullet, 70);
+    lv_obj_set_y(ui_imgEjectedBullet, 67);
+    lv_obj_set_align(ui_imgEjectedBullet, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_imgEjectedBullet,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_image_set_inner_align(ui_imgEjectedBullet, LV_IMAGE_ALIGN_TOP_LEFT);
 
     ui_Container7 = lv_obj_create(ui_Container3);
     lv_obj_remove_style_all(ui_Container7);
@@ -1842,7 +1875,6 @@ void ui_Main_screen_init(void)
     lv_obj_set_align(ui_Button1, LV_ALIGN_CENTER);
     lv_obj_set_flex_flow(ui_Button1, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(ui_Button1, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Button1, LV_OBJ_FLAG_CHECKABLE);     /// Flags
     lv_obj_remove_flag(ui_Button1, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
     lv_obj_set_style_bg_color(ui_Button1, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1870,7 +1902,6 @@ void ui_Main_screen_init(void)
     lv_obj_set_align(ui_Button2, LV_ALIGN_CENTER);
     lv_obj_set_flex_flow(ui_Button2, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(ui_Button2, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Button2, LV_OBJ_FLAG_CHECKABLE);     /// Flags
     lv_obj_remove_flag(ui_Button2, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
     lv_obj_set_style_bg_color(ui_Button2, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1889,6 +1920,33 @@ void ui_Main_screen_init(void)
     lv_obj_set_style_text_color(ui_Label10, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label10, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label10, &lv_font_montserrat_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_wndShotgunShotEffect = lv_obj_create(ui_Main);
+    lv_obj_remove_style_all(ui_wndShotgunShotEffect);
+    lv_obj_set_width(ui_wndShotgunShotEffect, 480);
+    lv_obj_set_height(ui_wndShotgunShotEffect, 800);
+    lv_obj_set_align(ui_wndShotgunShotEffect, LV_ALIGN_CENTER);
+    lv_obj_set_flex_flow(ui_wndShotgunShotEffect, LV_FLEX_FLOW_COLUMN_WRAP);
+    lv_obj_set_flex_align(ui_wndShotgunShotEffect, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_add_flag(ui_wndShotgunShotEffect, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_FLOATING);     /// Flags
+    lv_obj_remove_flag(ui_wndShotgunShotEffect,
+                       LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_bg_color(ui_wndShotgunShotEffect, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_wndShotgunShotEffect, 150, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_wndShotgunShotEffect, lv_color_hex(0xFFD900), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_wndShotgunShotEffect, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui_wndShotgunShotEffect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui_wndShotgunShotEffect, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_wndShotgunShotEffect, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui_wndShotgunShotEffect, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui_wndShotgunShotEffect, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_wndShotgunShotEffect, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_wndShotgunShotEffect, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_rotation(ui_wndShotgunShotEffect, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_pivot_x(ui_wndShotgunShotEffect, 240, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_pivot_y(ui_wndShotgunShotEffect, 400, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_imgShotgunInside = lv_image_create(ui_Main);
     lv_image_set_src(ui_imgShotgunInside, &ui_img_shotgun_png);
@@ -2053,6 +2111,8 @@ void ui_Main_screen_destroy(void)
     ui_lblPlayer1ChargeBack3 = NULL;
     ui_lblPlayer1ChargeBack4 = NULL;
     ui_imgbtnShotgunInTable = NULL;
+    ui_imgTrashBullet = NULL;
+    ui_imgEjectedBullet = NULL;
     ui_Container7 = NULL;
     ui_Container8 = NULL;
     ui_imgBullet1 = NULL;
@@ -2090,6 +2150,7 @@ void ui_Main_screen_destroy(void)
     ui_Label9 = NULL;
     ui_Button2 = NULL;
     ui_Label10 = NULL;
+    ui_wndShotgunShotEffect = NULL;
     ui_imgShotgunInside = NULL;
     ui_imgShotgunBullet = NULL;
     ui_imgShotgunBullet1 = NULL;
