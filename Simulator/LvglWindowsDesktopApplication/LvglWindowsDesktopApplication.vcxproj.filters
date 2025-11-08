@@ -821,6 +821,9 @@
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Main.h">
       <Filter>UI\screens</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Start.h">
+      <Filter>UI\screens</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\.typos.toml">
@@ -1561,6 +1564,9 @@
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_block_png.c">
       <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Start.c">
+      <Filter>UI\screens</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

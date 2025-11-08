@@ -4,54 +4,19 @@
 
 #include "CommonData.h"
 
- /* TODO: Declare shared data for the system
-          Do not use "extern"
- */
-
- // Do not delete or rename
-#pragma region System_data
-namespace sys_host {
-    CData<LABEL_INDICATOR> LabelIndicator;
-    CData<BATTERY_TYPE> BatteryType;
-    CData<COMPORT_TYPE> ComPortType;
-    CData<std::string> SerialNum;
-    CData<uint8_t> BatteryNum;
-    CData<uint32_t> RandomSeed;
-    CData<std::pair<uint8_t, uint8_t>> TimeClock;
-    CData<std::tuple<uint16_t, uint16_t, uint16_t>> EndlessTimeClock;
-    CData<uint8_t> StrikeNum;
-    CData<uint16_t> TimeCycle;
-    CData<bool> StrikeState;
-    CData<JsonDocument> JsonResponse;
-    CData<bool> ModuleStatus;
-    CData<std::string> ClientName;
 #ifdef _WIN64
-    CData<std::vector<std::string>> InputParamList;
+CData<std::vector<std::string>> InputParamList;
 #endif
-}
-
-namespace sys_gui
-{
-    CData<uint8_t> SuccessState;
-    CData<uint8_t> Brightness;
-    CData<std::unordered_map<std::string, MODULE_STATUS>> ModuleStatusMap;
-}
-#pragma endregion
-
-// Allow modification
-#pragma region Custom_data
-CData<bool> StrikeEnable;
-#pragma endregion
+CData<uint8_t> Brightness;
+CData<JsonDocument> JsonResponse;
+CData<std::string> ClientName;
+CData<PLAYER_TYPE> CurrentPlayer;
+CData<STATE_TYPE> CurrentState;
 
 // Add auto reset state for custom data only
 void UpdateAll()
 {
-    sys_gui::Brightness.ResetState();
-    sys_host::TimeCycle.ResetState();
-    sys_host::EndlessTimeClock.ResetState();
-    sys_host::TimeClock.ResetState();
-#ifndef _WIN64
-    sys_host::StrikeState.ResetState();
-    sys_gui::SuccessState.ResetState();
-#endif
+    Brightness.ResetState();
+    CurrentPlayer.ResetState();
+    CurrentState.ResetState();
 }

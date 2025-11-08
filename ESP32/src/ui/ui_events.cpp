@@ -3,33 +3,312 @@
 // LVGL version: 9.1.0
 // Project name: SquareLine_Project
 
+#ifdef _WIN64
+#include <iostream>
+#endif
+#include <algorithm>
 #include "ui.h"
 #include "../CommonData.h"
 #include "../CommonLibrary.h"
 #include "../CommonService.h"
 
+struct player_info_t
+{
+    struct player_slot_button_t
+    {
+        lv_obj_t* button;
+        lv_obj_t* buttonImg;
+        lv_img_dsc_t image;
+    };
+
+    lv_obj_t* pickButton;
+    std::vector<player_slot_button_t> listButtonInfo;
+    uint8_t pickItemCount;
+    uint8_t totalItemCount;
+    uint8_t hpLevel2;
+    uint8_t hpLevel1;
+    bool isPickComplete;
+
+    void Disable()
+    {
+        lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
+
+        for (const auto& item : this->listButtonInfo)
+        {
+            lv_obj_add_state(item.button, LV_STATE_DISABLED);
+        }
+    }
+
+    void EnablePickButton()
+    {
+        lv_obj_remove_state(this->pickButton, LV_STATE_DISABLED);
+    }
+
+    void EnableTable()
+    {
+        for (const auto& item : this->listButtonInfo)
+        {
+            lv_obj_remove_state(item.button, LV_STATE_DISABLED);
+        }
+    }
+} Player1, Player2;
+
+struct shotgun_info_t
+{
+    lv_obj_t* objInTable;
+    lv_obj_t* objInside;
+    lv_obj_t* objHand;
+    std::unordered_map<BULLET_TYPE, lv_img_dsc_t> mapBulletImg;
+    std::vector <lv_obj_t*> listBulletImg;
+    std::vector <BULLET_TYPE> listBullet;
+
+    void Disable()
+    {
+        lv_obj_add_state(this->objInTable, LV_STATE_DISABLED);
+    }
+
+    void Enable()
+    {
+        lv_obj_remove_state(this->objInTable, LV_STATE_DISABLED);
+    }
+} Shotgun;
+
+std::unordered_map<ITEM_TYPE, lv_img_dsc_t> mapItemImg;
+
+#pragma region Internal_functions
+static void ResetPlayerTable()
+{
+    Player1.Disable();
+    Player2.Disable();
+
+    Shotgun.Disable();
+}
+#pragma endregion
+
 void Init()
 {
     // Brightness
-    sys_gui::Brightness.SetValue(100);
-    lv_slider_set_value(ui_sldBrightness, sys_gui::Brightness.GetValue(), LV_ANIM_OFF);
+    Brightness.SetValue(100);
+    lv_slider_set_value(ui_sldBrightness, Brightness.GetValue(), LV_ANIM_OFF);
+
+    mapItemImg = {
+        { ITEM_TYPE::BEER, ui_img_beer_png },
+        { ITEM_TYPE::BURNERPHONE, ui_img_burnerphone_png },
+        { ITEM_TYPE::CIGARETTE, ui_img_cigarette_png },
+        { ITEM_TYPE::EXPIREDMEDICINE, ui_img_expiredmedicine_png },
+        { ITEM_TYPE::HANDCUFFS, ui_img_handcuffs_png },
+        { ITEM_TYPE::HANDSAW, ui_img_handsaw_png },
+        { ITEM_TYPE::INVERTER, ui_img_inverter_png },
+        { ITEM_TYPE::MAGNIFYINGGLASS, ui_img_magnifyingglass_png },
+        { ITEM_TYPE::ADRENALINE, ui_img_adrenaline_png },
+    };
+
+    // Init shotgun
+    Shotgun.objInTable = ui_imgbtnShotgunInTable;
+    Shotgun.objInside = ui_imgbtnShotgunInside;
+    Shotgun.objHand = ui_imgShotgunInHand;
+    Shotgun.mapBulletImg = {
+        { BULLET_TYPE::MIN, ui_img_empty_bullet_png },
+        { BULLET_TYPE::LIVE, ui_img_live_png },
+        { BULLET_TYPE::BLANK, ui_img_blank_png },
+    };
+    Shotgun.listBulletImg = {
+        ui_imgBullet1,
+        ui_imgBullet2,
+        ui_imgBullet3,
+        ui_imgBullet4,
+        ui_imgBullet5,
+        ui_imgBullet6,
+        ui_imgBullet7,
+        ui_imgBullet8,
+    };
+
+    // Init player #1
+    Player1.pickButton = ui_btnPlayer1Pick;
+    Player1.listButtonInfo = {
+        { ui_btnPlayer1Slot1, ui_imgbtnPlayer1Slot1, { 0 } },
+        { ui_btnPlayer1Slot2, ui_imgbtnPlayer1Slot2, { 0 } },
+        { ui_btnPlayer1Slot3, ui_imgbtnPlayer1Slot3, { 0 } },
+        { ui_btnPlayer1Slot4, ui_imgbtnPlayer1Slot4, { 0 } },
+        { ui_btnPlayer1Slot5, ui_imgbtnPlayer1Slot5, { 0 } },
+        { ui_btnPlayer1Slot6, ui_imgbtnPlayer1Slot6, { 0 } },
+        { ui_btnPlayer1Slot7, ui_imgbtnPlayer1Slot7, { 0 } },
+        { ui_btnPlayer1Slot8, ui_imgbtnPlayer1Slot8, { 0 } },
+    };
+    Player1.hpLevel1 = MAX_HP;
+    Player1.hpLevel2 = MAX_HP;
+
+    // Init player #2
+    Player2.pickButton = ui_btnPlayer2Pick;
+    Player2.listButtonInfo = {
+        { ui_btnPlayer2Slot1, ui_imgbtnPlayer2Slot1, { 0 } },
+        { ui_btnPlayer2Slot2, ui_imgbtnPlayer2Slot2, { 0 } },
+        { ui_btnPlayer2Slot3, ui_imgbtnPlayer2Slot3, { 0 } },
+        { ui_btnPlayer2Slot4, ui_imgbtnPlayer2Slot4, { 0 } },
+        { ui_btnPlayer2Slot5, ui_imgbtnPlayer2Slot5, { 0 } },
+        { ui_btnPlayer2Slot6, ui_imgbtnPlayer2Slot6, { 0 } },
+        { ui_btnPlayer2Slot7, ui_imgbtnPlayer2Slot7, { 0 } },
+        { ui_btnPlayer2Slot8, ui_imgbtnPlayer2Slot8, { 0 } },
+    };
+    Player2.hpLevel1 = MAX_HP;
+    Player2.hpLevel2 = MAX_HP;
+
+    // Init data
+    CurrentState.SetValue(STATE_TYPE::STARTUP);
 }
 
 void AutoUpdate()
 {
+    if (CurrentState.GetValue() == STATE_TYPE::STARTUP)
+    {
+        if (CheckObjectState(ui_btnPlayer1Start, LV_STATE_CHECKED) && CheckObjectState(ui_btnPlayer2Start, LV_STATE_CHECKED))
+        {
+            // Change screen to main screen
+            _ui_screen_change(&ui_Main, LV_SCR_LOAD_ANIM_FADE_IN, 500, 0, &ui_Main_screen_init);
 
+            // Transit state
+            CurrentState.SetValue(STATE_TYPE::PLAYER_NEXT);
+        }
+    }
+
+    // Update player sequence
+    if (CurrentState.GetValue() == STATE_TYPE::PLAYER_NEXT)
+    {
+        ResetPlayerTable();
+
+        if (Player1.isPickComplete && Player2.isPickComplete)
+        {
+            // Set player
+            CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER1);
+
+            // Transit state
+            CurrentState.SetValue(STATE_TYPE::LOAD_SHELL);
+        }
+        else
+        {
+            auto player = CurrentPlayer.GetValue();
+
+            if (player == PLAYER_TYPE::MIN)
+            {
+                CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER1);
+            }
+            else if (player == PLAYER_TYPE::PLAYER1)
+            {
+                CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER2);
+            }
+            else if (player == PLAYER_TYPE::PLAYER2)
+            {
+                CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER1);
+            }
+
+            // Transit state
+            CurrentState.SetValue(STATE_TYPE::PICK);
+        }
+    }
+
+    if (CurrentState.GetState())
+    {
+        if (CurrentState.GetValue() == STATE_TYPE::PICK)
+        {
+            if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+            {
+                lv_obj_set_style_transform_rotation(ui_conCardReview, PLAYER1_ANGLE, LV_PART_MAIN | LV_STATE_DEFAULT); // Enable card viewer
+
+                Player1.EnablePickButton();
+            }
+            else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+            {
+                lv_obj_set_style_transform_rotation(ui_conCardReview, PLAYER2_ANGLE, LV_PART_MAIN | LV_STATE_DEFAULT); // Enable card viewer
+
+                Player2.EnablePickButton();
+            }
+        }
+        else if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
+        {
+            if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+            {
+                // Enable player #1 table
+                Player1.EnableTable();
+            }
+            else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+            {
+                // Enable player #2 table
+                Player2.EnableTable();
+            }
+        }
+        else if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
+        {
+            uint8_t bulletNum = RandomRange(MIN_BULLET - 1, MAX_BULLET + 1);
+            Shotgun.listBullet = CreateBulletList(MAX_BULLET); // Random order
+            std::vector<BULLET_TYPE> listBulletSort = Shotgun.listBullet;
+            std::sort(listBulletSort.begin(), listBulletSort.end(), [](BULLET_TYPE a, BULLET_TYPE b)
+                {
+                    return a < b;
+                }); // BLANK group is always on top
+
+            // Show sort bullet group
+            for (uint8_t i = 0; i < Shotgun.listBulletImg.size(); i++)
+            {
+                if (i < bulletNum)
+                {
+                    lv_image_set_src(Shotgun.listBulletImg[i], &Shotgun.mapBulletImg[listBulletSort[i]]);
+                }
+                else
+                {
+                    lv_image_set_src(Shotgun.listBulletImg[i], &Shotgun.mapBulletImg[BULLET_TYPE::MIN]);
+                }
+            }
+
+            // Show message
+            lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(ui_lblCardMessage, MSG_TOUCH_SHOTGUN);
+
+            // Enable shotgun
+            Shotgun.Enable();
+
+            // Hide bullet box cover
+            lv_obj_add_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
+        }
+        else if (CurrentState.GetValue() == STATE_TYPE::ACTION_TURN)
+        {
+            if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+            {
+                // Rotate shotgun to player #1
+                PlayObjectRotate(ui_imgbtnShotgunInTable, PLAYER1_ANGLE, STEP_ANGLE);
+
+                // Enable player #1 table
+                Player1.EnableTable();
+            }
+            else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+            {
+                // Rotate shotgun to player #2
+                PlayObjectRotate(ui_imgbtnShotgunInTable, PLAYER2_ANGLE, STEP_ANGLE);
+
+                // Enable player #2 table
+                Player2.EnableTable();
+            }
+        }
+    }
 }
 
 void OnBrightnessChange(lv_event_t* e)
 {
-    sys_gui::Brightness.SetValue(lv_slider_get_value(ui_sldBrightness));
+    Brightness.SetValue(lv_slider_get_value(ui_sldBrightness));
 }
 
-void OnLoaded(lv_event_t* e)
+#pragma region Screen_events
+void Start_OnLoaded(lv_event_t* e)
 {
-    // Your code here
+
 }
 
+void Main_OnLoaded(lv_event_t* e)
+{
+
+}
+#pragma endregion
+
+#pragma region Component_events
 void OnShotgunShot(lv_event_t* e)
 {
     // Your code here
@@ -37,20 +316,138 @@ void OnShotgunShot(lv_event_t* e)
 
 void OnItemSelect(lv_event_t* e)
 {
-    // Your code here
+    if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
+    {
+        player_info_t* player = nullptr;
+
+        // Get player info
+        if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+        {
+            player = &Player1;
+        }
+        else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+        {
+            player = &Player2;
+        }
+
+        if (player)
+        {
+            auto currentButton = (lv_obj_t*)(e->current_target);
+
+            auto resultButtonInfo = std::find_if(player->listButtonInfo.begin(), player->listButtonInfo.end(),
+                [currentButton](const decltype(player->listButtonInfo.front())& item) {
+                    // Button has no assigned image
+                    return ((item.button == currentButton) && (item.image.data_size == 0));
+                });
+
+            if (resultButtonInfo != player->listButtonInfo.end())
+            {
+                auto& buttonInfo = (*resultButtonInfo); // Get button info
+                auto imgCardReview = lv_image_get_src(ui_imgCardReview); // Get image from card review
+
+                // Update button info
+                lv_image_set_src(buttonInfo.buttonImg, imgCardReview);
+                memcpy(&buttonInfo.image, imgCardReview, sizeof(lv_img_dsc_t));
+
+                // Update item count
+                player->pickItemCount++;
+                player->totalItemCount++;
+
+                // Hide card review
+                lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
+
+                // Transit previous state
+                CurrentState.SetValue(CurrentState.GetOldValue());
+            }
+        }
+    }
 }
 
 void OnShotgunSelect(lv_event_t* e)
 {
+    if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
+    {
+        // Show bullet box cover
+        lv_obj_remove_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
+
+        // Hide message
+        lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+
+        // Transit state
+        CurrentState.SetValue(STATE_TYPE::ACTION_TURN);
+    }
+    else
+    {
+
+    }
+}
+
+void OnItemPick(lv_event_t* e)
+{
+    player_info_t* player = nullptr;
+    ITEM_TYPE item = RandomRange(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
+
+    // Get list button info
+    if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+    {
+        player = &Player1;
+    }
+    else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+    {
+        player = &Player2;
+    }
+
+    // Show and set card review
+    lv_obj_remove_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
+    lv_image_set_src(ui_imgCardReview, &mapItemImg[item]);
+
+    if (player)
+    {
+        player->EnablePickButton();
+
+        if ((player->pickItemCount == MAX_PICK_ITEM_PER_ROUND) || (player->totalItemCount == MAX_ITEM_NUM))
+        {
+            ResetPlayerTable();
+
+            // Show message
+            lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+
+            // Set message
+            if (player->totalItemCount == MAX_ITEM_NUM)
+            {
+                lv_label_set_text(ui_lblCardMessage, MSG_OUT_OF_SPACE);
+            }
+            else if (player->pickItemCount == MAX_PICK_ITEM_PER_ROUND)
+            {
+                lv_label_set_text(ui_lblCardMessage, MSG_END_TURN);
+            }
+
+            // Reset item count
+            player->pickItemCount = 0;
+            player->isPickComplete = true;
+
+            // Show delayed message
+            lv_timer_create([](lv_timer_t* timer) {
+                // Hide card review
+                lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
+
+                // Hide message
+                lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+
+                // Transit state
+                CurrentState.SetValue(STATE_TYPE::PLAYER_NEXT);
+                }, WAIT_TIME, nullptr)->repeat_count = 1;
+        }
+        else
+        {
+            // Transit state
+            CurrentState.SetValue(STATE_TYPE::PLAYER_ITEM_ARRANGE);
+        }
+    }
+}
+
+void OnShotgunInsideClick(lv_event_t* e)
+{
     // Your code here
 }
-
-void OnItemPick(lv_event_t * e)
-{
-	// Your code here
-}
-
-void OnShotgunInsideClick(lv_event_t * e)
-{
-	// Your code here
-}
+#pragma endregion

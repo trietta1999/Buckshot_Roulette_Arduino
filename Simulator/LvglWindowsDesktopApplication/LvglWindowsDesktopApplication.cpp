@@ -64,7 +64,7 @@ LRESULT CALLBACK MyNewWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
         // If client name is not HostTimer
         if (clientName && strcmp(clientName, CLIENT_NAME_FOR_JSON))
         {
-            sys_host::ClientName.SetValue(clientName);
+            ClientName.SetValue(clientName);
         }
     }
     break;
@@ -134,7 +134,7 @@ LRESULT CALLBACK MyNewWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
         JsonDocument jsonDoc;
         deserializeJson(jsonDoc, receivedJsonString);
-        sys_host::JsonResponse.SetValue(jsonDoc);
+        JsonResponse.SetValue(jsonDoc);
 
         UnmapViewOfFile(pBuffer);
         CloseHandle(hMapFile);
@@ -170,7 +170,7 @@ int WINAPI wWinMain(
     bool allow_dpi_override = false;
     bool simulator_mode = false;
     lv_display_t* display = ::lv_windows_create_display(
-        mapWstr_MODULE_NAME[MODULE_NAME::HostTimer].c_str(),
+        HOST_NAME,
         480,
         800,
         zoom_level,

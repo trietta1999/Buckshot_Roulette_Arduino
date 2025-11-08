@@ -26,6 +26,11 @@ public:
         return this->value;
     }
 
+    T GetOldValue()
+    {
+        return this->oldValue;
+    }
+
     void SetValue(T value)
     {
         if (value != this->value)
@@ -45,7 +50,7 @@ public:
     {
         if (this->state)
         {
-            this->oldValue = this->value;
+            //this->oldValue = this->value;
             this->state = false;
         }
     }

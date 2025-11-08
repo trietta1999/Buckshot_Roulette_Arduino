@@ -3,73 +3,95 @@
  */
 
 #include <algorithm>
+#include <random>
 #include "CommonLibrary.h"
-#include "CommonData.h"
 
- // Do not delete or rename
-#pragma region System_function
-uint8_t RandomRange(uint8_t a, uint8_t b)
+bool CheckObjectState(lv_obj_t* obj, lv_state_t state)
 {
-    return a + rand() % (b - a);
-}
-
-std::string GenerateSerialNumber() {
-    uint8_t total = 10;
-    std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    std::string digits = "0123456789";
-    std::string serial_number;
-
-    for (uint8_t i = 0; i < total - 1; i++) {
-        uint8_t random_index = RandomRange(0, characters.size());
-        serial_number += characters[random_index];
+    if ((lv_obj_get_state(obj) & state) == state)
+    {
+        return true;
     }
 
-    uint8_t random_index = RandomRange(0, digits.size());
-    serial_number += digits[random_index];
-
-    return serial_number;
+    return false;
 }
 
-bool VowelCheck(const std::string& str)
+void PlayObjectRotate(lv_obj_t* obj, int16_t endAngle, int16_t step)
 {
-    std::vector<char> vowels = { 'A', 'I','E','O','U' };
-    for (const auto& chr : str)
+    struct angle_t
     {
-        if (std::find(vowels.begin(), vowels.end(), chr) != vowels.end())
+        lv_obj_t* obj;
+        int16_t startAngle;
+        int16_t endAngle;
+        int16_t step;
+    };
+
+    angle_t* data = (angle_t*)malloc(sizeof(angle_t));
+    uint16_t startAngle = lv_obj_get_style_transform_rotation(obj, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Calculate angle
+    if (startAngle < endAngle)
+    {
+        endAngle += step;
+    }
+    else if (startAngle > endAngle)
+    {
+        endAngle -= step;
+    }
+
+    // Set data
+    data->obj = obj;
+    data->startAngle = startAngle;
+    data->endAngle = endAngle;
+    data->step = step;
+
+    // Create timer
+    lv_timer_create([](lv_timer_t* timer) {
+        auto data = (angle_t*)lv_timer_get_user_data(timer);
+
+        lv_obj_set_style_transform_rotation(data->obj, data->startAngle, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+        if (data->startAngle < data->endAngle)
         {
-            return true;
+            data->startAngle += data->step;
+        }
+        else if (data->startAngle > data->endAngle)
+        {
+            data->startAngle -= data->step;
+        }
+
+        if (data->startAngle == data->endAngle)
+        {
+            lv_timer_del(timer);
+            free(data);
+            timer = nullptr;
+        }
+        }, 5, data);
+}
+
+std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
+{
+    std::vector<BULLET_TYPE> sample(maxNum);
+
+    // Get number of Blank value
+    uint8_t blankCount = RandomRange(MIN_BULLET - 1, maxNum + 1);
+
+    // Assign Blank value to first element range
+    for (uint8_t i = 0; i < blankCount; i++) {
+        sample[i] = BULLET_TYPE::BLANK;
+    }
+
+    std::mt19937 gen(rand());
+    std::shuffle(sample.begin(), sample.end(), gen); // Random shuffle
+
+    // Fill Live value
+    for (auto& item : sample)
+    {
+        if (item == BULLET_TYPE::MIN)
+        {
+            item = BULLET_TYPE::LIVE;
         }
     }
 
-    return false;
+    return sample;
 }
-
-bool OddCheckAtLast(const std::string& str)
-{
-    if ((str.back() - '0') % 2 == 1)
-    {
-        return true;
-    }
-
-    return false;
-}
-
-bool NumberCheckInTimer(uint8_t num)
-{
-    auto timer = sys_host::TimeClock.GetValue();
-    uint8_t minute = std::get<MINUTE_POS>(timer);
-    uint8_t second = std::get<SECOND_POS>(timer);
-
-    if ((minute / 10 % 10 == num) || (minute % 10 == num) || (second / 10 % 10 == num) || (second % 10 == num))
-    {
-        return true;
-    }
-
-    return false;
-}
-#pragma endregion
-
-// Allow modification
-#pragma region Custom_function
-
-#pragma endregion

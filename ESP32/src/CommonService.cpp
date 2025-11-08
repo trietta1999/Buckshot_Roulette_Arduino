@@ -2,6 +2,7 @@
  * @brief Common service library
  */
 
+#include <algorithm>
 #include "CommonService.h"
 #include "CommonData.h"
 #include "CommonLibrary.h"
@@ -28,15 +29,41 @@ void AttachConsoleWindow()
 void DebugConsoleProcess()
 {
     // Debug console
-    if (sys_host::InputParamList.GetState())
+    if (InputParamList.GetState())
     {
         try {
-            auto inputParams = sys_host::InputParamList.GetValue();
+            auto inputParams = InputParamList.GetValue();
 
             // Test show message box
             if (inputParams.at(0) == "test")
             {
                 ::MessageBox(NULL, L"Test show message box", L"Test", MB_OK);
+            }
+            // Transit state
+            else if (inputParams.at(0) == "transit")
+            {
+                std::string state = inputParams.at(1);
+                std::transform(state.begin(), state.end(), state.begin(), ::toupper);
+
+                auto resultStateInfo = std::find_if(map_STATE_TYPE.begin(), map_STATE_TYPE.end(),
+                    [state](const std::pair<STATE_TYPE, std::string>& item) {
+                        return (item.second == state);
+                    });
+
+                CurrentState.SetValue(resultStateInfo->first);
+            }
+            // Change player
+            else if (inputParams.at(0) == "player")
+            {
+                std::string player = inputParams.at(0) + inputParams.at(1);
+                std::transform(player.begin(), player.end(), player.begin(), ::toupper);
+
+                auto resultPlayerInfo = std::find_if(map_PLAYER_TYPE.begin(), map_PLAYER_TYPE.end(),
+                    [player](const std::pair<PLAYER_TYPE, std::string>& item) {
+                        return (item.second == player);
+                    });
+
+                CurrentPlayer.SetValue(resultPlayerInfo->first);
             }
 
             debug_println("Process debug data done!");
@@ -46,7 +73,8 @@ void DebugConsoleProcess()
             debug_println("Process debug data fail! Try again!");
         }
 
-        sys_host::InputParamList.ResetState();
+        InputParamList.SetValue({ });
+        InputParamList.ResetState();
     }
 }
 #endif
@@ -77,17 +105,17 @@ void InitData()
     srand(seed);
 
     // Create random init data
-    sys_host::RandomSeed.SetValue(seed);
-    sys_host::LabelIndicator.SetValue((LABEL_INDICATOR)RandomRange(0, (uint8_t)LABEL_INDICATOR::MAX));
-    sys_host::BatteryType.SetValue((BATTERY_TYPE)RandomRange(0, (uint8_t)BATTERY_TYPE::MAX));
-    sys_host::ComPortType.SetValue((COMPORT_TYPE)RandomRange(0, (uint8_t)COMPORT_TYPE::MAX));
-    sys_host::BatteryNum.SetValue(RandomRange(1, 5));
-    sys_host::SerialNum.SetValue(GenerateSerialNumber());
-    sys_host::EndlessTimeClock.SetValue(std::make_tuple(0, 0, 0));
+    //sys_host::RandomSeed.SetValue(seed);
+    //sys_host::LabelIndicator.SetValue((LABEL_INDICATOR)RandomRange(0, (uint8_t)LABEL_INDICATOR::MAX));
+    //sys_host::BatteryType.SetValue((BATTERY_TYPE)RandomRange(0, (uint8_t)BATTERY_TYPE::MAX));
+    //sys_host::ComPortType.SetValue((COMPORT_TYPE)RandomRange(0, (uint8_t)COMPORT_TYPE::MAX));
+    //sys_host::BatteryNum.SetValue(RandomRange(1, 5));
+    //sys_host::SerialNum.SetValue(GenerateSerialNumber());
+    //sys_host::EndlessTimeClock.SetValue(std::make_tuple(0, 0, 0));
 
-    sys_host::StrikeNum.SetValue(0);
-    sys_host::TimeCycle.SetValue(TIMECYCLE_0);
-    sys_gui::SuccessState.SetValue(INCORRECT);
+    //sys_host::StrikeNum.SetValue(0);
+    //sys_host::TimeCycle.SetValue(TIMECYCLE_0);
+    //sys_gui::SuccessState.SetValue(INCORRECT);
 #else
     // Get init data from HostTimer
     auto jsonDoc = CommonSendRequest(WM_SYSINIT_GET);
@@ -113,12 +141,12 @@ void InitData()
     // Print init data
 #ifdef _WIN64
     debug_println("===== Dummy Data Initialized =====");
-    debug_println("RandomSeed: " + std::to_string(sys_host::RandomSeed.GetValue()));
-    debug_println("LabelIndicator: " + map_LABEL_INDICATOR[sys_host::LabelIndicator.GetValue()]);
-    debug_println("BatteryType: " + map_BATTERY_TYPE[sys_host::BatteryType.GetValue()]);
-    debug_println("ComPortType: " + map_COMPORT_TYPE[sys_host::ComPortType.GetValue()]);
-    debug_println("BatteryNum: " + std::to_string(sys_host::BatteryNum.GetValue()));
-    debug_println("SerialNum: " + sys_host::SerialNum.GetValue());
+    //debug_println("RandomSeed: " + std::to_string(sys_host::RandomSeed.GetValue()));
+    //debug_println("LabelIndicator: " + map_LABEL_INDICATOR[sys_host::LabelIndicator.GetValue()]);
+    //debug_println("BatteryType: " + map_BATTERY_TYPE[sys_host::BatteryType.GetValue()]);
+    //debug_println("ComPortType: " + map_COMPORT_TYPE[sys_host::ComPortType.GetValue()]);
+    //debug_println("BatteryNum: " + std::to_string(sys_host::BatteryNum.GetValue()));
+    //debug_println("SerialNum: " + sys_host::SerialNum.GetValue());
     debug_println("==================================");
 #endif
 }
@@ -144,7 +172,7 @@ void CommonServiceProcess()
                     inputParams.push_back(param);
                 }
 
-                sys_host::InputParamList.SetValue(inputParams);
+                InputParamList.SetValue(inputParams);
 
                 DebugConsoleProcess();
             }
@@ -185,126 +213,126 @@ JsonDocument ProcessRequest(HWND hwnd, uint32_t msg, JsonDocument jsonDocIn)
 {
     JsonDocument jsonDoc;
 
-#ifdef HOST_TIMER
-    switch (msg)
-    {
-    case WM_TIMER_GET:
-    {
-        auto time = sys_host::TimeClock.GetValue();
-
-        jsonDoc["minute"] = std::get<MINUTE_POS>(time);
-        jsonDoc["second"] = std::get<SECOND_POS>(time);
-    }
-    break;
-
-    case WM_STRIKENUM_GET:
-    {
-        jsonDoc[STR(StrikeNum)] = sys_host::StrikeNum.GetValue();
-    }
-    break;
-
-    case WM_STRIKESTATE_SET:
-    {
-        if (!StrikeEnable.GetValue())
-        {
-            sys_host::StrikeState.SetValue(true);
-        }
-    }
-    break;
-
-    case WM_SUCCESSSTATE_SET:
-    {
-        auto mapModuleStatus = sys_gui::ModuleStatusMap.GetValue();
-
-        if (mapModuleStatus[jsonDocIn["module"].as<const char*>()] == MODULE_STATUS::ON)
-        {
-            mapModuleStatus[jsonDocIn["module"].as<const char*>()] = MODULE_STATUS::SUCCESS;
-
-            sys_gui::ModuleStatusMap.SetValue(mapModuleStatus);
-        }
-
-        // Find if any module still ON
-        auto result = std::find_if(mapModuleStatus.begin(), mapModuleStatus.end(),
-            [](const std::pair<std::string, MODULE_STATUS>& item) {
-                return item.second == MODULE_STATUS::ON;
-            });
-
-        if (result == mapModuleStatus.end())
-        {
-            // Stop HostTimer
-            sys_host::ModuleStatus.SetValue(false);
-
-            // Set success state
-            sys_gui::SuccessState.SetValue(STATE_CHECKED);
-        }
-    }
-    break;
-
-    case WM_SYSINIT_GET:
-    {
-        jsonDoc[STR(RandomSeed)] = sys_host::RandomSeed.GetValue();
-        jsonDoc[STR(LabelIndicator)] = (uint8_t)sys_host::LabelIndicator.GetValue();
-        jsonDoc[STR(BatteryType)] = (uint8_t)sys_host::BatteryType.GetValue();
-        jsonDoc[STR(ComPortType)] = (uint8_t)sys_host::ComPortType.GetValue();
-        jsonDoc[STR(BatteryNum)] = sys_host::BatteryNum.GetValue();
-        jsonDoc[STR(SerialNum)] = sys_host::SerialNum.GetValue();
-        jsonDoc[STR(StrikeNum)] = sys_host::StrikeNum.GetValue();
-    }
-    break;
-
-    case WM_STOP_COMPLETE:
-    {
-        auto mapModuleStatus = sys_gui::ModuleStatusMap.GetValue();
-
-        // Find if any module still ON
-        auto result = std::find_if(mapModuleStatus.begin(), mapModuleStatus.end(),
-            [](const std::pair<std::string, MODULE_STATUS>& item) {
-                return item.second == MODULE_STATUS::ON;
-            });
-
-        if (result != mapModuleStatus.end())
-        {
-            // Stop HostTimer
-            sys_host::ModuleStatus.SetValue(false);
-
-            // Set fail state
-            sys_gui::SuccessState.SetValue(STATE_UNCHECK);
-        }
-    }
-    break;
-
-    default:
-        break;
-    }
-
-#ifdef _WIN64
-    char jsonDocStr[MAX_SIZE] = { 0 };
-    serializeJson(jsonDoc, jsonDocStr);
-
-    HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, BUFFER_SIZE, SHARED_MEM);
-    if (!hMapFile)
-    {
-        return jsonDoc;
-    }
-
-    LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-    if (!pBuffer)
-    {
-        CloseHandle(hMapFile);
-        return jsonDoc;
-    }
-
-    strcpy((char*)pBuffer, jsonDocStr);
-
-    UnmapViewOfFile(pBuffer);
-
-    ::SendMessage(hwnd, WM_RESPONSE, NULL, NULL);
-#else
+    //#ifdef HOST_TIMER
+    //    switch (msg)
+    //    {
+    //    case WM_TIMER_GET:
+    //    {
+    //        auto time = TimeClock.GetValue();
+    //
+    //        jsonDoc["minute"] = std::get<MINUTE_POS>(time);
+    //        jsonDoc["second"] = std::get<SECOND_POS>(time);
+    //    }
+    //    break;
+    //
+    //    case WM_STRIKENUM_GET:
+    //    {
+    //        jsonDoc[STR(StrikeNum)] = sys_host::StrikeNum.GetValue();
+    //    }
+    //    break;
+    //
+    //    case WM_STRIKESTATE_SET:
+    //    {
+    //        if (!StrikeEnable.GetValue())
+    //        {
+    //            sys_host::StrikeState.SetValue(true);
+    //        }
+    //    }
+    //    break;
+    //
+    //    case WM_SUCCESSSTATE_SET:
+    //    {
+    //        auto mapModuleStatus = sys_gui::ModuleStatusMap.GetValue();
+    //
+    //        if (mapModuleStatus[jsonDocIn["module"].as<const char*>()] == MODULE_STATUS::ON)
+    //        {
+    //            mapModuleStatus[jsonDocIn["module"].as<const char*>()] = MODULE_STATUS::SUCCESS;
+    //
+    //            sys_gui::ModuleStatusMap.SetValue(mapModuleStatus);
+    //        }
+    //
+    //        // Find if any module still ON
+    //        auto result = std::find_if(mapModuleStatus.begin(), mapModuleStatus.end(),
+    //            [](const std::pair<std::string, MODULE_STATUS>& item) {
+    //                return item.second == MODULE_STATUS::ON;
+    //            });
+    //
+    //        if (result == mapModuleStatus.end())
+    //        {
+    //            // Stop HostTimer
+    //            sys_host::ModuleStatus.SetValue(false);
+    //
+    //            // Set success state
+    //            sys_gui::SuccessState.SetValue(STATE_CHECKED);
+    //        }
+    //    }
+    //    break;
+    //
+    //    case WM_SYSINIT_GET:
+    //    {
+    //        jsonDoc[STR(RandomSeed)] = sys_host::RandomSeed.GetValue();
+    //        jsonDoc[STR(LabelIndicator)] = (uint8_t)sys_host::LabelIndicator.GetValue();
+    //        jsonDoc[STR(BatteryType)] = (uint8_t)sys_host::BatteryType.GetValue();
+    //        jsonDoc[STR(ComPortType)] = (uint8_t)sys_host::ComPortType.GetValue();
+    //        jsonDoc[STR(BatteryNum)] = sys_host::BatteryNum.GetValue();
+    //        jsonDoc[STR(SerialNum)] = sys_host::SerialNum.GetValue();
+    //        jsonDoc[STR(StrikeNum)] = sys_host::StrikeNum.GetValue();
+    //    }
+    //    break;
+    //
+    //    case WM_STOP_COMPLETE:
+    //    {
+    //        auto mapModuleStatus = sys_gui::ModuleStatusMap.GetValue();
+    //
+    //        // Find if any module still ON
+    //        auto result = std::find_if(mapModuleStatus.begin(), mapModuleStatus.end(),
+    //            [](const std::pair<std::string, MODULE_STATUS>& item) {
+    //                return item.second == MODULE_STATUS::ON;
+    //            });
+    //
+    //        if (result != mapModuleStatus.end())
+    //        {
+    //            // Stop HostTimer
+    //            sys_host::ModuleStatus.SetValue(false);
+    //
+    //            // Set fail state
+    //            sys_gui::SuccessState.SetValue(STATE_UNCHECK);
+    //        }
+    //    }
+    //    break;
+    //
+    //    default:
+    //        break;
+    //    }
+    //
+    //#ifdef _WIN64
+    //    char jsonDocStr[MAX_SIZE] = { 0 };
+    //    serializeJson(jsonDoc, jsonDocStr);
+    //
+    //    HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, BUFFER_SIZE, SHARED_MEM);
+    //    if (!hMapFile)
+    //    {
+    //        return jsonDoc;
+    //    }
+    //
+    //    LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
+    //    if (!pBuffer)
+    //    {
+    //        CloseHandle(hMapFile);
+    //        return jsonDoc;
+    //    }
+    //
+    //    strcpy((char*)pBuffer, jsonDocStr);
+    //
+    //    UnmapViewOfFile(pBuffer);
+    //
+    //    ::SendMessage(hwnd, WM_RESPONSE, NULL, NULL);
+    //#else
+    //    return jsonDoc;
+    //#endif
+    //#else
     return jsonDoc;
-#endif
-#else
-    return jsonDoc;
-#endif
+    //#endif
 }
 
 JsonDocument CommonSendRequest(uint32_t msg)
@@ -347,7 +375,7 @@ JsonDocument CommonSendRequest(uint32_t msg)
     SendMessage(byteData);
 #endif
 
-    return sys_host::JsonResponse.GetValue();
+    return JsonResponse.GetValue();
 }
 
 JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
@@ -392,5 +420,5 @@ JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
     SendMessage(byteData);
 #endif
 
-    return sys_host::JsonResponse.GetValue();
+    return JsonResponse.GetValue();
 }

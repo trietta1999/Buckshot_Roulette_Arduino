@@ -5,22 +5,19 @@
 #ifndef _COMMON_LIBRARY_H
 #define _COMMON_LIBRARY_H
 
+#include <lvgl.h>
 #include "CommonDataType.h"
 
- // Do not delete or rename
-#pragma region System_function
 void Init();
 void AutoUpdate();
-uint8_t RandomRange(uint8_t, uint8_t);
-std::string GenerateSerialNumber();
-bool VowelCheck(const std::string&);
-bool OddCheckAtLast(const std::string&);
-bool NumberCheckInTimer(uint8_t);
-#pragma endregion
 
-// Allow modification
-#pragma region Custom_function
+template<typename T>
+T RandomRange(T a, T b)
+{
+    return (T)(((uint32_t)a + 1) + rand() % ((uint32_t)b - ((uint32_t)a + 1)));
+}
 
-#pragma endregion
-
+bool CheckObjectState(lv_obj_t* obj, lv_state_t state);
+void PlayObjectRotate(lv_obj_t* obj, int16_t endAngle, int16_t step);
+std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum);
 #endif // !_COMMON_LIBRARY_H

@@ -19,15 +19,9 @@
 #define STR(a) #a
 
 #ifdef _WIN64
-#ifndef UNIT_TEST
-#define HOST_NAME mapWstr_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#define CLIENT_NAME mapWstr_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#define CLIENT_NAME_FOR_JSON map_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#else
-#define HOST_NAME mapWstr_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#define CLIENT_NAME mapWstr_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#define CLIENT_NAME_FOR_JSON map_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#endif
+#define HOST_NAME L"Buckshot_Roulette"
+#define CLIENT_NAME L"Buckshot_Roulette"
+#define CLIENT_NAME_FOR_JSON "Buckshot_Roulette"
 #else
 #define HOST_NAME map_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
 #define CLIENT_NAME map_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
@@ -55,7 +49,7 @@
 #define IP_ADD_1 192
 #define IP_ADD_2 168
 #define IP_ADD_3 0
-#define IP_ADD_4 (uint8_t)MODULE_NAME::HostTimer
+#define IP_ADD_4 1
 
 #define NETMASK_1 255
 #define NETMASK_2 255
@@ -91,17 +85,7 @@ enum
     WM_STOP_COMPLETE,     // Notify for all client stopped to Host
 };
 
-#define STRIKE_NUM_MAX 3
-
 #define INCORRECT (uint8_t)(-1)
-
-#define MINUTE_POS 0
-#define SECOND_POS 1
-#define MILLIS_POS 2
-
-#define TIMECYCLE_0 1000
-#define TIMECYCLE_1 600
-#define TIMECYCLE_2 400
 
 #define BEEP_FRE 3000
 #define BEEP_INCREASE_DURATION 50
@@ -122,107 +106,79 @@ enum
 #define EXTERN_MAP_ENUM_WSTR(enum_name) extern std::unordered_map<enum_name, std::wstring> mapWstr_##enum_name;
 #endif
 
- // Do not modify
-#pragma region System_datatype
-#define DEF_LABEL_INDICATOR(e, CREATE) \
-        CREATE(e, SND) \
-        CREATE(e, CLR) \
-        CREATE(e, CAR) \
-        CREATE(e, IND) \
-        CREATE(e, FRQ) \
-        CREATE(e, SIG) \
-        CREATE(e, NSA) \
-        CREATE(e, MSA) \
-        CREATE(e, TRN) \
-        CREATE(e, BOB) \
-        CREATE(e, FRK) \
+#define WAIT_TIME 3000
 
-#define DEF_BATTERY_TYPE(e, CREATE) \
-        CREATE(e, AA) \
-        CREATE(e, D) \
+#define PLAYER1_ANGLE 0
+#define PLAYER2_ANGLE 1800
+#define STEP_ANGLE 100
+#define MAX_PICK_ITEM_PER_ROUND 4
+#define MAX_ITEM_NUM 8
+#define MAX_BULLET 8
+#define MIN_BULLET 2
+#define MAX_HP 4
 
-#define DEF_COMPORT_TYPE(e, CREATE) \
-        CREATE(e, DVID) \
-        CREATE(e, Parallel) \
-        CREATE(e, PS2) \
-        CREATE(e, RJ45) \
-        CREATE(e, Serial) \
-        CREATE(e, Stereo_RCA) \
+#define MSG_OUT_OF_SPACE "OUT OF SPACE!"
+#define MSG_END_TURN "END TURN!"
+#define MSG_TOUCH_SHOTGUN "Touch the shotgun!"
 
-#define DEF_MODULE_NAME(e, CREATE) \
-        CREATE(e, HostTimer) \
-        CREATE(e, Wires) \
-        CREATE(e, TheButton) \
-        CREATE(e, Keypads) \
-        CREATE(e, SimonSays) \
-        CREATE(e, WhosOnFirst) \
-        CREATE(e, Memory) \
-        CREATE(e, MorseCode) \
-        CREATE(e, ComplicatedWires) \
-        CREATE(e, WireSequences) \
-        CREATE(e, Mazes) \
-        CREATE(e, Passwords) \
-        CREATE(e, VentingGas) \
-        CREATE(e, CapacitorDischarge) \
-        CREATE(e, Knobs) \
-        CREATE(e, SystemInfo) \
-        CREATE(e, Transporter) \
+#define DEF_PLAYER_TYPE(e, CREATE) \
+        CREATE(e, PLAYER1) \
+        CREATE(e, PLAYER2) \
 
-enum class LABEL_INDICATOR
-{
-    DEF_LABEL_INDICATOR(LABEL_INDICATOR, TO_ENUM)
-    MAX
-};
+#define DEF_STATE_TYPE(e, CREATE) \
+        CREATE(e, STARTUP) \
+        CREATE(e, PICK) \
+        CREATE(e, PLAYER_NEXT) \
+        CREATE(e, PLAYER_ITEM_ARRANGE) \
+        CREATE(e, LOAD_SHELL) \
+        CREATE(e, ACTION_TURN) \
 
-enum class BATTERY_TYPE
-{
-    DEF_BATTERY_TYPE(BATTERY_TYPE, TO_ENUM)
-    MAX
-};
+#define DEF_ITEM_TYPE(e, CREATE) \
+        CREATE(e, BEER) \
+        CREATE(e, BURNERPHONE) \
+        CREATE(e, CIGARETTE) \
+        CREATE(e, EXPIREDMEDICINE) \
+        CREATE(e, HANDCUFFS) \
+        CREATE(e, HANDSAW) \
+        CREATE(e, INVERTER) \
+        CREATE(e, MAGNIFYINGGLASS) \
+        CREATE(e, ADRENALINE) \
 
-enum class COMPORT_TYPE
-{
-    DEF_COMPORT_TYPE(COMPORT_TYPE, TO_ENUM)
-    MAX
-};
+#define DEF_BULLET_TYPE(e, CREATE) \
+        CREATE(e, BLANK) \
+        CREATE(e, LIVE) \
 
-enum class MODULE_NAME
+enum class PLAYER_TYPE
 {
     MIN,
-    DEF_MODULE_NAME(MODULE_NAME, TO_ENUM)
+    DEF_PLAYER_TYPE(PLAYER_TYPE, TO_ENUM)
     MAX
 };
 
-enum class MODULE_STATUS
+enum class STATE_TYPE
 {
-    OFF,
-    ON,
-    START,
-    SUCCESS,
+    MIN,
+    DEF_STATE_TYPE(STATE_TYPE, TO_ENUM)
+    MAX
 };
 
-EXTERN_MAP_ENUM_STR(LABEL_INDICATOR)
-EXTERN_MAP_ENUM_STR(BATTERY_TYPE)
-EXTERN_MAP_ENUM_STR(COMPORT_TYPE)
-EXTERN_MAP_ENUM_STR(MODULE_NAME)
+enum class ITEM_TYPE
+{
+    MIN,
+    DEF_ITEM_TYPE(ITEM_TYPE, TO_ENUM)
+    MAX
+};
 
-#ifdef _WIN64
-EXTERN_MAP_ENUM_WSTR(MODULE_NAME)
-#endif
+enum class BULLET_TYPE
+{
+    MIN,
+    DEF_BULLET_TYPE(BULLET_TYPE, TO_ENUM)
+    MAX
+};
 
-#pragma endregion
-
-// Allow modification
-#pragma region Custom_datatype
-#define COLOR_RED 0xFF0000
-#define COLOR_GREEN 0x35C61F
-#define COLOR_WHITE 0xFFFFFF
-
-#define VERIFY_CODE "241"
-#define MAX_MODULE_SELECT 6
-
-#define ERROR_FRE 873
-#define SUCCESS_FRE 824
-#pragma endregion
+EXTERN_MAP_ENUM_STR(PLAYER_TYPE)
+EXTERN_MAP_ENUM_STR(STATE_TYPE)
+EXTERN_MAP_ENUM_STR(ITEM_TYPE)
+EXTERN_MAP_ENUM_STR(BULLET_TYPE)
 
 #endif // !_COMMON_DATATYPE_H
