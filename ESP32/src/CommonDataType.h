@@ -6,6 +6,7 @@
 #define _COMMON_DATATYPE_H
 
 #include <cstdint>
+#include <queue>
 #include <tuple>
 #include <vector>
 #include <array>
@@ -120,6 +121,7 @@ enum
 #define MSG_OUT_OF_SPACE "OUT OF SPACE!"
 #define MSG_END_TURN "END TURN!"
 #define MSG_TOUCH_SHOTGUN "Touch the shotgun!"
+#define MSG_BURNERPHONE "%d%s SHELL IS... %s!"
 
 #define DEF_PLAYER_TYPE(e, CREATE) \
         CREATE(e, PLAYER1) \
@@ -132,6 +134,7 @@ enum
         CREATE(e, PLAYER_ITEM_ARRANGE) \
         CREATE(e, LOAD_SHELL) \
         CREATE(e, ACTION_TURN) \
+        CREATE(e, UPDATE_HP) \
 
 #define DEF_ITEM_TYPE(e, CREATE) \
         CREATE(e, BEER) \

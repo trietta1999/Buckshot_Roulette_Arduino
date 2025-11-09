@@ -65,6 +65,27 @@ void DebugConsoleProcess()
 
                 CurrentPlayer.SetValue(resultPlayerInfo->first);
             }
+            // Change player table preset
+            else if (inputParams.at(0) == "setitem")
+            {
+                CurrentItemType.SetValue((ITEM_TYPE)std::stoi(inputParams.at(1)));
+            }
+            // Change player HP
+            else if (inputParams.at(0) == "sethp")
+            {
+                std::string player = inputParams.at(1);
+                uint8_t level = std::stoi(inputParams.at(2));
+                uint8_t hp = std::stoi(inputParams.at(3));
+
+                std::transform(player.begin(), player.end(), player.begin(), ::toupper);
+
+                auto resultPlayerInfo = std::find_if(map_PLAYER_TYPE.begin(), map_PLAYER_TYPE.end(),
+                    [player](const std::pair<PLAYER_TYPE, std::string>& item) {
+                        return (item.second == player);
+                    });
+
+                PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
+            }
 
             debug_println("Process debug data done!");
         }

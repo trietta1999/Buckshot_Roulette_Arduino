@@ -12,6 +12,8 @@
 #ifdef _WIN64
 extern CData<std::vector<std::string>> InputParamList;
 extern CData<PLAYER_TYPE> CurrentPlayer;
+extern CData<ITEM_TYPE> CurrentItemType;
+extern CData<std::tuple<PLAYER_TYPE, uint8_t, uint8_t>> PlayerHP;
 #endif
 extern CData<uint8_t> Brightness;
 extern CData<JsonDocument> JsonResponse;

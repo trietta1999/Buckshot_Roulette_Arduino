@@ -100,3 +100,23 @@ std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
 
     return sample;
 }
+
+void GetOrdinalNumber(uint8_t num, std::string& suffix)
+{
+    if (num == 1)
+    {
+        suffix = "st";
+    }
+    else if (num == 2)
+    {
+        suffix = "nd";
+    }
+    else if (num == 3)
+    {
+        suffix = "rd";
+    }
+    else
+    {
+        suffix = "th";
+    }
+}
