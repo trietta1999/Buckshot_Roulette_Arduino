@@ -32,7 +32,6 @@ extern lv_obj_t * ui____initial_actions0;
 LV_IMG_DECLARE(ui_img_metal_table_png);    // assets/metal_table.png
 LV_IMG_DECLARE(ui_img_empty_png);    // assets/Empty.png
 LV_IMG_DECLARE(ui_img_picking_png);    // assets/picking.png
-LV_IMG_DECLARE(ui_img_block_png);    // assets/block.png
 LV_IMG_DECLARE(ui_img_chargeback_png);    // assets/ChargeBack.png
 LV_IMG_DECLARE(ui_img_charge_png);    // assets/Charge.png
 LV_IMG_DECLARE(ui_img_shotgun_png);    // assets/Shotgun.png
@@ -50,10 +49,7 @@ LV_IMG_DECLARE(ui_img_expiredmedicine_png);    // assets/ExpiredMedicine.png
 LV_IMG_DECLARE(ui_img_handcuffs_png);    // assets/Handcuffs.png
 LV_IMG_DECLARE(ui_img_handsaw_png);    // assets/Handsaw.png
 LV_IMG_DECLARE(ui_img_inverter_png);    // assets/Inverter.png
-LV_IMG_DECLARE(ui_img_load_png);    // assets/Load.png
 LV_IMG_DECLARE(ui_img_magnifyingglass_png);    // assets/MagnifyingGlass.png
-LV_IMG_DECLARE(ui_img_metal_turntable_png);    // assets/metal_turntable.png
-LV_IMG_DECLARE(ui_img_shotgunback_png);    // assets/ShotgunBack.png
 LV_IMG_DECLARE(ui_img_shotguncut_png);    // assets/ShotgunCut.png
 LV_IMG_DECLARE(ui_img_shotgun_in_hand_png);    // assets/shotgun_in_hand.png
 

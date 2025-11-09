@@ -11,11 +11,11 @@
 
 #ifdef _WIN64
 extern CData<std::vector<std::string>> InputParamList;
+extern CData<PLAYER_TYPE> CurrentPlayer;
 #endif
 extern CData<uint8_t> Brightness;
 extern CData<JsonDocument> JsonResponse;
 extern CData<std::string> ClientName;
-extern CData<PLAYER_TYPE> CurrentPlayer;
 extern CData<STATE_TYPE> CurrentState;
 
 void UpdateAll();

@@ -7,7 +7,6 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_metal_table_png.c
     images/ui_img_empty_png.c
     images/ui_img_picking_png.c
-    images/ui_img_block_png.c
     images/ui_img_chargeback_png.c
     images/ui_img_charge_png.c
     images/ui_img_shotgun_png.c
@@ -25,10 +24,7 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_handcuffs_png.c
     images/ui_img_handsaw_png.c
     images/ui_img_inverter_png.c
-    images/ui_img_load_png.c
     images/ui_img_magnifyingglass_png.c
-    images/ui_img_metal_turntable_png.c
-    images/ui_img_shotgunback_png.c
     images/ui_img_shotguncut_png.c
     images/ui_img_shotgun_in_hand_png.c)
 

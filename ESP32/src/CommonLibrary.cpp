@@ -6,6 +6,11 @@
 #include <random>
 #include "CommonLibrary.h"
 
+int32_t RandomRangeNumber(int32_t a, int32_t b)
+{
+    return (a + rand() % (b + 1 - a));
+}
+
 bool CheckObjectState(lv_obj_t* obj, lv_state_t state)
 {
     if ((lv_obj_get_state(obj) & state) == state)
@@ -16,7 +21,7 @@ bool CheckObjectState(lv_obj_t* obj, lv_state_t state)
     return false;
 }
 
-void PlayObjectRotate(lv_obj_t* obj, int16_t endAngle, int16_t step)
+void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
 {
     struct angle_t
     {
@@ -74,7 +79,7 @@ std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
     std::vector<BULLET_TYPE> sample(maxNum);
 
     // Get number of Blank value
-    uint8_t blankCount = RandomRange(MIN_BULLET - 1, maxNum + 1);
+    uint8_t blankCount = RandomRangeNumber(1, maxNum - 1); // Must have at least 1 Live value
 
     // Assign Blank value to first element range
     for (uint8_t i = 0; i < blankCount; i++) {

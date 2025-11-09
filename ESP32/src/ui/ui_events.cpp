@@ -11,75 +11,19 @@
 #include "../CommonData.h"
 #include "../CommonLibrary.h"
 #include "../CommonService.h"
+#include "../Entity.h"
 
-struct player_info_t
-{
-    struct player_slot_button_t
-    {
-        lv_obj_t* button;
-        lv_obj_t* buttonImg;
-        lv_img_dsc_t image;
-    };
-
-    lv_obj_t* pickButton;
-    std::vector<player_slot_button_t> listButtonInfo;
-    uint8_t pickItemCount;
-    uint8_t totalItemCount;
-    uint8_t hpLevel2;
-    uint8_t hpLevel1;
-    bool isPickComplete;
-
-    void Disable()
-    {
-        lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
-
-        for (const auto& item : this->listButtonInfo)
-        {
-            lv_obj_add_state(item.button, LV_STATE_DISABLED);
-        }
-    }
-
-    void EnablePickButton()
-    {
-        lv_obj_remove_state(this->pickButton, LV_STATE_DISABLED);
-    }
-
-    void EnableTable()
-    {
-        for (const auto& item : this->listButtonInfo)
-        {
-            lv_obj_remove_state(item.button, LV_STATE_DISABLED);
-        }
-    }
-} Player1, Player2;
-
-struct shotgun_info_t
-{
-    lv_obj_t* objInTable;
-    lv_obj_t* objInside;
-    lv_obj_t* objHand;
-    std::unordered_map<BULLET_TYPE, lv_img_dsc_t> mapBulletImg;
-    std::vector <lv_obj_t*> listBulletImg;
-    std::vector <BULLET_TYPE> listBullet;
-
-    void Disable()
-    {
-        lv_obj_add_state(this->objInTable, LV_STATE_DISABLED);
-    }
-
-    void Enable()
-    {
-        lv_obj_remove_state(this->objInTable, LV_STATE_DISABLED);
-    }
-} Shotgun;
-
-std::unordered_map<ITEM_TYPE, lv_img_dsc_t> mapItemImg;
+static player::player_info_t* Player = nullptr;
+static shotgun::shotgun_info_t Shotgun = { };
+static std::unordered_map<ITEM_TYPE, lv_img_dsc_t> mapItemImg;
 
 #pragma region Internal_functions
 static void ResetPlayerTable()
 {
-    Player1.Disable();
-    Player2.Disable();
+    for (auto& player : player::listPlayer)
+    {
+        player.Disable();
+    }
 
     Shotgun.Disable();
 }
@@ -91,6 +35,7 @@ void Init()
     Brightness.SetValue(100);
     lv_slider_set_value(ui_sldBrightness, Brightness.GetValue(), LV_ANIM_OFF);
 
+    // Init image map
     mapItemImg = {
         { ITEM_TYPE::BEER, ui_img_beer_png },
         { ITEM_TYPE::BURNERPHONE, ui_img_burnerphone_png },
@@ -124,8 +69,10 @@ void Init()
     };
 
     // Init player #1
-    Player1.pickButton = ui_btnPlayer1Pick;
-    Player1.listButtonInfo = {
+    player::player_info_t player1 = { };
+    player1.type = PLAYER_TYPE::PLAYER1;
+    player1.pickButton = ui_btnPlayer1Pick;
+    player1.listButtonInfo = {
         { ui_btnPlayer1Slot1, ui_imgbtnPlayer1Slot1, { 0 } },
         { ui_btnPlayer1Slot2, ui_imgbtnPlayer1Slot2, { 0 } },
         { ui_btnPlayer1Slot3, ui_imgbtnPlayer1Slot3, { 0 } },
@@ -135,12 +82,14 @@ void Init()
         { ui_btnPlayer1Slot7, ui_imgbtnPlayer1Slot7, { 0 } },
         { ui_btnPlayer1Slot8, ui_imgbtnPlayer1Slot8, { 0 } },
     };
-    Player1.hpLevel1 = MAX_HP;
-    Player1.hpLevel2 = MAX_HP;
+    player1.hpLevel1 = MAX_HP;
+    player1.hpLevel2 = MAX_HP;
 
     // Init player #2
-    Player2.pickButton = ui_btnPlayer2Pick;
-    Player2.listButtonInfo = {
+    player::player_info_t player2 = { };
+    player2.type = PLAYER_TYPE::PLAYER2;
+    player2.pickButton = ui_btnPlayer2Pick;
+    player2.listButtonInfo = {
         { ui_btnPlayer2Slot1, ui_imgbtnPlayer2Slot1, { 0 } },
         { ui_btnPlayer2Slot2, ui_imgbtnPlayer2Slot2, { 0 } },
         { ui_btnPlayer2Slot3, ui_imgbtnPlayer2Slot3, { 0 } },
@@ -150,8 +99,11 @@ void Init()
         { ui_btnPlayer2Slot7, ui_imgbtnPlayer2Slot7, { 0 } },
         { ui_btnPlayer2Slot8, ui_imgbtnPlayer2Slot8, { 0 } },
     };
-    Player2.hpLevel1 = MAX_HP;
-    Player2.hpLevel2 = MAX_HP;
+    player2.hpLevel1 = MAX_HP;
+    player2.hpLevel2 = MAX_HP;
+
+    // Add player list
+    player::listPlayer = { player1, player2 };
 
     // Init data
     CurrentState.SetValue(STATE_TYPE::STARTUP);
@@ -159,6 +111,7 @@ void Init()
 
 void AutoUpdate()
 {
+    // Startup state
     if (CurrentState.GetValue() == STATE_TYPE::STARTUP)
     {
         if (CheckObjectState(ui_btnPlayer1Start, LV_STATE_CHECKED) && CheckObjectState(ui_btnPlayer2Start, LV_STATE_CHECKED))
@@ -171,34 +124,45 @@ void AutoUpdate()
         }
     }
 
+#ifdef _WIN64
+    // Debug change player
+    if (CurrentPlayer.GetState())
+    {
+        for (auto& player : player::listPlayer)
+        {
+            if (player.type == CurrentPlayer.GetValue())
+            {
+                Player = &player;
+                break;
+            }
+        }
+    }
+#endif
+
     // Update player sequence
     if (CurrentState.GetValue() == STATE_TYPE::PLAYER_NEXT)
     {
         ResetPlayerTable();
 
-        if (Player1.isPickComplete && Player2.isPickComplete)
+        if (player::AllPickComplete())
         {
-            // Set player
-            CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER1);
+            // Set player #1 as default
+            Player = &player::listPlayer[0];
 
             // Transit state
             CurrentState.SetValue(STATE_TYPE::LOAD_SHELL);
         }
+        // Move to next player
         else
         {
-            auto player = CurrentPlayer.GetValue();
-
-            if (player == PLAYER_TYPE::MIN)
+            if (!Player)
             {
-                CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER1);
+                // Set player #1 as default
+                Player = &player::listPlayer[0];
             }
-            else if (player == PLAYER_TYPE::PLAYER1)
+            else
             {
-                CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER2);
-            }
-            else if (player == PLAYER_TYPE::PLAYER2)
-            {
-                CurrentPlayer.SetValue(PLAYER_TYPE::PLAYER1);
+                Player = &player::NextPlayer(*Player);
             }
 
             // Transit state
@@ -208,53 +172,48 @@ void AutoUpdate()
 
     if (CurrentState.GetState())
     {
+        // Item pick state
         if (CurrentState.GetValue() == STATE_TYPE::PICK)
         {
-            if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+            // Rotate item card review to player
+            if (Player->type == PLAYER_TYPE::PLAYER1)
             {
                 lv_obj_set_style_transform_rotation(ui_conCardReview, PLAYER1_ANGLE, LV_PART_MAIN | LV_STATE_DEFAULT); // Enable card viewer
-
-                Player1.EnablePickButton();
             }
-            else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+            else if (Player->type == PLAYER_TYPE::PLAYER2)
             {
                 lv_obj_set_style_transform_rotation(ui_conCardReview, PLAYER2_ANGLE, LV_PART_MAIN | LV_STATE_DEFAULT); // Enable card viewer
-
-                Player2.EnablePickButton();
             }
+
+            Player->EnablePickButton();
         }
+        // Item arrange state
         else if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
         {
-            if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
-            {
-                // Enable player #1 table
-                Player1.EnableTable();
-            }
-            else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
-            {
-                // Enable player #2 table
-                Player2.EnableTable();
-            }
+            Player->EnableTable();
         }
+        // Load shell state
         else if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
         {
-            uint8_t bulletNum = RandomRange(MIN_BULLET - 1, MAX_BULLET + 1);
-            Shotgun.listBullet = CreateBulletList(MAX_BULLET); // Random order
+            uint8_t bulletNum = RandomRangeNumber(MIN_BULLET, MAX_BULLET);
+            Shotgun.listBullet = CreateBulletList(bulletNum); // Random order
             std::vector<BULLET_TYPE> listBulletSort = Shotgun.listBullet;
             std::sort(listBulletSort.begin(), listBulletSort.end(), [](BULLET_TYPE a, BULLET_TYPE b)
                 {
                     return a < b;
-                }); // BLANK group is always on top
+                }); // BLANK group is always on top (for view only)
 
             // Show sort bullet group
             for (uint8_t i = 0; i < Shotgun.listBulletImg.size(); i++)
             {
                 if (i < bulletNum)
                 {
+                    // Bullet image
                     lv_image_set_src(Shotgun.listBulletImg[i], &Shotgun.mapBulletImg[listBulletSort[i]]);
                 }
                 else
                 {
+                    // Empty image
                     lv_image_set_src(Shotgun.listBulletImg[i], &Shotgun.mapBulletImg[BULLET_TYPE::MIN]);
                 }
             }
@@ -269,24 +228,20 @@ void AutoUpdate()
             // Hide bullet box cover
             lv_obj_add_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
         }
+        // Action play turn state
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_TURN)
         {
-            if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+            // Rotate shotgun to player
+            if (Player->type == PLAYER_TYPE::PLAYER1)
             {
-                // Rotate shotgun to player #1
-                PlayObjectRotate(ui_imgbtnShotgunInTable, PLAYER1_ANGLE, STEP_ANGLE);
-
-                // Enable player #1 table
-                Player1.EnableTable();
+                PlayObjectRotatingAnimation(ui_imgbtnShotgunInTable, PLAYER1_ANGLE, STEP_ANGLE);
             }
-            else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
+            else if (Player->type == PLAYER_TYPE::PLAYER2)
             {
-                // Rotate shotgun to player #2
-                PlayObjectRotate(ui_imgbtnShotgunInTable, PLAYER2_ANGLE, STEP_ANGLE);
-
-                // Enable player #2 table
-                Player2.EnableTable();
+                PlayObjectRotatingAnimation(ui_imgbtnShotgunInTable, PLAYER2_ANGLE, STEP_ANGLE);
             }
+
+            Player->EnableTable();
         }
     }
 }
@@ -318,40 +273,28 @@ void OnItemSelect(lv_event_t* e)
 {
     if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
     {
-        player_info_t* player = nullptr;
-
-        // Get player info
-        if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
+        if (Player)
         {
-            player = &Player1;
-        }
-        else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
-        {
-            player = &Player2;
-        }
-
-        if (player)
-        {
+            // Get current slot button
             auto currentButton = (lv_obj_t*)(e->current_target);
-
-            auto resultButtonInfo = std::find_if(player->listButtonInfo.begin(), player->listButtonInfo.end(),
-                [currentButton](const decltype(player->listButtonInfo.front())& item) {
+            auto resultButtonInfo = std::find_if(Player->listButtonInfo.begin(), Player->listButtonInfo.end(),
+                [currentButton](const decltype(Player->listButtonInfo.front())& item) {
                     // Button has no assigned image
                     return ((item.button == currentButton) && (item.image.data_size == 0));
                 });
 
-            if (resultButtonInfo != player->listButtonInfo.end())
+            if (resultButtonInfo != Player->listButtonInfo.end())
             {
                 auto& buttonInfo = (*resultButtonInfo); // Get button info
                 auto imgCardReview = lv_image_get_src(ui_imgCardReview); // Get image from card review
 
-                // Update button info
+                // Update button image
                 lv_image_set_src(buttonInfo.buttonImg, imgCardReview);
                 memcpy(&buttonInfo.image, imgCardReview, sizeof(lv_img_dsc_t));
 
                 // Update item count
-                player->pickItemCount++;
-                player->totalItemCount++;
+                Player->pickItemCount++;
+                Player->totalItemCount++;
 
                 // Hide card review
                 lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
@@ -384,28 +327,17 @@ void OnShotgunSelect(lv_event_t* e)
 
 void OnItemPick(lv_event_t* e)
 {
-    player_info_t* player = nullptr;
-    ITEM_TYPE item = RandomRange(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
+    ITEM_TYPE item = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
 
-    // Get list button info
-    if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER1)
-    {
-        player = &Player1;
-    }
-    else if (CurrentPlayer.GetValue() == PLAYER_TYPE::PLAYER2)
-    {
-        player = &Player2;
-    }
-
-    // Show and set card review
+    // Show and set image to card review
     lv_obj_remove_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
     lv_image_set_src(ui_imgCardReview, &mapItemImg[item]);
 
-    if (player)
+    if (Player)
     {
-        player->EnablePickButton();
+        Player->DisablePickButton();
 
-        if ((player->pickItemCount == MAX_PICK_ITEM_PER_ROUND) || (player->totalItemCount == MAX_ITEM_NUM))
+        if ((Player->pickItemCount == MAX_PICK_ITEM_PER_ROUND) || (Player->totalItemCount == MAX_ITEM_NUM))
         {
             ResetPlayerTable();
 
@@ -413,18 +345,18 @@ void OnItemPick(lv_event_t* e)
             lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
 
             // Set message
-            if (player->totalItemCount == MAX_ITEM_NUM)
+            if (Player->totalItemCount == MAX_ITEM_NUM)
             {
                 lv_label_set_text(ui_lblCardMessage, MSG_OUT_OF_SPACE);
             }
-            else if (player->pickItemCount == MAX_PICK_ITEM_PER_ROUND)
+            else if (Player->pickItemCount == MAX_PICK_ITEM_PER_ROUND)
             {
                 lv_label_set_text(ui_lblCardMessage, MSG_END_TURN);
             }
 
-            // Reset item count
-            player->pickItemCount = 0;
-            player->isPickComplete = true;
+            // Reset pick item count, keep total count
+            Player->pickItemCount = 0;
+            Player->isPickComplete = true;
 
             // Show delayed message
             lv_timer_create([](lv_timer_t* timer) {

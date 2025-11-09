@@ -25,7 +25,6 @@ lv_obj_t * ui_btnPlayer2Slot6 = NULL;
 lv_obj_t * ui_imgbtnPlayer2Slot6 = NULL;
 lv_obj_t * ui_btnPlayer2Slot8 = NULL;
 lv_obj_t * ui_imgbtnPlayer2Slot8 = NULL;
-lv_obj_t * ui_imgPlayer2Block = NULL;
 lv_obj_t * ui_Container3 = NULL;
 lv_obj_t * ui_Container6 = NULL;
 lv_obj_t * ui_Container13 = NULL;
@@ -86,7 +85,6 @@ lv_obj_t * ui_btnPlayer1Slot6 = NULL;
 lv_obj_t * ui_imgbtnPlayer1Slot6 = NULL;
 lv_obj_t * ui_btnPlayer1Slot8 = NULL;
 lv_obj_t * ui_imgbtnPlayer1Slot8 = NULL;
-lv_obj_t * ui_imgPlayer1Block = NULL;
 lv_obj_t * ui_wndShotgunConfirm = NULL;
 lv_obj_t * ui_btnPlayer2Confirm = NULL;
 lv_obj_t * ui_Label9 = NULL;
@@ -180,15 +178,6 @@ void ui_event_btnPlayer2Slot6(lv_event_t * e)
 }
 
 void ui_event_btnPlayer2Slot8(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-
-    if(event_code == LV_EVENT_CLICKED) {
-        OnItemSelect(e);
-    }
-}
-
-void ui_event_imgPlayer2Block(lv_event_t * e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
 
@@ -297,15 +286,6 @@ void ui_event_btnPlayer1Slot6(lv_event_t * e)
 }
 
 void ui_event_btnPlayer1Slot8(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-
-    if(event_code == LV_EVENT_CLICKED) {
-        OnItemSelect(e);
-    }
-}
-
-void ui_event_imgPlayer1Block(lv_event_t * e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
 
@@ -702,17 +682,6 @@ void ui_Main_screen_init(void)
                        LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
     lv_image_set_inner_align(ui_imgbtnPlayer2Slot8, LV_IMAGE_ALIGN_STRETCH);
-
-    ui_imgPlayer2Block = lv_image_create(ui_Container1);
-    lv_image_set_src(ui_imgPlayer2Block, &ui_img_block_png);
-    lv_obj_set_width(ui_imgPlayer2Block, 470);
-    lv_obj_set_height(ui_imgPlayer2Block, 265);
-    lv_obj_set_align(ui_imgPlayer2Block, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_imgPlayer2Block, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_FLOATING);     /// Flags
-    lv_obj_remove_flag(ui_imgPlayer2Block,
-                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
-                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
 
     ui_Container3 = lv_obj_create(ui_Main);
     lv_obj_remove_style_all(ui_Container3);
@@ -1710,17 +1679,6 @@ void ui_Main_screen_init(void)
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
     lv_image_set_inner_align(ui_imgbtnPlayer1Slot8, LV_IMAGE_ALIGN_STRETCH);
 
-    ui_imgPlayer1Block = lv_image_create(ui_Container10);
-    lv_image_set_src(ui_imgPlayer1Block, &ui_img_block_png);
-    lv_obj_set_width(ui_imgPlayer1Block, 470);
-    lv_obj_set_height(ui_imgPlayer1Block, 265);
-    lv_obj_set_align(ui_imgPlayer1Block, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_imgPlayer1Block, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_FLOATING);     /// Flags
-    lv_obj_remove_flag(ui_imgPlayer1Block,
-                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
-                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-
     ui_wndShotgunConfirm = lv_obj_create(ui_Main);
     lv_obj_remove_style_all(ui_wndShotgunConfirm);
     lv_obj_set_width(ui_wndShotgunConfirm, 480);
@@ -1909,7 +1867,6 @@ void ui_Main_screen_init(void)
     lv_obj_add_event_cb(ui_btnPlayer2Slot7, ui_event_btnPlayer2Slot7, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer2Slot6, ui_event_btnPlayer2Slot6, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer2Slot8, ui_event_btnPlayer2Slot8, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_imgPlayer2Block, ui_event_imgPlayer2Block, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_imgCardReview, ui_event_imgCardReview, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_imgbtnShotgunInTable, ui_event_imgbtnShotgunInTable, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_sldBrightness, ui_event_sldBrightness, LV_EVENT_ALL, NULL);
@@ -1922,7 +1879,6 @@ void ui_Main_screen_init(void)
     lv_obj_add_event_cb(ui_btnPlayer1Slot7, ui_event_btnPlayer1Slot7, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer1Slot6, ui_event_btnPlayer1Slot6, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer1Slot8, ui_event_btnPlayer1Slot8, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_imgPlayer1Block, ui_event_imgPlayer1Block, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer2Confirm, ui_event_btnPlayer2Confirm, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer1Confirm, ui_event_btnPlayer1Confirm, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_imgbtnShotgunInside, ui_event_imgbtnShotgunInside, LV_EVENT_ALL, NULL);
@@ -1955,7 +1911,6 @@ void ui_Main_screen_destroy(void)
     ui_imgbtnPlayer2Slot6 = NULL;
     ui_btnPlayer2Slot8 = NULL;
     ui_imgbtnPlayer2Slot8 = NULL;
-    ui_imgPlayer2Block = NULL;
     ui_Container3 = NULL;
     ui_Container6 = NULL;
     ui_Container13 = NULL;
@@ -2016,7 +1971,6 @@ void ui_Main_screen_destroy(void)
     ui_imgbtnPlayer1Slot6 = NULL;
     ui_btnPlayer1Slot8 = NULL;
     ui_imgbtnPlayer1Slot8 = NULL;
-    ui_imgPlayer1Block = NULL;
     ui_wndShotgunConfirm = NULL;
     ui_btnPlayer2Confirm = NULL;
     ui_Label9 = NULL;

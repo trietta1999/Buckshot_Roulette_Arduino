@@ -305,6 +305,7 @@
     <ClInclude Include="..\..\ESP32\src\CommonDataType.h" />
     <ClInclude Include="..\..\ESP32\src\CommonLibrary.h" />
     <ClInclude Include="..\..\ESP32\src\CommonService.h" />
+    <ClInclude Include="..\..\ESP32\src\Entity.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Main.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Start.h" />
     <ClInclude Include="..\..\ESP32\src\ui\ui.h" />
