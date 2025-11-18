@@ -86,6 +86,11 @@ void DebugConsoleProcess()
 
                 PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
             }
+            // Special command
+            else
+            {
+                SpecialCommand.SetValue(inputParams.at(0));
+            }
 
             debug_println("Process debug data done!");
         }

@@ -76,7 +76,7 @@ void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
 
 std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
 {
-    std::vector<BULLET_TYPE> sample(maxNum);
+    std::vector<BULLET_TYPE> sample(maxNum), temp(maxNum);
 
     // Get number of Blank value
     uint8_t blankCount = RandomRangeNumber(1, maxNum - 1); // Must have at least 1 Live value
@@ -86,8 +86,24 @@ std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
         sample[i] = BULLET_TYPE::BLANK;
     }
 
+    // Copy to temporary
+    temp = sample;
+
     std::mt19937 gen(rand());
-    std::shuffle(sample.begin(), sample.end(), gen); // Random shuffle
+
+    //do // For numbers greater than 2, the random set must be different from the sample
+    //{
+    //    std::shuffle(temp.begin(), temp.end(), gen); // Random shuffle
+    //} while ((maxNum > 2) && (temp == sample));
+
+    // The random set must be different from the sample
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        std::shuffle(temp.begin(), temp.end(), gen);
+    }
+
+    // Update sample
+    sample = temp;
 
     // Fill Live value
     for (auto& item : sample)

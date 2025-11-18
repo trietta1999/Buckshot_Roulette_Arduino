@@ -107,11 +107,14 @@ enum
 #define EXTERN_MAP_ENUM_WSTR(enum_name) extern std::unordered_map<enum_name, std::wstring> mapWstr_##enum_name;
 #endif
 
-#define WAIT_TIME 3000
+#define WAIT_TIME 4000
+#define EFFECT_WAIT_TIME 1000
+#define WAIT_1_SEC 1000
 
 #define PLAYER1_ANGLE 0
 #define PLAYER2_ANGLE 1800
 #define STEP_ANGLE 100
+
 #define MAX_PICK_ITEM_PER_ROUND 4
 #define MAX_ITEM_NUM 8
 #define MAX_BULLET 8
@@ -134,7 +137,9 @@ enum
         CREATE(e, PLAYER_ITEM_ARRANGE) \
         CREATE(e, LOAD_SHELL) \
         CREATE(e, ACTION_TURN) \
+        CREATE(e, ACTION_ITEM) \
         CREATE(e, UPDATE_HP) \
+        CREATE(e, SHOTGUN_SHOT) \
 
 #define DEF_ITEM_TYPE(e, CREATE) \
         CREATE(e, BEER) \

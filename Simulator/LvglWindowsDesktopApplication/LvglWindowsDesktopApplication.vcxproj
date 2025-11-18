@@ -31,7 +31,7 @@
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>LV_CONF_INCLUDE_SIMPLE;LV_LVGL_H_INCLUDE_SIMPLE;LV_USE_DEV_VERSION;_CRT_SECURE_NO_WARNINGS;HOST_TIMER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LV_CONF_INCLUDE_SIMPLE;LV_LVGL_H_INCLUDE_SIMPLE;LV_USE_DEV_VERSION;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization Condition="'$(Configuration)'=='Release'">MinSpace</Optimization>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -305,7 +305,9 @@
     <ClInclude Include="..\..\ESP32\src\CommonDataType.h" />
     <ClInclude Include="..\..\ESP32\src\CommonLibrary.h" />
     <ClInclude Include="..\..\ESP32\src\CommonService.h" />
+    <ClInclude Include="..\..\ESP32\src\Effect.h" />
     <ClInclude Include="..\..\ESP32\src\Entity.h" />
+    <ClInclude Include="..\..\ESP32\src\FSM.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Main.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Start.h" />
     <ClInclude Include="..\..\ESP32\src\ui\ui.h" />

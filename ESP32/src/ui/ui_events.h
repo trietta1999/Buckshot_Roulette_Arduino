@@ -17,7 +17,7 @@ void OnItemPick(lv_event_t * e);
 void OnShotgunSelect(lv_event_t * e);
 void OnBrightnessChange(lv_event_t * e);
 void OnShotgunShot(lv_event_t * e);
-void OnShotgunInsideClick(lv_event_t * e);
+void OnShotgunInside(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

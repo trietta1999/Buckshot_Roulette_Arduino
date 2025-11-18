@@ -10,6 +10,8 @@
 
 void Init();
 void AutoUpdate();
+void FSM();
+void FSMTransit(STATE_TYPE next);
 
 template<typename T>
 T RandomRangeEnum(T a, T b)

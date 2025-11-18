@@ -827,6 +827,12 @@
     <ClInclude Include="..\..\ESP32\src\Entity.h">
       <Filter>Library</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ESP32\src\Effect.h">
+      <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ESP32\src\FSM.h">
+      <Filter>Library</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\.typos.toml">

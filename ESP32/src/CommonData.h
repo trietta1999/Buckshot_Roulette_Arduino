@@ -14,6 +14,7 @@ extern CData<std::vector<std::string>> InputParamList;
 extern CData<PLAYER_TYPE> CurrentPlayer;
 extern CData<ITEM_TYPE> CurrentItemType;
 extern CData<std::tuple<PLAYER_TYPE, uint8_t, uint8_t>> PlayerHP;
+extern CData<std::string> SpecialCommand;
 #endif
 extern CData<uint8_t> Brightness;
 extern CData<JsonDocument> JsonResponse;

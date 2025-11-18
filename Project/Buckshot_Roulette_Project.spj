@@ -5775,7 +5775,8 @@
                 "InheritedType": 11
               }
             ],
-            "saved_objtypeKey": "CONTAINER"
+            "saved_objtypeKey": "CONTAINER",
+            "tree_closed": true
           },
           {
             "guid": "GUID89675509-524279S8744308",
@@ -19428,7 +19429,8 @@
                 "InheritedType": 11
               }
             ],
-            "saved_objtypeKey": "CONTAINER"
+            "saved_objtypeKey": "CONTAINER",
+            "tree_closed": true
           },
           {
             "guid": "GUID61595421-353377S8744308",
@@ -21502,7 +21504,7 @@
                 "disabled": false,
                 "nid": 1001551,
                 "strtype": "_event/EventHandler",
-                "strval": "CLICKED",
+                "strval": "PRESSED",
                 "childs": [
                   {
                     "nid": 1001552,
@@ -21548,7 +21550,7 @@
                       {
                         "nid": 1001559,
                         "strtype": "CALL FUNCTION/Function_name",
-                        "strval": "OnShotgunInsideClick",
+                        "strval": "OnShotgunInside",
                         "InheritedType": 10
                       },
                       {
@@ -21566,9 +21568,8 @@
               {
                 "disabled": false,
                 "nid": 1001561,
-                "flags": 1048576,
                 "strtype": "_event/EventHandler",
-                "strval": "CLICKED",
+                "strval": "RELEASED",
                 "childs": [
                   {
                     "nid": 1001562,
@@ -21587,13 +21588,50 @@
                     "strtype": "_event/condition_P",
                     "strval": "",
                     "InheritedType": 10
+                  },
+                  {
+                    "nid": 1001674,
+                    "strtype": "_event/action",
+                    "strval": "CALL FUNCTION",
+                    "childs": [
+                      {
+                        "nid": 1001675,
+                        "strtype": "CALL FUNCTION/Name",
+                        "strval": "CALL FUNCTION",
+                        "InheritedType": 10
+                      },
+                      {
+                        "nid": 1001676,
+                        "strtype": "CALL FUNCTION/Call",
+                        "strval": "<{Function_name}>( event_struct )",
+                        "InheritedType": 10
+                      },
+                      {
+                        "nid": 1001677,
+                        "strtype": "CALL FUNCTION/CallC",
+                        "strval": "<{Function_name}>( e );",
+                        "InheritedType": 10
+                      },
+                      {
+                        "nid": 1001678,
+                        "strtype": "CALL FUNCTION/Function_name",
+                        "strval": "OnShotgunInside",
+                        "InheritedType": 10
+                      },
+                      {
+                        "nid": 1001679,
+                        "strtype": "CALL FUNCTION/Dont_export_function",
+                        "strval": "False",
+                        "InheritedType": 2
+                      }
+                    ],
+                    "InheritedType": 10
                   }
                 ],
                 "InheritedType": 4
               }
             ],
-            "saved_objtypeKey": "IMAGE",
-            "tree_closed": true
+            "saved_objtypeKey": "IMAGE"
           },
           {
             "guid": "GUID91949157-623910S9094308",
@@ -22078,7 +22116,7 @@
     "uiExportFolderPath": "D:\\Git\\Buckshot_Roulette_Arduino\\ESP32\\src\\ui",
     "projectExportFolderPath": "D:\\Git\\Buckshot_Roulette_Arduino\\Project",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 206,
+    "backup_cnt": 208,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.1.0",
@@ -22096,7 +22134,7 @@
     "naming": "Name",
     "naming_force_lowercase": false,
     "naming_add_subcomponent": false,
-    "nidcnt": 1001674,
+    "nidcnt": 1001680,
     "BitDepth": 16,
     "Name": "SquareLine_Project"
   }
