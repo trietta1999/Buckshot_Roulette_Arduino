@@ -7,7 +7,6 @@
 #include <iostream>
 #endif
 #include <algorithm>
-#include <functional>
 #include "ui.h"
 #include "../CommonData.h"
 #include "../CommonLibrary.h"
@@ -24,6 +23,7 @@ static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
 static bool itemUsingState = false;
 static ITEM_TYPE itemUsingType = ITEM_TYPE::MIN;
 static uint64_t lastShotgunTime = 0;
+static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
 
 #pragma region Internal_functions
 static void ResetPlayerTable()
@@ -263,6 +263,9 @@ void OnShotgunShot(lv_event_t* e)
 
     Shotgun.state = 0;
 
+    lv_obj_add_state(ui_btnPlayer1Confirm, LV_STATE_DISABLED);
+    lv_obj_add_state(ui_btnPlayer2Confirm, LV_STATE_DISABLED);
+
     FSMTransit(STATE_TYPE::SHOTGUN_SHOT);
 }
 
@@ -376,6 +379,9 @@ void OnShotgunSelect(lv_event_t* e)
     }
     else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
     {
+        lv_obj_remove_state(ui_btnPlayer1Confirm, LV_STATE_DISABLED);
+        lv_obj_remove_state(ui_btnPlayer2Confirm, LV_STATE_DISABLED);
+
         Shotgun.ShowInHand(*Player);
     }
 }

@@ -30,12 +30,10 @@ void FSM()
     {
         if (MILLISEC_GET - lastShotgunTime >= EFFECT_WAIT_TIME)
         {
-            // End stageof shotgun
+            // End stage of shotgun
             if (Shotgun.state > 2)
             {
                 FSMTransit(STATE_TYPE::UPDATE_HP);
-
-                ShowTrashBullet();
 
                 // Shotgun is fired or Target player is not current player
                 if ((Shotgun.isGunfire) || (Player != Shotgun.targetPlayer))
@@ -43,12 +41,17 @@ void FSM()
                     FSMTransit(STATE_TYPE::ACTION_TURN);
                 }
 
+                ShowTrashBullet();
+
                 Shotgun.Reset();
 
                 // Out of bullet
                 if (!Shotgun.queueBullet.size())
                 {
-                    FSMTransit(STATE_TYPE::PLAYER_NEXT);
+                    // Wait for transit to next round
+                    lv_timer_create([](lv_timer_t* timer) {
+                        FSMTransit(STATE_TYPE::PLAYER_NEXT);
+                        }, EFFECT_WAIT_TIME, nullptr)->repeat_count = 1;
                 }
             }
 
@@ -68,36 +71,30 @@ void FSM()
         // Update player sequence
         if (CurrentState.GetValue() == STATE_TYPE::PLAYER_NEXT)
         {
-            //if (CurrentState.GetOldValue() != STATE_TYPE::SHOTGUN_SHOT)
-            {
-                ResetPlayerTable();
+            ResetPlayerTable();
 
-                if (player::CheckAllPickComplete())
+            if (player::CheckAllPickComplete())
+            {
+                Shotgun.RotateToPlayer(Player->angle);
+
+                FSMTransit(STATE_TYPE::LOAD_SHELL);
+            }
+            // Move to next player
+            else
+            {
+                if (!Player)
                 {
                     // Set player #1 as default
                     Player = &player::listPlayer[0];
-
-                    Shotgun.RotateToPlayer(Player->angle);
-
-                    FSMTransit(STATE_TYPE::LOAD_SHELL);
                 }
-                // Move to next player
                 else
                 {
-                    if (!Player)
-                    {
-                        // Set player #1 as default
-                        Player = &player::listPlayer[0];
-                    }
-                    else
-                    {
-                        Player = &player::NextPlayer(*Player);
-                    }
-
-                    Shotgun.RotateToPlayer(Player->angle);
-
-                    FSMTransit(STATE_TYPE::PICK);
+                    Player = &player::NextPlayer(*Player);
                 }
+
+                Shotgun.RotateToPlayer(Player->angle);
+
+                FSMTransit(STATE_TYPE::PICK);
             }
         }
         // Item pick state
@@ -183,8 +180,18 @@ void FSM()
                     }
                 }
             }
+            else
+            {
+                // Move to latest player
+                while (Player->type != latestPlayer)
+                {
+                    Player = &player::NextPlayer(*Player);
+                }
+            }
 
             debug_println("Player: " + map_PLAYER_TYPE[Player->type]);
+
+            latestPlayer = Player->type;
 
             player::DisableAllPlayerTableExcept(*Player);
             Shotgun.RotateToPlayer(Player->angle);

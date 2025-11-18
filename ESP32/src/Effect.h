@@ -18,7 +18,10 @@ EFFECT_FUNCTION(BEER)
     // Out of bullet
     if (!Shotgun.queueBullet.size())
     {
-        FSMTransit(STATE_TYPE::PLAYER_NEXT);
+        // Wait for transit to next round
+        lv_timer_create([](lv_timer_t* timer) {
+            FSMTransit(STATE_TYPE::PLAYER_NEXT);
+            }, EFFECT_WAIT_TIME, nullptr)->repeat_count = 1;
     }
 
     itemUsingState = false;

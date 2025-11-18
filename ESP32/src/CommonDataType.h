@@ -11,6 +11,7 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <functional>
 #include <unordered_map>
 
 #ifndef HOST_TIMER

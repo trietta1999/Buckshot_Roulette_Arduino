@@ -45,33 +45,40 @@ void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
     }
 
     // Set data
-    data->obj = obj;
-    data->startAngle = startAngle;
-    data->endAngle = endAngle;
-    data->step = step;
+    if (data)
+    {
+        data->obj = obj;
+        data->startAngle = startAngle;
+        data->endAngle = endAngle;
+        data->step = step;
 
-    // Create timer
-    lv_timer_create([](lv_timer_t* timer) {
-        auto data = (angle_t*)lv_timer_get_user_data(timer);
+        lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
 
-        lv_obj_set_style_transform_rotation(data->obj, data->startAngle, LV_PART_MAIN | LV_STATE_DEFAULT);
+        // Create timer
+        lv_timer_create([](lv_timer_t* timer) {
+            auto data = (angle_t*)lv_timer_get_user_data(timer);
 
-        if (data->startAngle < data->endAngle)
-        {
-            data->startAngle += data->step;
-        }
-        else if (data->startAngle > data->endAngle)
-        {
-            data->startAngle -= data->step;
-        }
+            lv_obj_set_style_transform_rotation(data->obj, data->startAngle, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-        if (data->startAngle == data->endAngle)
-        {
-            lv_timer_del(timer);
-            free(data);
-            timer = nullptr;
-        }
-        }, 5, data);
+            if (data->startAngle < data->endAngle)
+            {
+                data->startAngle += data->step;
+            }
+            else if (data->startAngle > data->endAngle)
+            {
+                data->startAngle -= data->step;
+            }
+
+            if (data->startAngle == data->endAngle)
+            {
+                lv_obj_add_flag(data->obj, LV_OBJ_FLAG_CLICKABLE);
+
+                lv_timer_del(timer);
+                free(data);
+                timer = nullptr;
+            }
+            }, 5, data);
+    }
 }
 
 std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
