@@ -58,6 +58,7 @@ namespace player
         uint16_t angle;
         bool isPickComplete;
         bool isSkip;
+        bool isNext;
 
         bool operator==(const player_info_t& other)
         {
@@ -195,7 +196,20 @@ namespace player
             }
         }
     }
-};
+
+    bool CheckAnyPlayerDead()
+    {
+        for (auto& player : listPlayer)
+        {
+            if (!player.hpLevel1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
 
 namespace shotgun
 {
@@ -365,6 +379,6 @@ namespace shotgun
             }
         }
     };
-};
+}
 
 #endif // !_ENTITY_H

@@ -141,6 +141,7 @@ enum
         CREATE(e, ACTION_ITEM) \
         CREATE(e, UPDATE_HP) \
         CREATE(e, SHOTGUN_SHOT) \
+        CREATE(e, RESULT) \
 
 #define DEF_ITEM_TYPE(e, CREATE) \
         CREATE(e, BEER) \

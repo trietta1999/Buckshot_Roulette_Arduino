@@ -34,6 +34,9 @@
       <PreprocessorDefinitions>LV_CONF_INCLUDE_SIMPLE;LV_LVGL_H_INCLUDE_SIMPLE;LV_USE_DEV_VERSION;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization Condition="'$(Configuration)'=='Release'">MinSpace</Optimization>
     </ClCompile>
+    <Link>
+      <GenerateMapFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateMapFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\lvgl.h" />
@@ -700,7 +703,6 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_adrenaline_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_beer_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_blank_png.c" />
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_block_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_burnerphone_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_chargeback_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_charge_png.c" />
@@ -713,17 +715,16 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_hide_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_inverter_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_live_png.c" />
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_load_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_magnifyingglass_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_bullet_box_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_table_png.c" />
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_turntable_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_party_popper_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_picking_png.c" />
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgunback_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotguncut_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_block_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_in_hand_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skull_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Main.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Start.c" />
     <ClCompile Include="..\..\ESP32\src\ui\ui.c" />

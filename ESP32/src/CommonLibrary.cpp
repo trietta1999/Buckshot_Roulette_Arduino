@@ -52,8 +52,6 @@ void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
         data->endAngle = endAngle;
         data->step = step;
 
-        lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE);
-
         // Create timer
         lv_timer_create([](lv_timer_t* timer) {
             auto data = (angle_t*)lv_timer_get_user_data(timer);
@@ -71,8 +69,6 @@ void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
 
             if (data->startAngle == data->endAngle)
             {
-                lv_obj_add_flag(data->obj, LV_OBJ_FLAG_CLICKABLE);
-
                 lv_timer_del(timer);
                 free(data);
                 timer = nullptr;

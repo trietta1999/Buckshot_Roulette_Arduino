@@ -40,6 +40,7 @@ LV_IMG_DECLARE(ui_img_live_png);    // assets/Live.png
 LV_IMG_DECLARE(ui_img_metal_bullet_box_png);    // assets/metal_bullet_box.png
 LV_IMG_DECLARE(ui_img_empty_bullet_png);    // assets/empty_bullet.png
 LV_IMG_DECLARE(ui_img_hide_png);    // assets/hide.png
+LV_IMG_DECLARE(ui_img_party_popper_png);    // assets/party_popper.png
 LV_IMG_DECLARE(ui_img_adrenaline_png);    // assets/Adrenaline.png
 LV_IMG_DECLARE(ui_img_beer_png);    // assets/Beer.png
 LV_IMG_DECLARE(ui_img_blank_png);    // assets/Blank.png
@@ -52,6 +53,7 @@ LV_IMG_DECLARE(ui_img_inverter_png);    // assets/Inverter.png
 LV_IMG_DECLARE(ui_img_magnifyingglass_png);    // assets/MagnifyingGlass.png
 LV_IMG_DECLARE(ui_img_shotguncut_png);    // assets/ShotgunCut.png
 LV_IMG_DECLARE(ui_img_shotgun_in_hand_png);    // assets/shotgun_in_hand.png
+LV_IMG_DECLARE(ui_img_skull_png);    // assets/skull.png
 
 // UI INIT
 void ui_init(void);

@@ -38,18 +38,24 @@ static void ResetPlayerTable()
 
 static void ShowEjectedBullet()
 {
+    debug_println("Eject bullet");
+
     lv_obj_remove_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
 }
 
 static void ShowTrashBullet()
 {
+    debug_println("Trash bullet");
+
     lv_obj_remove_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
 }
 
 static void HideBulletInTable()
 {
+    debug_println("Hide bullet");
+
     lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
 }
@@ -171,20 +177,20 @@ void AutoUpdate()
 {
 #ifdef _WIN64 // Debug only
     // Debug change player
-    if (CurrentPlayer.GetState())
+    if (debug_data::CurrentPlayer.GetState())
     {
         for (auto& player : player::listPlayer)
         {
-            if (player.type == CurrentPlayer.GetValue())
+            if (player.type == debug_data::CurrentPlayer.GetValue())
             {
                 Player = &player;
                 break;
             }
         }
     }
-    if (PlayerHP.GetState())
+    if (debug_data::PlayerHP.GetState())
     {
-        auto info = PlayerHP.GetValue();
+        auto info = debug_data::PlayerHP.GetValue();
 
         for (auto& player : player::listPlayer)
         {
@@ -205,9 +211,9 @@ void AutoUpdate()
             }
         }
     }
-    if (SpecialCommand.GetState())
+    if (debug_data::SpecialCommand.GetState())
     {
-        auto command = SpecialCommand.GetValue();
+        auto command = debug_data::SpecialCommand.GetValue();
 
         if (command == "bulletbox")
         {
@@ -220,8 +226,15 @@ void AutoUpdate()
                 tempQueue.pop();
             }
         }
+        else if (command == "gettotalitem")
+        {
+            for (const auto& iPlayer : player::listPlayer)
+            {
+                debug_println(map_PLAYER_TYPE[iPlayer.type] + ": " + std::to_string(iPlayer.totalItemCount));
+            }
+        }
 
-        SpecialCommand.SetValue("");
+        debug_data::SpecialCommand.SetValue("");
     }
 #endif
 
@@ -258,6 +271,8 @@ void OnShotgunShot(lv_event_t* e)
     {
         Shotgun.targetPlayer = &player::NextPlayer(*Player);
     }
+
+    debug_println("Confirm target: " + map_PLAYER_TYPE[Shotgun.targetPlayer->type]);
 
     lastShotgunTime = MILLISEC_GET;
 
@@ -324,8 +339,10 @@ void OnItemSelect(lv_event_t* e)
                         if ((buttonInfo.playerType != Player->type) && (buttonInfo.itemType != ITEM_TYPE::ADRENALINE) && (!itemUsingState))
                         {
                             debug_println("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
+                            debug_println("From: " + map_PLAYER_TYPE[buttonInfo.playerType]);
 
                             itemUsingState = true; // Block other action
+                            itemUsingType = buttonInfo.itemType;
                             mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
 
                             iPlayer.totalItemCount--;
@@ -369,6 +386,8 @@ void OnShotgunSelect(lv_event_t* e)
 {
     if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
     {
+        debug_println("Shell loaded");
+
         // Show bullet box cover
         lv_obj_remove_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
 
@@ -379,6 +398,8 @@ void OnShotgunSelect(lv_event_t* e)
     }
     else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
     {
+        debug_println("Show shotgun in hand");
+
         lv_obj_remove_state(ui_btnPlayer1Confirm, LV_STATE_DISABLED);
         lv_obj_remove_state(ui_btnPlayer2Confirm, LV_STATE_DISABLED);
 
@@ -389,16 +410,16 @@ void OnShotgunSelect(lv_event_t* e)
 void OnItemPick(lv_event_t* e)
 {
 #ifdef _WIN64
-    if ((uint8_t)CurrentItemType.GetValue() > 0)
+    if ((uint8_t)debug_data::CurrentItemType.GetValue() > 0)
     {
-        currentPickItem = CurrentItemType.GetValue();
+        currentPickItem = debug_data::CurrentItemType.GetValue();
     }
     else
     {
         currentPickItem = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
     }
 
-    CurrentItemType.SetValue(ITEM_TYPE::MIN);
+    debug_data::CurrentItemType.SetValue(ITEM_TYPE::MIN);
 #else
     currentPickItem = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
 #endif

@@ -29,10 +29,10 @@ void AttachConsoleWindow()
 void DebugConsoleProcess()
 {
     // Debug console
-    if (InputParamList.GetState())
+    if (debug_data::InputParamList.GetState())
     {
         try {
-            auto inputParams = InputParamList.GetValue();
+            auto inputParams = debug_data::InputParamList.GetValue();
 
             // Test show message box
             if (inputParams.at(0) == "test")
@@ -63,12 +63,12 @@ void DebugConsoleProcess()
                         return (item.second == player);
                     });
 
-                CurrentPlayer.SetValue(resultPlayerInfo->first);
+                debug_data::CurrentPlayer.SetValue(resultPlayerInfo->first);
             }
             // Change player table preset
             else if (inputParams.at(0) == "setitem")
             {
-                CurrentItemType.SetValue((ITEM_TYPE)std::stoi(inputParams.at(1)));
+                debug_data::CurrentItemType.SetValue((ITEM_TYPE)std::stoi(inputParams.at(1)));
             }
             // Change player HP
             else if (inputParams.at(0) == "sethp")
@@ -84,12 +84,12 @@ void DebugConsoleProcess()
                         return (item.second == player);
                     });
 
-                PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
+                debug_data::PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
             }
             // Special command
             else
             {
-                SpecialCommand.SetValue(inputParams.at(0));
+                debug_data::SpecialCommand.SetValue(inputParams.at(0));
             }
 
             debug_println("Process debug data done!");
@@ -99,8 +99,8 @@ void DebugConsoleProcess()
             debug_println("Process debug data fail! Try again!");
         }
 
-        InputParamList.SetValue({ });
-        InputParamList.ResetState();
+        debug_data::InputParamList.SetValue({ });
+        debug_data::InputParamList.ResetState();
     }
 }
 #endif
@@ -198,7 +198,7 @@ void CommonServiceProcess()
                     inputParams.push_back(param);
                 }
 
-                InputParamList.SetValue(inputParams);
+                debug_data::InputParamList.SetValue(inputParams);
 
                 DebugConsoleProcess();
             }

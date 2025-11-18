@@ -128,6 +128,9 @@ extern lv_obj_t * ui_imgbtnShotgunInside;
 extern lv_obj_t * ui_imgShotgunBullet;
 extern lv_obj_t * ui_imgShotgunBullet1;
 extern lv_obj_t * ui_imgShotgunInHand;
+extern lv_obj_t * ui_wndResult;
+extern lv_obj_t * ui_imgPlayer2Result;
+extern lv_obj_t * ui_imgPlayer1Result;
 // CUSTOM VARIABLES
 
 #ifdef __cplusplus

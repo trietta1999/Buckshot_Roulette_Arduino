@@ -95,6 +95,9 @@ lv_obj_t * ui_imgbtnShotgunInside = NULL;
 lv_obj_t * ui_imgShotgunBullet = NULL;
 lv_obj_t * ui_imgShotgunBullet1 = NULL;
 lv_obj_t * ui_imgShotgunInHand = NULL;
+lv_obj_t * ui_wndResult = NULL;
+lv_obj_t * ui_imgPlayer2Result = NULL;
+lv_obj_t * ui_imgPlayer1Result = NULL;
 // event funtions
 void ui_event_Main(lv_event_t * e)
 {
@@ -1861,6 +1864,55 @@ void ui_Main_screen_init(void)
     lv_obj_set_style_transform_pivot_x(ui_imgShotgunInHand, 240, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_transform_pivot_y(ui_imgShotgunInHand, 400, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    ui_wndResult = lv_obj_create(ui_Main);
+    lv_obj_remove_style_all(ui_wndResult);
+    lv_obj_set_width(ui_wndResult, 480);
+    lv_obj_set_height(ui_wndResult, 800);
+    lv_obj_set_align(ui_wndResult, LV_ALIGN_CENTER);
+    lv_obj_set_flex_flow(ui_wndResult, LV_FLEX_FLOW_COLUMN_WRAP);
+    lv_obj_set_flex_align(ui_wndResult, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_add_flag(ui_wndResult, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_FLOATING);     /// Flags
+    lv_obj_remove_flag(ui_wndResult, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_bg_color(ui_wndResult, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_wndResult, 200, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui_wndResult, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui_wndResult, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_wndResult, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui_wndResult, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui_wndResult, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_wndResult, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_wndResult, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_rotation(ui_wndResult, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_pivot_x(ui_wndResult, 240, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_pivot_y(ui_wndResult, 400, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_imgPlayer2Result = lv_image_create(ui_wndResult);
+    lv_image_set_src(ui_imgPlayer2Result, &ui_img_party_popper_png);
+    lv_obj_set_width(ui_imgPlayer2Result, 256);
+    lv_obj_set_height(ui_imgPlayer2Result, 256);
+    lv_obj_set_x(ui_imgPlayer2Result, -3);
+    lv_obj_set_y(ui_imgPlayer2Result, 228);
+    lv_obj_set_align(ui_imgPlayer2Result, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_imgPlayer2Result,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_image_set_rotation(ui_imgPlayer2Result, 1800);
+
+    ui_imgPlayer1Result = lv_image_create(ui_wndResult);
+    lv_image_set_src(ui_imgPlayer1Result, &ui_img_party_popper_png);
+    lv_obj_set_width(ui_imgPlayer1Result, 256);
+    lv_obj_set_height(ui_imgPlayer1Result, 256);
+    lv_obj_set_x(ui_imgPlayer1Result, -3);
+    lv_obj_set_y(ui_imgPlayer1Result, 228);
+    lv_obj_set_align(ui_imgPlayer1Result, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_imgPlayer1Result,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+
     lv_obj_add_event_cb(ui_btnPlayer2Slot1, ui_event_btnPlayer2Slot1, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer2Slot3, ui_event_btnPlayer2Slot3, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_btnPlayer2Slot2, ui_event_btnPlayer2Slot2, LV_EVENT_ALL, NULL);
@@ -1984,5 +2036,8 @@ void ui_Main_screen_destroy(void)
     ui_imgShotgunBullet = NULL;
     ui_imgShotgunBullet1 = NULL;
     ui_imgShotgunInHand = NULL;
+    ui_wndResult = NULL;
+    ui_imgPlayer2Result = NULL;
+    ui_imgPlayer1Result = NULL;
 
 }

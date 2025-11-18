@@ -45,7 +45,6 @@ EFFECT_FUNCTION(BURNERPHONE)
 
         // Show delayed message
         lv_timer_create([](lv_timer_t* timer) {
-
             // Hide message
             lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
 
@@ -113,12 +112,13 @@ EFFECT_FUNCTION(HANDCUFFS)
 
     if (!nextPlayer.isSkip)
     {
+        buttonSlot.Unassign();
+
         nextPlayer.isSkip = true;
 
-        itemUsingState = false;
-
-        buttonSlot.Unassign();
     }
+
+    itemUsingState = false;
 }
 
 EFFECT_FUNCTION(HANDSAW)

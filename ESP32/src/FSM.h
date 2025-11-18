@@ -168,14 +168,22 @@ void FSM()
                 {
                     Player = &player::NextPlayer(*Player);
 
-                    if (Player->isSkip)
+                    if (Player->isNext)
+                    {
+                        // Already to be the next turn
+                        Player->isSkip = false;
+                        Player->isNext = false;
+                        break;
+                    }
+                    else if (Player->isSkip)
                     {
                         // Ignore this player now, next turn will be allowed
-                        Player->isSkip = false;
+                        Player->isNext = true;
                         continue;
                     }
                     else
                     {
+                        // Normal player
                         break;
                     }
                 }
@@ -201,22 +209,44 @@ void FSM()
         // Action play item state
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
         {
-
+            // Do nothing
         }
         // Update HP state
         else if (CurrentState.GetValue() == STATE_TYPE::UPDATE_HP)
         {
             player::UpdateAllPlayerHP();
 
-            if (CurrentState.GetOldValue() == STATE_TYPE::SHOTGUN_SHOT)
+            if (player::CheckAnyPlayerDead())
             {
-                // Transit previous state
-                FSMTransit(STATE_TYPE::ACTION_ITEM);
+                FSMTransit(STATE_TYPE::RESULT);
             }
             else
             {
-                // Transit previous state
-                FSMTransit(CurrentState.GetOldValue());
+                if (CurrentState.GetOldValue() == STATE_TYPE::SHOTGUN_SHOT)
+                {
+                    FSMTransit(STATE_TYPE::ACTION_ITEM);
+                }
+                else
+                {
+                    // Transit previous state
+                    FSMTransit(CurrentState.GetOldValue());
+                }
+            }
+        }
+        // Result state
+        else if (CurrentState.GetValue() == STATE_TYPE::RESULT)
+        {
+            lv_obj_remove_flag(ui_wndResult, LV_OBJ_FLAG_HIDDEN); // Show result window
+
+            // Player #1 is dead
+            if (!player::listPlayer[0].hpLevel1)
+            {
+                lv_image_set_src(ui_imgPlayer1Result, &ui_img_skull_png);
+            }
+            // Player #2 is dead
+            else if (!player::listPlayer[1].hpLevel1)
+            {
+                lv_image_set_src(ui_imgPlayer2Result, &ui_img_skull_png);
             }
         }
     }

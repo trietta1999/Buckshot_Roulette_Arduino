@@ -15,6 +15,7 @@ images/ui_img_live_png.c
 images/ui_img_metal_bullet_box_png.c
 images/ui_img_empty_bullet_png.c
 images/ui_img_hide_png.c
+images/ui_img_party_popper_png.c
 images/ui_img_adrenaline_png.c
 images/ui_img_beer_png.c
 images/ui_img_blank_png.c
@@ -27,3 +28,4 @@ images/ui_img_inverter_png.c
 images/ui_img_magnifyingglass_png.c
 images/ui_img_shotguncut_png.c
 images/ui_img_shotgun_in_hand_png.c
+images/ui_img_skull_png.c
