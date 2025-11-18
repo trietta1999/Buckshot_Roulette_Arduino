@@ -228,8 +228,7 @@ void FSM()
                 }
                 else
                 {
-                    // Transit previous state
-                    FSMTransit(CurrentState.GetOldValue());
+                    FSMTransit(STATE_TYPE::ACTION_ITEM);
                 }
             }
         }

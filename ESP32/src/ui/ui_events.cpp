@@ -316,8 +316,7 @@ void OnItemSelect(lv_event_t* e)
                 // Hide card review
                 lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
 
-                // Transit previous state
-                FSMTransit(CurrentState.GetOldValue());
+                FSMTransit(STATE_TYPE::PICK);
             }
         }
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
