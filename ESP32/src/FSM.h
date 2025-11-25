@@ -30,6 +30,8 @@ void FSM()
     {
         if (MILLISEC_GET - lastShotgunTime >= EFFECT_WAIT_TIME)
         {
+            BlockGui();
+
             // End stage of shotgun
             if (Shotgun.state > 2)
             {
@@ -49,9 +51,15 @@ void FSM()
                 if (!Shotgun.queueBullet.size())
                 {
                     // Wait for transit to next round
-                    lv_timer_create([](lv_timer_t* timer) {
+                    DelayCallback(MAKE_DELAY_CB{
                         FSMTransit(STATE_TYPE::PLAYER_NEXT);
-                        }, EFFECT_WAIT_TIME, nullptr)->repeat_count = 1;
+                        }, nullptr, EFFECT_WAIT_TIME);
+                }
+
+                // Unblock all shotgun state
+                for (int8_t i = Shotgun.state; i >= 0; i--)
+                {
+                    UnblockGui();
                 }
             }
 
@@ -67,6 +75,8 @@ void FSM()
     if (CurrentState.GetState())
     {
         debug_println("State: " + map_STATE_TYPE[CurrentState.GetValue()]);
+
+        BlockGui();
 
         // Update player sequence
         if (CurrentState.GetValue() == STATE_TYPE::PLAYER_NEXT)
@@ -248,6 +258,8 @@ void FSM()
                 lv_image_set_src(ui_imgPlayer2Result, &ui_img_skull_png);
             }
         }
+
+        UnblockGui();
     }
 
     CurrentState.ResetState();

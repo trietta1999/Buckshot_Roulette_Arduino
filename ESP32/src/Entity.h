@@ -365,10 +365,10 @@ namespace shotgun
                 }
 
                 // Wait for hide effect
-                lv_timer_create([](lv_timer_t* timer) {
-                    auto data = (decltype(this))lv_timer_get_user_data(timer);
-                    lv_obj_add_flag(data->objEffect, LV_OBJ_FLAG_HIDDEN);
-                    }, EFFECT_WAIT_TIME, this)->repeat_count = 1;
+                DelayCallback(MAKE_DELAY_CB{
+                    decltype(this) ldata = (decltype(this))(data);
+                    lv_obj_add_flag(ldata->objEffect, LV_OBJ_FLAG_HIDDEN);
+                    }, this, EFFECT_WAIT_TIME);
             }
             // Reset shotgun in hand
             else if (this->state == 2)

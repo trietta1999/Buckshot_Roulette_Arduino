@@ -23,6 +23,7 @@ extern CData<uint8_t> Brightness;
 extern CData<JsonDocument> JsonResponse;
 extern CData<std::string> ClientName;
 extern CData<STATE_TYPE> CurrentState;
+extern CData<bool> GuiBlockState;
 
 void UpdateAll();
 

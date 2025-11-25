@@ -19,9 +19,9 @@ EFFECT_FUNCTION(BEER)
     if (!Shotgun.queueBullet.size())
     {
         // Wait for transit to next round
-        lv_timer_create([](lv_timer_t* timer) {
+        DelayCallback(MAKE_DELAY_CB{
             FSMTransit(STATE_TYPE::PLAYER_NEXT);
-            }, EFFECT_WAIT_TIME, nullptr)->repeat_count = 1;
+            }, nullptr, EFFECT_WAIT_TIME);
     }
 
     itemUsingState = false;
@@ -44,12 +44,12 @@ EFFECT_FUNCTION(BURNERPHONE)
         lv_label_set_text_fmt(ui_lblCardMessage, MSG_BURNERPHONE, bulletOrder, suffix.c_str(), bulletType.c_str());
 
         // Show delayed message
-        lv_timer_create([](lv_timer_t* timer) {
+        DelayCallback(MAKE_DELAY_CB{
             // Hide message
             lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
 
             itemUsingState = false; // Unblock
-            }, WAIT_TIME, nullptr)->repeat_count = 1;
+            }, nullptr, WAIT_TIME);
     }
 }
 

@@ -238,7 +238,41 @@ void AutoUpdate()
     }
 #endif
 
+    // Pre-block check
+    if (GuiBlockState.GetState())
+    {
+        if (GuiBlockState.GetValue())
+        {
+            debug_println("GUI block");
+
+            lv_obj_remove_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
+        }
+        else
+        {
+            debug_println("GUI unblock");
+
+            lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+
     FSM();
+
+    // Post-block check
+    if (GuiBlockState.GetState())
+    {
+        if (GuiBlockState.GetValue())
+        {
+            debug_println("GUI block");
+
+            lv_obj_remove_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
+        }
+        else
+        {
+            debug_println("GUI unblock");
+
+            lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 }
 
 void OnBrightnessChange(lv_event_t* e)
@@ -453,15 +487,15 @@ void OnItemPick(lv_event_t* e)
             Player->isPickComplete = true;
 
             // Show delayed message
-            lv_timer_create([](lv_timer_t* timer) {
+            DelayCallback(MAKE_DELAY_CB{
                 // Hide card review
                 lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
 
-                // Hide message
-                lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+            // Hide message
+            lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
 
-                FSMTransit(STATE_TYPE::PLAYER_NEXT);
-                }, WAIT_TIME, nullptr)->repeat_count = 1;
+            FSMTransit(STATE_TYPE::PLAYER_NEXT);
+                }, nullptr, WAIT_TIME);
         }
         else
         {

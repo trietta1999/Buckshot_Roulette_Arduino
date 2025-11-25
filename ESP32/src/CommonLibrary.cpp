@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <random>
 #include "CommonLibrary.h"
+#include "CommonData.h"
+
+std::queue<bool> queueTimerExist = { };
 
 int32_t RandomRangeNumber(int32_t a, int32_t b)
 {
@@ -52,6 +55,8 @@ void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
         data->endAngle = endAngle;
         data->step = step;
 
+        BlockGui();
+
         // Create timer
         lv_timer_create([](lv_timer_t* timer) {
             auto data = (angle_t*)lv_timer_get_user_data(timer);
@@ -72,6 +77,8 @@ void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step)
                 lv_timer_del(timer);
                 free(data);
                 timer = nullptr;
+
+                UnblockGui();
             }
             }, 5, data);
     }
@@ -93,11 +100,6 @@ std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
     temp = sample;
 
     std::mt19937 gen(rand());
-
-    //do // For numbers greater than 2, the random set must be different from the sample
-    //{
-    //    std::shuffle(temp.begin(), temp.end(), gen); // Random shuffle
-    //} while ((maxNum > 2) && (temp == sample));
 
     // The random set must be different from the sample
     for (uint8_t i = 0; i < 10; i++)
@@ -137,5 +139,50 @@ void GetOrdinalNumber(uint8_t num, std::string& suffix)
     else
     {
         suffix = "th";
+    }
+}
+
+void DelayCallback(std::function<void(const void*)> func, void* data, uint32_t ms)
+{
+    struct data_t
+    {
+        std::function<void(const void*)> func;
+        void* data = nullptr;
+    };
+
+    data_t* ldata = new data_t;
+
+    if (ldata)
+    {
+        ldata->func = func;
+        ldata->data = data;
+
+        BlockGui();
+
+        lv_timer_create([](lv_timer_t* timer) {
+            auto ldata = (data_t*)lv_timer_get_user_data(timer);
+
+            ldata->func(ldata->data);
+
+            delete ldata;
+
+            UnblockGui();
+            }, ms, ldata)->repeat_count = 1;
+    }
+}
+
+void BlockGui()
+{
+    GuiBlockState.SetValue(true);
+    queueTimerExist.push(true);
+}
+
+void UnblockGui()
+{
+    queueTimerExist.pop();
+
+    if (!queueTimerExist.size())
+    {
+        GuiBlockState.SetValue(false);
     }
 }
