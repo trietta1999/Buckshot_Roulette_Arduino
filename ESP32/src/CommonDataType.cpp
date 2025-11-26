@@ -34,7 +34,7 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
                 "Upon use, the user will rack the Shotgun, ejecting the current shell without firing it. If a Beer is used on the last round of a load, it ends that player's turn.",
             },
             {
-                "- Beer is only useful if the Player has a low number of charges compared to the Other Player and a load has many live rounds, in which case reducing the number of live rounds available to the Dealer by racking the Shotgun may prove useful.",
+                "- Beer is only useful if the Player has a low number of charges compared to the Other Player and a load has many live rounds, in which case reducing the number of live rounds available to the Other Player by racking the Shotgun may prove useful.",
                 "    + This item may also prove useful if the Player is unsure of the current shell in the chamber.",
                 "- Furthermore, if there are 2 shells left in the shotgun, using the Beer will make it function similarly to a Magnifying Glass, giving intel to the user, except for the fact that it will eject the current shell in the chamber.",
                 //"- It is also a required item out of 3 to earn \"Digita, Orava& Koni\" achievement.",
@@ -53,8 +53,8 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
                 "- The Burner Phone is best used at the start of a load so you can plan future moves.",
                 "- Burner Phones are extremely useful on smaller loads (e.g. 2 or 3 shell loads) where knowing the location and type of a shell is more valuable.",
                 "- Like the Magnifying Glass, the Burner Phone only reveals information to the user.",
-                "- But If the Dealer uses the Burner Phone in the same round, he is given the same information as the player.",
-                "- If you get a 2 or 3 shell load that's live and have beer, you can rack the shotgun until you get to that shell load and shoot the Dealer.",
+                //"- But If the Other Player uses the Burner Phone in the same round, they are given the same information as the player.",
+                "- If you get a 2 or 3 shell load that's live and have beer, you can rack the shotgun until you get to that shell load and shoot the Other Player.",
                 "- NEVER use the Burner Phone if there is one round left in the shotgun, as using it will display the text \"How Unfortunate...\", as previously stated, and waste the item. Always pay attention into how many rounds were loaded into the shotgun and how many were fired. When in doubt, use a Magnifying Glass instead, that is, if you have one.",
                 //"    + In multiplayer mode, however, the Burner Phone won't work even if there are two rounds left in a chamber. If used, it displays the same text so it becomes useless as well. In that case, the Magnifying Glass is the only option to see a currently loaded round.",
             }
@@ -83,7 +83,7 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
             {
                 "- The usage of Expired Medicine is extremely risky as there is a 50/50 chance between restoring two charges and losing one, so only use it if you have a charge to spare.",
                 "    + An exception is if you are 100% sure you're going to lose and have no cigarette packs.",
-                "    + It is recommended not to use the expired medicine when you still have chance to take down dealer by taking advantage of other items.",
+                "    + It is recommended not to use the expired medicine when you still have chance to take down the Other Player by taking advantage of other items.",
             }
         }
     },
@@ -91,7 +91,7 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
         ITEM_TYPE::HANDCUFFS,
         {
             {
-                "Upon use, the opposing player will skip their next turn.",
+                "Upon use, the Other Player will skip their next turn.",
             },
             {
                 "- Handcuffs are unable to be applied twice in one turn, likely to prevent indefinite turn skipping.",
@@ -108,9 +108,9 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
             {
                 "- Only use a Hand Saw if you know what round is currently chambered.",
                 "    + Using a Magnifying Glass or Burner Phone before using a Hand Saw is highly recommended.",
-                "    + If the chambered round is a blank, do not use a Hand Saw unless you also have an Inverter, unless the dealer has Adrenaline and can potentially shoot you with a live on their next turn.",
-                "    + If you combine 2 handsaws with handcuff, it will be a full combo to destroy the Dealer unless there are only 2 lives round in the chamber.",
-                "    + Sometimes, the handsaw should be used even without using a magnifying glass, because you could have a chance to kill the dealer twice if you're lucky.",
+                "    + If the chambered round is a blank, do not use a Hand Saw unless you also have an Inverter, unless the Other Player has Adrenaline and can potentially shoot you with a live on their next turn.",
+                "    + If you combine 2 handsaws with handcuff, it will be a full combo to destroy the Other Player unless there are only 2 lives round in the chamber.",
+                "    + Sometimes, the handsaw should be used even without using a magnifying glass, because you could have a chance to kill the Other Player twice if you're lucky.",
             }
         }
     },
@@ -121,11 +121,11 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
                 "Upon its use, the current shell in the chamber of the Shotgun will have its polarity reversed; a blank shell becomes a live shell, and a live shell becomes a blank shell.",
             },
             {
-                "- If there are more blanks than lives, you should invert the current shell, as it will either remove a live shell from the shotgun, or give you an extra shot on the Dealer.",
+                "- If there are more blanks than lives, you should invert the current shell, as it will either remove a live shell from the shotgun, or give you an extra shot on the Other Player.",
                 "- The Inverter can be used in situations where you need to get through an entire load, such as to obtain more Cigarette Packs to gain Charges, and thus can switch live shells into blank shells to pad out your turn and eventually get more items.",
-                "    + Observe caution when turning a blank shell into a live one, as the amount of normal live shells will not decrease, possibly allowing a higher chance for the Dealer to get a shot on you.",
+                "    + Observe caution when turning a blank shell into a live one, as the amount of normal live shells will not decrease, possibly allowing a higher chance for the Other Player to get a shot on you.",
                 "- If you get an item combination of an Inverter, Magnifying Glass, and a Hand Saw, you can close out some rounds almost immediately by finding a blank shell, turning it into a live shell, and then using the Hand Saw to double the damage.",
-                "    + This strategy also works if you have Adrenaline, and the Dealer has some of the items that you need for this strategy.",
+                "    + This strategy also works if you have Adrenaline, and the Other Player has some of the items that you need for this strategy.",
             }
         }
     },
@@ -137,8 +137,8 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
             },
             {
                 "- Magnifying Glasses are very powerful when used in conjunction with Handcuffs, Hand Saw or an Inverter, and possibly the Burner Phone.",
-                "- Always be prepared should the Dealer use the Magnifying Glass. After he uses one, his behavior will tell you whether the round is blank or live before he fires it. If the round is blank, he will either point it at himself or use an Inverter if he can. If the round is live (naturally or through the use of an Inverter), he will point it at the player, and will use a Hand saw first if possible.",
-                "- If the Player uses the Magnifying Glass but doesn't have either Handsaw, Handcuffs and/or Inverter, but does have Adrenaline, should there be a Handsaw, Handcuffs or Inverter on the Dealer's side it is always a good idea to use the Adrenaline and snatch that item from the Dealer. Beware, as the Dealer may do the same thing to you.",
+                "- Always be prepared should the Other Player use the Magnifying Glass. After they use one, their behavior will tell you whether the round is blank or live before they fire it. If the round is blank, they will either point it at themself or use an Inverter if they can. If the round is live (naturally or through the use of an Inverter), they will point it at the Other Player, and will use a Hand saw first if possible.",
+                "- If the Player uses the Magnifying Glass but doesn't have either Handsaw, Handcuffs and/or Inverter, but does have Adrenaline, should there be a Handsaw, Handcuffs or Inverter on the Other Player's side it is always a good idea to use the Adrenaline and snatch that item from the Other Player. Beware, as the Other Player may do the same thing to you.",
             }
         }
     },
@@ -146,11 +146,11 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
         ITEM_TYPE::ADRENALINE,
         {
             {
-                "Upon use, the user will be able to steal one item from the opposing player's board and use it immediately. Any item can be stolen except for another Adrenaline, or Handcuffs if the opponent being stolen from is already cuffed. If the user does not select an item within 10 seconds, the effect will wear off, barring them from stealing an item.",
+                "Upon use, the user will be able to steal one item from the Other Player's board and use it immediately. Any item can be stolen except for another Adrenaline, or Handcuffs if the opponent being stolen from is already cuffed.",
             },
             {
-                "- You only have 10 seconds to select the item you want to steal after using the Adrenaline, so decide what you want to steal before using it.",
-                "- If the Dealer has at least one Adrenaline, it is generally recommended to use up items that may pose a threat if the Dealer decides to steal them.",
+                //"- You only have 10 seconds to select the item you want to steal after using the Adrenaline, so decide what you want to steal before using it.",
+                "- If the Other Player has at least one Adrenaline, it is generally recommended to use up items that may pose a threat if the Other Player decides to steal them.",
                 "    + These include Hand Saws, Cigarette Packs, Handcuffs, Magnifying Glasses, and Inverters.",
             }
         }

@@ -18,11 +18,11 @@ static player::player_info_t* Player = nullptr;
 static shotgun::shotgun_info_t Shotgun = { };
 
 // Internal variable
-static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<void(player::player_info_t::player_slot_button_t&)>>> mapItemImg;
+static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<bool(player::player_info_t::player_slot_button_t&)>>> mapItemImg;
 static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton;
 static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
 static bool itemUsingState = false;
-static ITEM_TYPE itemUsingType = ITEM_TYPE::MIN;
+static player::player_info_t::player_slot_button_t* itemUsing = nullptr;
 static uint64_t lastShotgunTime = 0;
 static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
 
@@ -380,7 +380,7 @@ void OnItemSelect(lv_event_t* e)
         }
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
         {
-            if (itemUsingType == ITEM_TYPE::ADRENALINE)
+            if (itemUsing && (itemUsing->itemType == ITEM_TYPE::ADRENALINE))
             {
                 for (auto& iPlayer : player::listPlayer)
                 {
@@ -400,12 +400,16 @@ void OnItemSelect(lv_event_t* e)
                             debug_println("From: " + map_PLAYER_TYPE[buttonInfo.playerType]);
 
                             itemUsingState = true; // Block other action
-                            itemUsingType = buttonInfo.itemType;
-                            mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
 
-                            iPlayer.totalItemCount--;
+                            if (mapItemImg[buttonInfo.itemType].second(buttonInfo)) // Call item effect
+                            {
+                                itemUsing->Unassign(); // Unassign ADRENALINE item
+                                itemUsing = &buttonInfo; // Update item using
 
-                            player::DisableAllPlayerTableExcept(*Player);
+                                iPlayer.totalItemCount--;
+
+                                player::DisableAllPlayerTableExcept(*Player);
+                            }
                         }
 
                         break;
@@ -428,7 +432,7 @@ void OnItemSelect(lv_event_t* e)
                     {
                         debug_println("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
 
-                        itemUsingType = buttonInfo.itemType;
+                        itemUsing = &buttonInfo;
                         itemUsingState = true; // Block other action
                         mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
 

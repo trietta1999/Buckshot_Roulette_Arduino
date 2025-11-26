@@ -1,6 +1,6 @@
 #pragma once
 
-#define EFFECT_FUNCTION(item) static void Play_##item##_Effect(player::player_info_t::player_slot_button_t& buttonSlot)
+#define EFFECT_FUNCTION(item) static bool Play_##item##_Effect(player::player_info_t::player_slot_button_t& buttonSlot)
 #define EFFECT_FUNCTION_CALLBACK(item) Play_##item##_Effect
 
 EFFECT_FUNCTION(BEER)
@@ -25,6 +25,8 @@ EFFECT_FUNCTION(BEER)
     }
 
     itemUsingState = false;
+
+    return true;
 }
 
 EFFECT_FUNCTION(BURNERPHONE)
@@ -59,6 +61,8 @@ EFFECT_FUNCTION(BURNERPHONE)
             itemUsingState = false; // Unblock
             }, nullptr, WAIT_TIME);
     }
+
+    return true;
 }
 
 EFFECT_FUNCTION(CIGARETTE)
@@ -74,6 +78,8 @@ EFFECT_FUNCTION(CIGARETTE)
     FSMTransit(STATE_TYPE::UPDATE_HP);
 
     itemUsingState = false; // Unblock
+
+    return true;
 }
 
 EFFECT_FUNCTION(EXPIREDMEDICINE)
@@ -112,10 +118,13 @@ EFFECT_FUNCTION(EXPIREDMEDICINE)
     FSMTransit(STATE_TYPE::UPDATE_HP);
 
     itemUsingState = false; // Unblock
+
+    return true;
 }
 
 EFFECT_FUNCTION(HANDCUFFS)
 {
+    bool result = false;
     auto& nextPlayer = player::NextPlayer(*Player);
 
     if (!nextPlayer.isSkip)
@@ -124,21 +133,30 @@ EFFECT_FUNCTION(HANDCUFFS)
 
         nextPlayer.isSkip = true;
 
+        result = true;
     }
 
     itemUsingState = false;
+
+    return result;
 }
 
 EFFECT_FUNCTION(HANDSAW)
 {
+    bool result = false;
+
     if (!Shotgun.isCut)
     {
         buttonSlot.Unassign();
 
         Shotgun.Cut();
+
+        result = true;
     }
 
     itemUsingState = false;
+
+    return result;
 }
 
 EFFECT_FUNCTION(INVERTER)
@@ -162,6 +180,8 @@ EFFECT_FUNCTION(INVERTER)
     }
 
     itemUsingState = false;
+
+    return true;
 }
 
 EFFECT_FUNCTION(MAGNIFYINGGLASS)
@@ -173,13 +193,15 @@ EFFECT_FUNCTION(MAGNIFYINGGLASS)
 
     // Rotate shotgun inside to current player
     lv_obj_set_style_transform_rotation(Shotgun.objInside, Player->angle, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    return true;
 }
 
 EFFECT_FUNCTION(ADRENALINE)
 {
-    buttonSlot.Unassign();
-
     player::EnableAllPlayerTableExcept(*Player);
 
     itemUsingState = false;
+
+    return true;
 }
