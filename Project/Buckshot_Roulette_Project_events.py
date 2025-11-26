@@ -38,3 +38,15 @@ def Start_OnLoaded(event_struct):
 def Main_OnLoaded(event_struct):
     return
 
+
+def Info_OnLoaded(event_struct):
+    return
+
+
+def OnCardSelect(event_struct):
+    return
+
+
+def OnButtonHelp(event_struct):
+    return
+

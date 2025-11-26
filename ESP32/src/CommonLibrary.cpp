@@ -186,3 +186,15 @@ void UnblockGui()
         GuiBlockState.SetValue(false);
     }
 }
+
+std::string JoinString(std::string delimeter, const std::vector<std::string>& list)
+{
+    std::string output;
+
+    for (const auto& line : list)
+    {
+        output += line + delimeter;
+    }
+
+    return output;
+}

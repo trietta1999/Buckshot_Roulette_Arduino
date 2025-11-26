@@ -833,6 +833,9 @@
     <ClInclude Include="..\..\ESP32\src\FSM.h">
       <Filter>Library</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Info.h">
+      <Filter>UI\screens</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\.typos.toml">
@@ -1569,6 +1572,27 @@
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skull_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c">
+      <Filter>UI\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_arrow_left_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cblank_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargeback_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargefront_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_clive_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
   </ItemGroup>

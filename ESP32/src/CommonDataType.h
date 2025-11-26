@@ -122,10 +122,11 @@ enum
 #define MIN_BULLET 2
 #define MAX_HP 4
 
-#define MSG_OUT_OF_SPACE "OUT OF SPACE!"
-#define MSG_END_TURN "END TURN!"
+#define MSG_OUT_OF_SPACE "Out of space!"
+#define MSG_END_TURN "End turn!"
 #define MSG_TOUCH_SHOTGUN "Touch the shotgun!"
-#define MSG_BURNERPHONE "%d%s SHELL IS... %s!"
+#define MSG_BURNERPHONE "%d%s shell is... %s!"
+#define MSG_HOW_UNFORTUNATE "How Unfortunate..."
 
 #define DEF_PLAYER_TYPE(e, CREATE) \
         CREATE(e, PLAYER1) \
@@ -176,7 +177,12 @@ enum class ITEM_TYPE
 {
     MIN,
     DEF_ITEM_TYPE(ITEM_TYPE, TO_ENUM)
-    MAX
+    MAX,
+    // Additional, for card info only
+    LIVE,
+    BLANK,
+    NORMAL_CHARGE,
+    FADED_CHARGE,
 };
 
 enum class BULLET_TYPE
@@ -190,5 +196,14 @@ EXTERN_MAP_ENUM_STR(PLAYER_TYPE)
 EXTERN_MAP_ENUM_STR(STATE_TYPE)
 EXTERN_MAP_ENUM_STR(ITEM_TYPE)
 EXTERN_MAP_ENUM_STR(BULLET_TYPE)
+
+struct card_info_t
+{
+    std::vector<std::string> usageLines;
+    std::vector<std::string> strategyLines;
+};
+
+extern std::unordered_map<ITEM_TYPE, std::string> mapCardInfoName;
+extern std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc;
 
 #endif // !_COMMON_DATATYPE_H

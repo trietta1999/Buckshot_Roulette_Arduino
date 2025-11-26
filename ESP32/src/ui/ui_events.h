@@ -14,10 +14,13 @@ void Start_OnLoaded(lv_event_t * e);
 void Main_OnLoaded(lv_event_t * e);
 void OnItemSelect(lv_event_t * e);
 void OnItemPick(lv_event_t * e);
+void OnButtonHelp(lv_event_t * e);
 void OnShotgunSelect(lv_event_t * e);
 void OnBrightnessChange(lv_event_t * e);
 void OnShotgunShot(lv_event_t * e);
 void OnShotgunInside(lv_event_t * e);
+void Info_OnLoaded(lv_event_t * e);
+void OnCardSelect(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

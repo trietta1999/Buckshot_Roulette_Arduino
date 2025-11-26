@@ -1,5 +1,6 @@
 SET(SOURCES screens/ui_Start.c
     screens/ui_Main.c
+    screens/ui_Info.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c
@@ -7,6 +8,7 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_metal_table_png.c
     images/ui_img_empty_png.c
     images/ui_img_picking_png.c
+    images/ui_img_help_center_png.c
     images/ui_img_chargeback_png.c
     images/ui_img_charge_png.c
     images/ui_img_shotgun_png.c
@@ -16,9 +18,7 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_empty_bullet_png.c
     images/ui_img_hide_png.c
     images/ui_img_party_popper_png.c
-    images/ui_img_adrenaline_png.c
     images/ui_img_beer_png.c
-    images/ui_img_blank_png.c
     images/ui_img_burnerphone_png.c
     images/ui_img_cigarette_png.c
     images/ui_img_expiredmedicine_png.c
@@ -26,6 +26,13 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_handsaw_png.c
     images/ui_img_inverter_png.c
     images/ui_img_magnifyingglass_png.c
+    images/ui_img_adrenaline_png.c
+    images/ui_img_cblank_png.c
+    images/ui_img_clive_png.c
+    images/ui_img_cchargefront_png.c
+    images/ui_img_cchargeback_png.c
+    images/ui_img_arrow_left_png.c
+    images/ui_img_blank_png.c
     images/ui_img_shotguncut_png.c
     images/ui_img_shotgun_in_hand_png.c
     images/ui_img_skull_png.c)

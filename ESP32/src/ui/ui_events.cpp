@@ -19,6 +19,7 @@ static shotgun::shotgun_info_t Shotgun = { };
 
 // Internal variable
 static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<void(player::player_info_t::player_slot_button_t&)>>> mapItemImg;
+static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton;
 static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
 static bool itemUsingState = false;
 static ITEM_TYPE itemUsingType = ITEM_TYPE::MIN;
@@ -81,6 +82,23 @@ void Init()
         { ITEM_TYPE::INVERTER       , { ui_img_inverter_png       , EFFECT_FUNCTION_CALLBACK(INVERTER)        } },
         { ITEM_TYPE::MAGNIFYINGGLASS, { ui_img_magnifyingglass_png, EFFECT_FUNCTION_CALLBACK(MAGNIFYINGGLASS) } },
         { ITEM_TYPE::ADRENALINE     , { ui_img_adrenaline_png     , EFFECT_FUNCTION_CALLBACK(ADRENALINE)      } },
+    };
+
+    // Init card info button
+    listItemCardButton = {
+        { ITEM_TYPE::BEER           , ui_img_beer_png           , ui_btnCard1 },
+        { ITEM_TYPE::BURNERPHONE    , ui_img_burnerphone_png    , ui_btnCard2 },
+        { ITEM_TYPE::CIGARETTE      , ui_img_cigarette_png      , ui_btnCard3 },
+        { ITEM_TYPE::EXPIREDMEDICINE, ui_img_expiredmedicine_png, ui_btnCard4 },
+        { ITEM_TYPE::HANDCUFFS      , ui_img_handcuffs_png      , ui_btnCard5 },
+        { ITEM_TYPE::HANDSAW        , ui_img_handsaw_png        , ui_btnCard6 },
+        { ITEM_TYPE::INVERTER       , ui_img_inverter_png       , ui_btnCard7 },
+        { ITEM_TYPE::MAGNIFYINGGLASS, ui_img_magnifyingglass_png, ui_btnCard8 },
+        { ITEM_TYPE::ADRENALINE     , ui_img_adrenaline_png     , ui_btnCard9 },
+        { ITEM_TYPE::BLANK          , ui_img_cblank_png         , ui_btnCard10 },
+        { ITEM_TYPE::LIVE           , ui_img_clive_png          , ui_btnCard11 },
+        { ITEM_TYPE::NORMAL_CHARGE  , ui_img_cchargefront_png   , ui_btnCard12 },
+        { ITEM_TYPE::FADED_CHARGE   , ui_img_cchargeback_png    , ui_btnCard13 },
     };
 
     // Init shotgun
@@ -289,6 +307,13 @@ void Start_OnLoaded(lv_event_t* e)
 void Main_OnLoaded(lv_event_t* e)
 {
 
+}
+
+void Info_OnLoaded(lv_event_t* e)
+{
+    e->current_target = std::get<2>(listItemCardButton[0]);
+
+    OnCardSelect(e);
 }
 #pragma endregion
 
@@ -523,5 +548,42 @@ void OnShotgunInside(lv_event_t* e)
 
         itemUsingState = false;
     }
+}
+
+void OnCardSelect(lv_event_t* e)
+{
+    auto currentButton = (lv_obj_t*)(e->current_target);
+
+    auto resultButtonInfo = std::find_if(listItemCardButton.begin(), listItemCardButton.end(),
+        [currentButton](const decltype(listItemCardButton.front())& item) {
+            return (std::get<2>(item) == currentButton);
+        });
+
+    if (resultButtonInfo != listItemCardButton.end())
+    {
+        const auto& item = *resultButtonInfo;
+
+        // Set text
+        lv_label_set_text(ui_lblCardInfoTitle, mapCardInfoName[std::get<0>(item)].c_str());
+        lv_label_set_text(ui_lblUsageInfo, JoinString("\n", mapCardInfoDesc[std::get<0>(item)].usageLines).c_str());
+        lv_label_set_text(ui_lblStrategyInfo, JoinString("\n", mapCardInfoDesc[std::get<0>(item)].strategyLines).c_str());
+
+        // Set image
+        lv_image_set_src(ui_imgInfoCardReview, &std::get<1>(item));
+    }
+}
+
+void OnButtonHelp(lv_event_t* e)
+{
+    if (e->current_target == ui_btnPlayer1Help)
+    {
+        lv_obj_set_style_transform_rotation(ui_wndInfo, player::listPlayer[0].angle, LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+    else if (e->current_target == ui_btnPlayer2Help)
+    {
+        lv_obj_set_style_transform_rotation(ui_wndInfo, player::listPlayer[1].angle, LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+
+    _ui_screen_change(&ui_Info, LV_SCR_LOAD_ANIM_MOVE_LEFT, 100, 0, &ui_Info_screen_init);
 }
 #pragma endregion

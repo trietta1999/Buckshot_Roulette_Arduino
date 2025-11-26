@@ -33,15 +33,23 @@ EFFECT_FUNCTION(BURNERPHONE)
     {
         buttonSlot.Unassign();
 
-        auto bulletOrder = RandomRangeNumber(0, Shotgun.queueBullet.size() - 1);
-        auto bulletType = map_BULLET_TYPE[Shotgun.listBullet[bulletOrder]];
-        std::string suffix = "";
-
-        GetOrdinalNumber(++bulletOrder, suffix);
-
         // Show message
         lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(ui_lblCardMessage, MSG_BURNERPHONE, bulletOrder, suffix.c_str(), bulletType.c_str());
+
+        if (Shotgun.queueBullet.size() == 1)
+        {
+            lv_label_set_text(ui_lblCardMessage, MSG_HOW_UNFORTUNATE);
+        }
+        else
+        {
+            auto bulletOrder = RandomRangeNumber(0, Shotgun.queueBullet.size() - 1);
+            auto bulletType = map_BULLET_TYPE[Shotgun.listBullet[bulletOrder]];
+            std::string suffix = "";
+
+            GetOrdinalNumber(++bulletOrder, suffix);
+
+            lv_label_set_text_fmt(ui_lblCardMessage, MSG_BURNERPHONE, bulletOrder, suffix.c_str(), bulletType.c_str());
+        }
 
         // Show delayed message
         DelayCallback(MAKE_DELAY_CB{
