@@ -105,13 +105,10 @@ EFFECT_FUNCTION(EXPIREDMEDICINE)
     }
     else if (num % 2 != 0) // Decrease HP
     {
+        // Only HP level 2
         if (Player->hpLevel2 > 0)
         {
             Player->hpLevel2--;
-        }
-        else if (Player->hpLevel1 > 0)
-        {
-            Player->hpLevel1--;
         }
     }
 
@@ -202,6 +199,9 @@ EFFECT_FUNCTION(ADRENALINE)
     player::EnableAllPlayerTableExcept(*Player);
 
     itemUsingState = false;
+
+    lv_obj_remove_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN); // Show effect
+    lv_obj_set_style_transform_rotation(ui_wndAdrenalineEffect, Player->angle, LV_PART_MAIN | LV_STATE_DEFAULT); // Rotate to current player
 
     return true;
 }

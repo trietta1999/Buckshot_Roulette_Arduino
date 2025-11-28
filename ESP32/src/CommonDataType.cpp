@@ -183,7 +183,7 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
         ITEM_TYPE::NORMAL_CHARGE,
         {
             {
-                "Charge can be restored with items such as: Cigarette Packs, Expired Medicine (50% chance to get increased charge)",
+                "Charge can be increase with items such as: Cigarette Packs, Expired Medicine (50% chance to get increased charge)",
             },
             {
                 "- When the charge number is 0, the Player cannot increase it again with rechargeable items.",
@@ -194,7 +194,7 @@ std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
         ITEM_TYPE::FADED_CHARGE,
         {
             {
-                "Charge can not be restored with items such as: Cigarette Packs, Expired Medicine (50% chance of charge deduction)",
+                "Charge can not be increase with items such as: Cigarette Packs, Expired Medicine. Charge can not be reduced by using Expired Medicine.",
             },
             {
                 "- When the charge number is 0, the Player will lose immediately.",

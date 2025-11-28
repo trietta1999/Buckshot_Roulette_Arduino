@@ -97,6 +97,7 @@ lv_obj_t * ui_imgbtnShotgunInside = NULL;
 lv_obj_t * ui_imgShotgunBullet = NULL;
 lv_obj_t * ui_imgShotgunBullet1 = NULL;
 lv_obj_t * ui_imgShotgunInHand = NULL;
+lv_obj_t * ui_wndAdrenalineEffect = NULL;
 lv_obj_t * ui_wndResult = NULL;
 lv_obj_t * ui_imgPlayer2Result = NULL;
 lv_obj_t * ui_imgPlayer1Result = NULL;
@@ -1939,6 +1940,34 @@ void ui_Main_screen_init(void)
     lv_obj_set_style_transform_pivot_x(ui_imgShotgunInHand, 240, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_transform_pivot_y(ui_imgShotgunInHand, 400, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    ui_wndAdrenalineEffect = lv_obj_create(ui_Main);
+    lv_obj_remove_style_all(ui_wndAdrenalineEffect);
+    lv_obj_set_width(ui_wndAdrenalineEffect, 480);
+    lv_obj_set_height(ui_wndAdrenalineEffect, 800);
+    lv_obj_set_align(ui_wndAdrenalineEffect, LV_ALIGN_CENTER);
+    lv_obj_set_flex_flow(ui_wndAdrenalineEffect, LV_FLEX_FLOW_COLUMN_WRAP);
+    lv_obj_set_flex_align(ui_wndAdrenalineEffect, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_FLOATING);     /// Flags
+    lv_obj_remove_flag(ui_wndAdrenalineEffect,
+                       LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_bg_color(ui_wndAdrenalineEffect, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_wndAdrenalineEffect, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_wndAdrenalineEffect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_wndAdrenalineEffect, LV_GRAD_DIR_VER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui_wndAdrenalineEffect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui_wndAdrenalineEffect, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_wndAdrenalineEffect, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_blend_mode(ui_wndAdrenalineEffect, LV_BLEND_MODE_MULTIPLY, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui_wndAdrenalineEffect, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui_wndAdrenalineEffect, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_wndAdrenalineEffect, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_wndAdrenalineEffect, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_rotation(ui_wndAdrenalineEffect, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_pivot_x(ui_wndAdrenalineEffect, 240, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_transform_pivot_y(ui_wndAdrenalineEffect, 400, LV_PART_MAIN | LV_STATE_DEFAULT);
+
     ui_wndResult = lv_obj_create(ui_Main);
     lv_obj_remove_style_all(ui_wndResult);
     lv_obj_set_width(ui_wndResult, 480);
@@ -2137,6 +2166,7 @@ void ui_Main_screen_destroy(void)
     ui_imgShotgunBullet = NULL;
     ui_imgShotgunBullet1 = NULL;
     ui_imgShotgunInHand = NULL;
+    ui_wndAdrenalineEffect = NULL;
     ui_wndResult = NULL;
     ui_imgPlayer2Result = NULL;
     ui_imgPlayer1Result = NULL;

@@ -409,6 +409,8 @@ void OnItemSelect(lv_event_t* e)
                                 iPlayer.totalItemCount--;
 
                                 player::DisableAllPlayerTableExcept(*Player);
+
+                                lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN); // Hide effect
                             }
                         }
 
