@@ -15,15 +15,6 @@ extern void ui_Info_screen_init(void);
 extern void ui_Info_screen_destroy(void);
 extern void ui_event_Info(lv_event_t * e);
 extern lv_obj_t * ui_Info;
-extern lv_obj_t * ui_wndInfo;
-extern lv_obj_t * ui_Container9;
-extern lv_obj_t * ui_imgInfoCardReview1;
-extern lv_obj_t * ui_imgInfoCardReview;
-extern lv_obj_t * ui_lblCardInfoTitle;
-extern lv_obj_t * ui_lblPlayer2Charge6;
-extern lv_obj_t * ui_lblUsageInfo;
-extern lv_obj_t * ui_lblPlayer2Charge7;
-extern lv_obj_t * ui_lblStrategyInfo;
 extern lv_obj_t * ui_Container16;
 extern void ui_event_btnCard1(lv_event_t * e);
 extern lv_obj_t * ui_btnCard1;
@@ -53,6 +44,13 @@ extern void ui_event_btnCard13(lv_event_t * e);
 extern lv_obj_t * ui_btnCard13;
 extern void ui_event_btnBack(lv_event_t * e);
 extern lv_obj_t * ui_btnBack;
+extern lv_obj_t * ui_Container9;
+extern lv_obj_t * ui_imgInfoCardReview;
+extern lv_obj_t * ui_lblCardInfoTitle;
+extern lv_obj_t * ui_lblPlayer2Charge6;
+extern lv_obj_t * ui_lblUsageInfo;
+extern lv_obj_t * ui_lblPlayer2Charge7;
+extern lv_obj_t * ui_lblStrategyInfo;
 // CUSTOM VARIABLES
 
 #ifdef __cplusplus

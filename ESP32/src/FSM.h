@@ -85,7 +85,7 @@ void FSM()
 
             if (player::CheckAllPickComplete())
             {
-                Shotgun.RotateToPlayer(Player->angle);
+                Player->Enable();
 
                 FSMTransit(STATE_TYPE::LOAD_SHELL);
             }
@@ -102,7 +102,7 @@ void FSM()
                     Player = &player::NextPlayer(*Player);
                 }
 
-                Shotgun.RotateToPlayer(Player->angle);
+                Player->Enable();
 
                 FSMTransit(STATE_TYPE::PICK);
             }
@@ -115,7 +115,7 @@ void FSM()
         // Item arrange state
         else if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
         {
-            Player->EnableTable();
+            Player->Enable();
         }
         // Load shell state
         else if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
@@ -154,8 +154,7 @@ void FSM()
             }
 
             // Show message
-            lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text(ui_lblCardMessage, MSG_TOUCH_SHOTGUN);
+            lv_label_set_text(ui_lblMessage, MSG_TOUCH_SHOTGUN);
 
             HideBulletInTable();
 
@@ -212,7 +211,7 @@ void FSM()
             latestPlayer = Player->type;
 
             player::DisableAllPlayerTableExcept(*Player);
-            Shotgun.RotateToPlayer(Player->angle);
+            Player->Enable();
 
             FSMTransit(STATE_TYPE::ACTION_ITEM);
         }
@@ -250,12 +249,12 @@ void FSM()
             // Player #1 is dead
             if (!player::listPlayer[0].hpLevel1)
             {
-                lv_image_set_src(ui_imgPlayer1Result, &ui_img_skull_png);
+                lv_image_set_src(ui_imgPlayerLeftResult, &ui_img_skull_png);
             }
             // Player #2 is dead
             else if (!player::listPlayer[1].hpLevel1)
             {
-                lv_image_set_src(ui_imgPlayer2Result, &ui_img_skull_png);
+                lv_image_set_src(ui_imgPlayerRightResult, &ui_img_skull_png);
             }
         }
 

@@ -35,12 +35,9 @@ EFFECT_FUNCTION(BURNERPHONE)
     {
         buttonSlot.Unassign();
 
-        // Show message
-        lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
-
         if (Shotgun.queueBullet.size() == 1)
         {
-            lv_label_set_text(ui_lblCardMessage, MSG_HOW_UNFORTUNATE);
+            lv_label_set_text(ui_lblMessageInside, MSG_HOW_UNFORTUNATE);
         }
         else
         {
@@ -50,16 +47,11 @@ EFFECT_FUNCTION(BURNERPHONE)
 
             GetOrdinalNumber(++bulletOrder, suffix);
 
-            lv_label_set_text_fmt(ui_lblCardMessage, MSG_BURNERPHONE, bulletOrder, suffix.c_str(), bulletType.c_str());
+            lv_label_set_text_fmt(ui_lblMessageInside, MSG_BURNERPHONE, bulletOrder, suffix.c_str(), bulletType.c_str());
         }
 
-        // Show delayed message
-        DelayCallback(MAKE_DELAY_CB{
-            // Hide message
-            lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
-
-            itemUsingState = false; // Unblock
-            }, nullptr, WAIT_TIME);
+        // Show shotgun inside
+        lv_obj_remove_flag(Shotgun.objInside, LV_OBJ_FLAG_HIDDEN);
     }
 
     return true;
@@ -188,9 +180,6 @@ EFFECT_FUNCTION(MAGNIFYINGGLASS)
     // Show shotgun inside
     lv_obj_remove_flag(Shotgun.objInside, LV_OBJ_FLAG_HIDDEN);
 
-    // Rotate shotgun inside to current player
-    lv_obj_set_style_transform_rotation(Shotgun.objInside, Player->angle, LV_PART_MAIN | LV_STATE_DEFAULT);
-
     return true;
 }
 
@@ -200,8 +189,11 @@ EFFECT_FUNCTION(ADRENALINE)
 
     itemUsingState = false;
 
-    lv_obj_remove_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN); // Show effect
-    lv_obj_set_style_transform_rotation(ui_wndAdrenalineEffect, Player->angle, LV_PART_MAIN | LV_STATE_DEFAULT); // Rotate to current player
+    // Show effect
+    lv_obj_remove_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN);
+
+    Shotgun.Disable();
 
     return true;
 }

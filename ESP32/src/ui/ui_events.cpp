@@ -22,9 +22,13 @@ static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<bool(
 static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton;
 static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
 static bool itemUsingState = false;
-static player::player_info_t::player_slot_button_t* itemUsing = nullptr;
 static uint64_t lastShotgunTime = 0;
 static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
+
+static struct {
+    player::player_info_t::player_slot_button_t* data;
+    ITEM_TYPE itemType;
+} itemUsing = { };
 
 #pragma region Internal_functions
 static void ResetPlayerTable()
@@ -105,7 +109,6 @@ void Init()
     Shotgun.objInTable = ui_imgbtnShotgunInTable;
     Shotgun.objInside = ui_imgbtnShotgunInside;
     Shotgun.objHand = ui_imgShotgunInHand;
-    Shotgun.objEffect = ui_wndShotgunShotEffect;
     Shotgun.objWndConfirm = ui_wndShotgunConfirm;
     Shotgun.objTrashBullet = ui_imgTrashBullet;
     Shotgun.mapBulletImg = {
@@ -127,28 +130,30 @@ void Init()
     // Init player #1
     player::player_info_t player1 = { };
     player1.type = PLAYER_TYPE::PLAYER1;
-    player1.pickButton = ui_btnPlayer1Pick;
+    player1.table = ui_conPlayerLeft;
+    player1.pickButton = ui_btnItemPick1;
+    player1.confirmButton = ui_btnPlayerLeftConfirm;
+    player1.gunfireEffect = ui_wndShotgunShotEffectLeft;
+    player1.adrenalinefEffect = ui_wndAdrenalineEffectLeft;
     player1.listButtonInfo = {
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot1, ui_imgbtnPlayer1Slot1, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot2, ui_imgbtnPlayer1Slot2, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot3, ui_imgbtnPlayer1Slot3, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot4, ui_imgbtnPlayer1Slot4, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot5, ui_imgbtnPlayer1Slot5, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot6, ui_imgbtnPlayer1Slot6, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot7, ui_imgbtnPlayer1Slot7, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer1Slot8, ui_imgbtnPlayer1Slot8, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot1, ui_imgItemSlot1, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot2, ui_imgItemSlot2, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot3, ui_imgItemSlot3, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot4, ui_imgItemSlot4, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot5, ui_imgItemSlot5, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot6, ui_imgItemSlot6, { 0 } },
     };
     player1.listHPLevel1 = {
-        ui_lblPlayer1ChargeBack1,
-        ui_lblPlayer1ChargeBack2,
-        ui_lblPlayer1ChargeBack3,
-        ui_lblPlayer1ChargeBack4,
+        ui_lblChargeBack1,
+        ui_lblChargeBack2,
+        ui_lblChargeBack3,
+        ui_lblChargeBack4,
     };
     player1.listHPLevel2 = {
-        ui_lblPlayer1Charge1,
-        ui_lblPlayer1Charge2,
-        ui_lblPlayer1Charge3,
-        ui_lblPlayer1Charge4,
+        ui_lblCharge1,
+        ui_lblCharge2,
+        ui_lblCharge3,
+        ui_lblCharge4,
     };
     player1.hpLevel1 = MAX_HP;
     player1.hpLevel2 = MAX_HP;
@@ -157,28 +162,30 @@ void Init()
     // Init player #2
     player::player_info_t player2 = { };
     player2.type = PLAYER_TYPE::PLAYER2;
-    player2.pickButton = ui_btnPlayer2Pick;
+    player2.table = ui_conPlayerRight;
+    player2.pickButton = ui_btnItemPick2;
+    player2.confirmButton = ui_btnPlayerRightConfirm;
+    player2.gunfireEffect = ui_wndShotgunShotEffectRight;
+    player2.adrenalinefEffect = ui_wndAdrenalineEffectRight;
     player2.listButtonInfo = {
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot1, ui_imgbtnPlayer2Slot1, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot2, ui_imgbtnPlayer2Slot2, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot3, ui_imgbtnPlayer2Slot3, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot4, ui_imgbtnPlayer2Slot4, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot5, ui_imgbtnPlayer2Slot5, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot6, ui_imgbtnPlayer2Slot6, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot7, ui_imgbtnPlayer2Slot7, { 0 } },
-        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnPlayer2Slot8, ui_imgbtnPlayer2Slot8, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot7, ui_imgItemSlot7, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot8, ui_imgItemSlot8, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot9, ui_imgItemSlot9, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot10, ui_imgItemSlot10, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot11, ui_imgItemSlot11, { 0 } },
+        { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot12, ui_imgItemSlot12, { 0 } },
     };
     player2.listHPLevel1 = {
-        ui_lblPlayer2ChargeBack1,
-        ui_lblPlayer2ChargeBack2,
-        ui_lblPlayer2ChargeBack3,
-        ui_lblPlayer2ChargeBack4,
+        ui_lblChargeBack5,
+        ui_lblChargeBack6,
+        ui_lblChargeBack7,
+        ui_lblChargeBack8,
     };
     player2.listHPLevel2 = {
-        ui_lblPlayer2Charge1,
-        ui_lblPlayer2Charge2,
-        ui_lblPlayer2Charge3,
-        ui_lblPlayer2Charge4,
+        ui_lblCharge5,
+        ui_lblCharge6,
+        ui_lblCharge7,
+        ui_lblCharge8,
     };
     player2.hpLevel1 = MAX_HP;
     player2.hpLevel2 = MAX_HP;
@@ -322,13 +329,14 @@ void OnShotgunShot(lv_event_t* e)
 {
     auto currentButton = (lv_obj_t*)(e->current_target);
 
-    if (currentButton == ui_btnPlayer1Confirm)
+    // Set target player
+    for (auto& iPlayer : player::listPlayer)
     {
-        Shotgun.targetPlayer = Player;
-    }
-    else if (currentButton == ui_btnPlayer2Confirm)
-    {
-        Shotgun.targetPlayer = &player::NextPlayer(*Player);
+        if (currentButton == iPlayer.confirmButton)
+        {
+            Shotgun.targetPlayer = &iPlayer;
+            break;
+        }
     }
 
     debug_println("Confirm target: " + map_PLAYER_TYPE[Shotgun.targetPlayer->type]);
@@ -336,9 +344,6 @@ void OnShotgunShot(lv_event_t* e)
     lastShotgunTime = MILLISEC_GET;
 
     Shotgun.state = 0;
-
-    lv_obj_add_state(ui_btnPlayer1Confirm, LV_STATE_DISABLED);
-    lv_obj_add_state(ui_btnPlayer2Confirm, LV_STATE_DISABLED);
 
     FSMTransit(STATE_TYPE::SHOTGUN_SHOT);
 }
@@ -380,7 +385,7 @@ void OnItemSelect(lv_event_t* e)
         }
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
         {
-            if (itemUsing && (itemUsing->itemType == ITEM_TYPE::ADRENALINE))
+            if (itemUsing.data && (itemUsing.itemType == ITEM_TYPE::ADRENALINE))
             {
                 for (auto& iPlayer : player::listPlayer)
                 {
@@ -403,14 +408,19 @@ void OnItemSelect(lv_event_t* e)
 
                             if (mapItemImg[buttonInfo.itemType].second(buttonInfo)) // Call item effect
                             {
-                                itemUsing->Unassign(); // Unassign ADRENALINE item
-                                itemUsing = &buttonInfo; // Update item using
+                                itemUsing.data->Unassign(); // Unassign ADRENALINE item
+
+                                // Update item using
+                                itemUsing.data = &buttonInfo;
+                                itemUsing.itemType = buttonInfo.itemType;
 
                                 iPlayer.totalItemCount--;
 
                                 player::DisableAllPlayerTableExcept(*Player);
 
-                                lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN); // Hide effect
+                                lv_obj_add_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN); // Hide effect
+
+                                Shotgun.Enable();
                             }
                         }
 
@@ -434,7 +444,10 @@ void OnItemSelect(lv_event_t* e)
                     {
                         debug_println("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
 
-                        itemUsing = &buttonInfo;
+                        // Update item using
+                        itemUsing.data = &buttonInfo;
+                        itemUsing.itemType = buttonInfo.itemType;
+
                         itemUsingState = true; // Block other action
                         mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
 
@@ -456,16 +469,13 @@ void OnShotgunSelect(lv_event_t* e)
         lv_obj_remove_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
 
         // Hide message
-        lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+        lv_label_set_text(ui_lblMessage, "");
 
         FSMTransit(STATE_TYPE::ACTION_TURN);
     }
     else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
     {
         debug_println("Show shotgun in hand");
-
-        lv_obj_remove_state(ui_btnPlayer1Confirm, LV_STATE_DISABLED);
-        lv_obj_remove_state(ui_btnPlayer2Confirm, LV_STATE_DISABLED);
 
         Shotgun.ShowInHand(*Player);
     }
@@ -500,18 +510,18 @@ void OnItemPick(lv_event_t* e)
         {
             ResetPlayerTable();
 
-            // Show message
-            lv_obj_remove_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
-
             // Set message
             if (Player->totalItemCount == MAX_ITEM_NUM)
             {
-                lv_label_set_text(ui_lblCardMessage, MSG_OUT_OF_SPACE);
+                lv_label_set_text(ui_lblMessage, MSG_OUT_OF_SPACE);
             }
             else if (Player->pickItemCount == MAX_PICK_ITEM_PER_ROUND)
             {
-                lv_label_set_text(ui_lblCardMessage, MSG_END_TURN);
+                lv_label_set_text(ui_lblMessage, MSG_END_TURN);
             }
+
+            // Hide card review
+            lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
 
             // Reset pick item count, keep total count
             Player->pickItemCount = 0;
@@ -519,11 +529,8 @@ void OnItemPick(lv_event_t* e)
 
             // Show delayed message
             DelayCallback(MAKE_DELAY_CB{
-                // Hide card review
-                lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
-
             // Hide message
-            lv_obj_add_flag(ui_lblCardMessage, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(ui_lblMessage, "");
 
             FSMTransit(STATE_TYPE::PLAYER_NEXT);
                 }, nullptr, WAIT_TIME);
@@ -541,8 +548,16 @@ void OnShotgunInside(lv_event_t* e)
 
     if (eventCode == LV_EVENT_PRESSED)
     {
-        // Show first bullet
-        lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[Shotgun.queueBullet.front()]);
+        if (itemUsing.itemType == ITEM_TYPE::MAGNIFYINGGLASS)
+        {
+            // Show first bullet
+            lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[Shotgun.queueBullet.front()]);
+        }
+        else if (itemUsing.itemType == ITEM_TYPE::BURNERPHONE)
+        {
+            // Show message
+            lv_obj_remove_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
+        }
     }
     else
     {
@@ -551,6 +566,9 @@ void OnShotgunInside(lv_event_t* e)
 
         // Hide shotgun inside
         lv_obj_add_flag(Shotgun.objInside, LV_OBJ_FLAG_HIDDEN);
+
+        // Hide message
+        lv_obj_add_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
 
         itemUsingState = false;
     }
@@ -579,17 +597,19 @@ void OnCardSelect(lv_event_t* e)
     }
 }
 
-void OnButtonHelp(lv_event_t* e)
+void OnAdrenalineCancel(lv_event_t * e)
 {
-    if (e->current_target == ui_btnPlayer1Help)
-    {
-        lv_obj_set_style_transform_rotation(ui_wndInfo, player::listPlayer[0].angle, LV_PART_MAIN | LV_STATE_DEFAULT);
-    }
-    else if (e->current_target == ui_btnPlayer2Help)
-    {
-        lv_obj_set_style_transform_rotation(ui_wndInfo, player::listPlayer[1].angle, LV_PART_MAIN | LV_STATE_DEFAULT);
-    }
+    itemUsing.data->Unassign(); // Unassign ADRENALINE item
+    itemUsing.itemType = ITEM_TYPE::MIN;
 
-    _ui_screen_change(&ui_Info, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_Info_screen_init);
+    player::DisableAllPlayerTableExcept(*Player);
+
+    // Hide effect
+    lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN);
+
+    itemUsingState = false; // Unblock
+
+    Shotgun.Enable();
 }
 #pragma endregion

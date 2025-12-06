@@ -706,6 +706,7 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_beer_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_blank_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_burnerphone_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cancel_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cblank_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargeback_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargefront_png.c" />
@@ -713,13 +714,13 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_charge_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cigarette_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_clive_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_dart_board_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_empty_bullet_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_empty_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_expiredmedicine_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_handcuffs_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_handsaw_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c" />
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_hide_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_inverter_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_live_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_magnifyingglass_png.c" />

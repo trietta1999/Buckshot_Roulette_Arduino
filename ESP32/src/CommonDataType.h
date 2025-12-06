@@ -112,12 +112,11 @@ enum
 #define EFFECT_WAIT_TIME 1000
 #define WAIT_1_SEC 1000
 
-#define PLAYER1_ANGLE 0
-#define PLAYER2_ANGLE 1800
-#define STEP_ANGLE 100
+#define PLAYER1_ANGLE 1800 // Left
+#define PLAYER2_ANGLE 0 // Right
 
-#define MAX_PICK_ITEM_PER_ROUND 4
-#define MAX_ITEM_NUM 8
+#define MAX_PICK_ITEM_PER_ROUND 3
+#define MAX_ITEM_NUM 6
 #define MAX_BULLET 8
 #define MIN_BULLET 2
 #define MAX_HP 4

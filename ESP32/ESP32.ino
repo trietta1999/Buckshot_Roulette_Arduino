@@ -87,7 +87,7 @@ public:
       cfg.hsync_pulse_width = 4;
 
       cfg.vsync_polarity = 0;
-      cfg.vsync_back_porch = 8;
+      cfg.vsync_back_porch = 15;
       cfg.vsync_front_porch = 8;
       cfg.vsync_pulse_width = 4;
 
@@ -188,7 +188,6 @@ void setup() {
 */
 
   gfx.begin();
-  gfx.setRotation(1);
   gfx.setSwapBytes(true);
   lv_init();
 
@@ -215,7 +214,7 @@ void setup() {
   // set up LVGL
   //lv_tick_set_cb(my_tick_function);
 
-  disp = lv_display_create(screenHeight, screenWidth);
+  disp = lv_display_create(screenWidth, screenHeight);
   lv_display_set_flush_cb(disp, my_disp_flush);
   lv_display_set_buffers(disp, disp_draw_buf, disp_draw_buf2, buf_size_in_bytes, LV_DISPLAY_RENDER_MODE_PARTIAL);
 

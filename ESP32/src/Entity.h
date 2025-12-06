@@ -45,7 +45,11 @@ namespace player
         PLAYER_TYPE type;
 
         // UI
+        lv_obj_t* table;
         lv_obj_t* pickButton;
+        lv_obj_t* confirmButton;
+        lv_obj_t* gunfireEffect;
+        lv_obj_t* adrenalinefEffect;
         std::vector<lv_obj_t*> listHPLevel1;
         std::vector<lv_obj_t*> listHPLevel2;
 
@@ -65,9 +69,20 @@ namespace player
             return (other.type == this->type);
         }
 
+        void Enable()
+        {
+            lv_obj_add_state(this->table, LV_STATE_CHECKED);
+
+            for (const auto& item : this->listButtonInfo)
+            {
+                lv_obj_remove_state(item.button, LV_STATE_DISABLED);
+            }
+        }
+
         void Disable()
         {
             lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
+            lv_obj_remove_state(this->table, LV_STATE_CHECKED);
 
             for (const auto& item : this->listButtonInfo)
             {
@@ -83,14 +98,6 @@ namespace player
         void DisablePickButton()
         {
             lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
-        }
-
-        void EnableTable()
-        {
-            for (const auto& item : this->listButtonInfo)
-            {
-                lv_obj_remove_state(item.button, LV_STATE_DISABLED);
-            }
         }
     };
 
@@ -141,7 +148,7 @@ namespace player
         {
             if (player.type != current.type)
             {
-                player.EnableTable();
+                player.Enable();
             }
             else
             {
@@ -160,7 +167,7 @@ namespace player
             }
             else
             {
-                player.EnableTable();
+                player.Enable();
             }
         }
     }
@@ -219,7 +226,6 @@ namespace shotgun
         lv_obj_t* objInTable;
         lv_obj_t* objInside;
         lv_obj_t* objHand;
-        lv_obj_t* objEffect;
         lv_obj_t* objWndConfirm;
         lv_obj_t* objTrashBullet;
         std::vector<lv_obj_t*> listBulletImg;
@@ -268,11 +274,6 @@ namespace shotgun
             }
         }
 
-        void RotateToPlayer(uint16_t angle)
-        {
-            PlayObjectRotatingAnimation(this->objInTable, angle, STEP_ANGLE);
-        }
-
         void Reset()
         {
             // Update shotgun image
@@ -294,14 +295,20 @@ namespace shotgun
 
         void ShowInHand(player::player_info_t& player)
         {
-            // Rotate comfirm window to current player
-            lv_obj_set_style_transform_rotation(this->objWndConfirm, player.angle, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_remove_flag(this->objWndConfirm, LV_OBJ_FLAG_HIDDEN);
 
             // Rotate shotgun to current player
-            lv_obj_set_style_transform_rotation(this->objHand, player.angle, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_image_set_rotation(this->objHand, player.angle);
 
-            lv_obj_remove_flag(this->objHand, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_remove_flag(this->objWndConfirm, LV_OBJ_FLAG_HIDDEN);
+
+            // Uncheck all confirm button
+            for (const auto& iPlayer : player::listPlayer)
+            {
+                lv_obj_remove_state(iPlayer.confirmButton, LV_STATE_CHECKED);
+            }
+
+            // Check current player confirm button
+            lv_obj_add_state(player.confirmButton, LV_STATE_CHECKED);
         }
 
         void Shot()
@@ -309,8 +316,7 @@ namespace shotgun
             // Rotate shotgun to target player
             if (this->state == 0)
             {
-                PlayObjectRotatingAnimation(this->objHand, this->targetPlayer->angle, STEP_ANGLE * 3);
-                lv_obj_set_style_transform_rotation(this->objEffect, this->targetPlayer->angle, LV_PART_MAIN | LV_STATE_DEFAULT);
+                lv_image_set_rotation(this->objHand, this->targetPlayer->angle);
             }
             // Show shot effect
             else if (this->state == 1)
@@ -324,7 +330,7 @@ namespace shotgun
                 }
                 else
                 {
-                    lv_obj_remove_flag(this->objEffect, LV_OBJ_FLAG_HIDDEN); // Show effect
+                    lv_obj_remove_flag(this->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN); // Show effect
 
                     this->queueBullet.pop(); // Remove bullet
                     this->isGunfire = true;
@@ -338,6 +344,7 @@ namespace shotgun
                         else if (targetPlayer->hpLevel2 == 1)
                         {
                             targetPlayer->hpLevel2--;
+                            targetPlayer->hpLevel1--;
                         }
                         else
                         {
@@ -367,14 +374,13 @@ namespace shotgun
                 // Wait for hide effect
                 DelayCallback(MAKE_DELAY_CB{
                     decltype(this) ldata = (decltype(this))(data);
-                    lv_obj_add_flag(ldata->objEffect, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(ldata->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN);
                     }, this, EFFECT_WAIT_TIME);
             }
             // Reset shotgun in hand
             else if (this->state == 2)
             {
-                lv_obj_add_flag(this->objHand, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(this->objEffect, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(this->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(this->objWndConfirm, LV_OBJ_FLAG_HIDDEN);
             }
         }

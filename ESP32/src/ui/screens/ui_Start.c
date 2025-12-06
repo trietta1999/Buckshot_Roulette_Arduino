@@ -44,13 +44,13 @@ void ui_Start_screen_init(void)
 {
     ui_Start = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Start, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_set_flex_flow(ui_Start, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_flow(ui_Start, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(ui_Start, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_set_style_bg_image_src(ui_Start, &ui_img_metal_table_png, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui_Start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui_Start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_Start, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_Start, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui_Start, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui_Start, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_Start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_Start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_btnPlayer2Start = lv_button_create(ui_Start);
     lv_obj_set_width(ui_btnPlayer2Start, 210);
@@ -69,9 +69,6 @@ void ui_Start_screen_init(void)
     lv_obj_set_style_border_color(ui_btnPlayer2Start, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(ui_btnPlayer2Start, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui_btnPlayer2Start, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_transform_rotation(ui_btnPlayer2Start, 1800, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_transform_pivot_x(ui_btnPlayer2Start, 105, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_transform_pivot_y(ui_btnPlayer2Start, 50, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label3 = lv_label_create(ui_btnPlayer2Start);
     lv_obj_set_width(ui_Label3, LV_SIZE_CONTENT);   /// 1

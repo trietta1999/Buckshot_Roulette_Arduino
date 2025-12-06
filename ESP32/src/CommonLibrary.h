@@ -23,7 +23,6 @@ T RandomRangeEnum(T a, T b)
 
 int32_t RandomRangeNumber(int32_t a, int32_t b);
 bool CheckObjectState(lv_obj_t* obj, lv_state_t state);
-void PlayObjectRotatingAnimation(lv_obj_t* obj, int16_t endAngle, int16_t step);
 std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum);
 void GetOrdinalNumber(uint8_t num, std::string& suffix);
 void DelayCallback(std::function<void(const void*)> func, void* data, uint32_t ms);
