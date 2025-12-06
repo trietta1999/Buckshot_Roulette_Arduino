@@ -18,6 +18,8 @@ void FSM()
     {
         if (CheckObjectState(ui_btnPlayer1Start, LV_STATE_CHECKED) && CheckObjectState(ui_btnPlayer2Start, LV_STATE_CHECKED))
         {
+            debug_println_func("Change screen to Main");
+
             // Change screen to main screen
             _ui_screen_change(&ui_Main, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_Main_screen_init);
 
@@ -30,6 +32,8 @@ void FSM()
     {
         if (MILLISEC_GET - lastShotgunTime >= EFFECT_WAIT_TIME)
         {
+            debug_println_func("Shotgun shot stage " + std::to_string(Shotgun.state));
+
             BlockGui();
 
             // End stage of shotgun
@@ -74,7 +78,7 @@ void FSM()
 
     if (CurrentState.GetState())
     {
-        debug_println("State: " + map_STATE_TYPE[CurrentState.GetValue()]);
+        debug_println_func("State: " + map_STATE_TYPE[CurrentState.GetValue()]);
 
         BlockGui();
 
@@ -85,6 +89,8 @@ void FSM()
 
             if (player::CheckAllPickComplete())
             {
+                debug_println_func("All pick complete");
+
                 Player->Enable();
 
                 FSMTransit(STATE_TYPE::LOAD_SHELL);
@@ -92,6 +98,8 @@ void FSM()
             // Move to next player
             else
             {
+                debug_println_func("Next player");
+
                 if (!Player)
                 {
                     // Set player #1 as default
@@ -132,10 +140,10 @@ void FSM()
                 }); // BLANK group is always on top (for view only)
 
             // Debug show real bullet group
-            debug_println("Bullet box:");
+            debug_println_func("Bullet box:");
             for (const auto& item : Shotgun.listBullet)
             {
-                debug_println(map_BULLET_TYPE[item]);
+                debug_println_func(map_BULLET_TYPE[item]);
             }
 
             // Show sort bullet group
@@ -206,7 +214,7 @@ void FSM()
                 }
             }
 
-            debug_println("Player: " + map_PLAYER_TYPE[Player->type]);
+            debug_println_func("Player: " + map_PLAYER_TYPE[Player->type]);
 
             latestPlayer = Player->type;
 
@@ -231,14 +239,7 @@ void FSM()
             }
             else
             {
-                if (CurrentState.GetOldValue() == STATE_TYPE::SHOTGUN_SHOT)
-                {
-                    FSMTransit(STATE_TYPE::ACTION_ITEM);
-                }
-                else
-                {
-                    FSMTransit(STATE_TYPE::ACTION_ITEM);
-                }
+                FSMTransit(STATE_TYPE::ACTION_ITEM);
             }
         }
         // Result state

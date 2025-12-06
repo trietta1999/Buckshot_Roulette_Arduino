@@ -36,6 +36,7 @@
 #include <Windows.h>
 #define MILLISEC_GET ::GetTickCount64()
 #define debug_println(a) std::cout << std::string(a) << "\n"
+#define debug_println_func(a) std::cout << __func__ << " -> " << std::string(a) << "\n"
 #define SHARED_MEM L"SharedMemoryJson"
 #else
 #include <Arduino.h>
@@ -43,6 +44,7 @@
 #define HWND uint8_t
 
 #define debug_println(a) Serial.println(std::string(a).c_str())
+#define debug_println_func(a) Serial.println(String(__FUNCTION__) + " -> " + std::string(a).c_str())
 #define MILLISEC_GET millis()
 
 #define INPUT_PIN 22

@@ -22,17 +22,15 @@ static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<bool(
 static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton;
 static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
 static bool itemUsingState = false;
+static player::player_info_t::player_slot_button_t* itemUsingData = nullptr;
 static uint64_t lastShotgunTime = 0;
 static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
-
-static struct {
-    player::player_info_t::player_slot_button_t* data;
-    ITEM_TYPE itemType;
-} itemUsing = { };
 
 #pragma region Internal_functions
 static void ResetPlayerTable()
 {
+    debug_println_func("Reset player table");
+
     for (auto& player : player::listPlayer)
     {
         player.Disable();
@@ -43,7 +41,7 @@ static void ResetPlayerTable()
 
 static void ShowEjectedBullet()
 {
-    debug_println("Eject bullet");
+    debug_println_func("Eject bullet");
 
     lv_obj_remove_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
@@ -51,7 +49,7 @@ static void ShowEjectedBullet()
 
 static void ShowTrashBullet()
 {
-    debug_println("Trash bullet");
+    debug_println_func("Trash bullet");
 
     lv_obj_remove_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
@@ -59,7 +57,7 @@ static void ShowTrashBullet()
 
 static void HideBulletInTable()
 {
-    debug_println("Hide bullet");
+    debug_println_func("Hide bullet");
 
     lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
@@ -71,6 +69,8 @@ static void HideBulletInTable()
 
 void Init()
 {
+    debug_println_func("Init");
+
     // Brightness
     Brightness.SetValue(100);
     lv_slider_set_value(ui_sldBrightness, Brightness.GetValue(), LV_ANIM_OFF);
@@ -268,13 +268,13 @@ void AutoUpdate()
     {
         if (GuiBlockState.GetValue())
         {
-            debug_println("GUI block");
+            debug_println_func("GUI pre-block");
 
             lv_obj_remove_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
         }
         else
         {
-            debug_println("GUI unblock");
+            debug_println_func("GUI pre-unblock");
 
             lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
         }
@@ -287,13 +287,13 @@ void AutoUpdate()
     {
         if (GuiBlockState.GetValue())
         {
-            debug_println("GUI block");
+            debug_println_func("GUI post-block");
 
             lv_obj_remove_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
         }
         else
         {
-            debug_println("GUI unblock");
+            debug_println_func("GUI post-unblock");
 
             lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
         }
@@ -318,6 +318,8 @@ void Main_OnLoaded(lv_event_t* e)
 
 void Info_OnLoaded(lv_event_t* e)
 {
+    debug_println_func("Info screen loaded");
+
     e->current_target = std::get<2>(listItemCardButton[0]);
 
     OnCardSelect(e);
@@ -327,6 +329,8 @@ void Info_OnLoaded(lv_event_t* e)
 #pragma region Component_events
 void OnShotgunShot(lv_event_t* e)
 {
+    debug_println_func("Shotgun shot prepare");
+
     auto currentButton = (lv_obj_t*)(e->current_target);
 
     // Set target player
@@ -339,7 +343,7 @@ void OnShotgunShot(lv_event_t* e)
         }
     }
 
-    debug_println("Confirm target: " + map_PLAYER_TYPE[Shotgun.targetPlayer->type]);
+    debug_println_func("Confirm target: " + map_PLAYER_TYPE[Shotgun.targetPlayer->type]);
 
     lastShotgunTime = MILLISEC_GET;
 
@@ -350,6 +354,8 @@ void OnShotgunShot(lv_event_t* e)
 
 void OnItemSelect(lv_event_t* e)
 {
+    debug_println_func("Item select");
+
     if (Player)
     {
         // Get current slot button
@@ -357,6 +363,8 @@ void OnItemSelect(lv_event_t* e)
 
         if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
         {
+            debug_println_func("Item arrange");
+
             auto resultButtonInfo = std::find_if(Player->listButtonInfo.begin(), Player->listButtonInfo.end(),
                 [currentButton](const decltype(Player->listButtonInfo.front())& item) {
                     // Button has no assigned image
@@ -368,7 +376,7 @@ void OnItemSelect(lv_event_t* e)
                 auto& buttonInfo = (*resultButtonInfo); // Get button info
                 auto imgCardReview = lv_image_get_src(ui_imgCardReview); // Get image from card review
 
-                debug_println("Pick: " + map_ITEM_TYPE[currentPickItem]);
+                debug_println_func("Pick: " + map_ITEM_TYPE[currentPickItem]);
 
                 // Assign button
                 buttonInfo.Assign(Player->type, currentPickItem, imgCardReview);
@@ -385,7 +393,9 @@ void OnItemSelect(lv_event_t* e)
         }
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
         {
-            if (itemUsing.data && (itemUsing.itemType == ITEM_TYPE::ADRENALINE))
+            debug_println_func("Item action");
+
+            if (itemUsingData && (itemUsingData->itemType == ITEM_TYPE::ADRENALINE))
             {
                 for (auto& iPlayer : player::listPlayer)
                 {
@@ -401,24 +411,25 @@ void OnItemSelect(lv_event_t* e)
 
                         if ((buttonInfo.playerType != Player->type) && (buttonInfo.itemType != ITEM_TYPE::ADRENALINE) && (!itemUsingState))
                         {
-                            debug_println("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
-                            debug_println("From: " + map_PLAYER_TYPE[buttonInfo.playerType]);
+                            debug_println_func("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
+                            debug_println_func("From: " + map_PLAYER_TYPE[buttonInfo.playerType]);
 
                             itemUsingState = true; // Block other action
 
                             if (mapItemImg[buttonInfo.itemType].second(buttonInfo)) // Call item effect
                             {
-                                itemUsing.data->Unassign(); // Unassign ADRENALINE item
+                                debug_println_func("Using done");
 
-                                // Update item using
-                                itemUsing.data = &buttonInfo;
-                                itemUsing.itemType = buttonInfo.itemType;
+                                itemUsingData->Unassign(); // Unassign ADRENALINE item
+                                itemUsingData = &buttonInfo; // Update item using
 
                                 iPlayer.totalItemCount--;
 
                                 player::DisableAllPlayerTableExcept(*Player);
 
-                                lv_obj_add_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN); // Hide effect
+                                // Hide effect
+                                lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN);
+                                lv_obj_add_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN);
 
                                 Shotgun.Enable();
                             }
@@ -442,16 +453,16 @@ void OnItemSelect(lv_event_t* e)
 
                     if (!itemUsingState)
                     {
-                        debug_println("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
+                        debug_println_func("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
 
-                        // Update item using
-                        itemUsing.data = &buttonInfo;
-                        itemUsing.itemType = buttonInfo.itemType;
+                        itemUsingData = &buttonInfo; // Update item using
 
                         itemUsingState = true; // Block other action
                         mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
 
                         Player->totalItemCount--;
+
+                        debug_println_func("Using done");
                     }
                 }
             }
@@ -461,9 +472,11 @@ void OnItemSelect(lv_event_t* e)
 
 void OnShotgunSelect(lv_event_t* e)
 {
+    debug_println_func("Shotgun select");
+
     if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
     {
-        debug_println("Shell loaded");
+        debug_println_func("Shell loaded");
 
         // Show bullet box cover
         lv_obj_remove_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
@@ -475,7 +488,7 @@ void OnShotgunSelect(lv_event_t* e)
     }
     else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
     {
-        debug_println("Show shotgun in hand");
+        debug_println_func("Show shotgun in hand");
 
         Shotgun.ShowInHand(*Player);
     }
@@ -483,6 +496,8 @@ void OnShotgunSelect(lv_event_t* e)
 
 void OnItemPick(lv_event_t* e)
 {
+    debug_println_func("Pick item");
+
 #ifdef _WIN64
     if ((uint8_t)debug_data::CurrentItemType.GetValue() > 0)
     {
@@ -513,10 +528,14 @@ void OnItemPick(lv_event_t* e)
             // Set message
             if (Player->totalItemCount == MAX_ITEM_NUM)
             {
+                debug_println_func(MSG_OUT_OF_SPACE);
+
                 lv_label_set_text(ui_lblMessage, MSG_OUT_OF_SPACE);
             }
             else if (Player->pickItemCount == MAX_PICK_ITEM_PER_ROUND)
             {
+                debug_println_func(MSG_END_TURN);
+
                 lv_label_set_text(ui_lblMessage, MSG_END_TURN);
             }
 
@@ -548,19 +567,25 @@ void OnShotgunInside(lv_event_t* e)
 
     if (eventCode == LV_EVENT_PRESSED)
     {
-        if (itemUsing.itemType == ITEM_TYPE::MAGNIFYINGGLASS)
+        if (itemUsingData->itemType == ITEM_TYPE::MAGNIFYINGGLASS)
         {
+            debug_println_func("Use Magnifying Glass");
+
             // Show first bullet
             lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[Shotgun.queueBullet.front()]);
         }
-        else if (itemUsing.itemType == ITEM_TYPE::BURNERPHONE)
+        else if (itemUsingData->itemType == ITEM_TYPE::BURNERPHONE)
         {
+            debug_println_func("Use Burner Phone");
+
             // Show message
             lv_obj_remove_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
         }
     }
     else
     {
+        debug_println_func("Hide shotgun inside");
+
         // Reset bullet slot
         lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[BULLET_TYPE::MIN]);
 
@@ -576,6 +601,8 @@ void OnShotgunInside(lv_event_t* e)
 
 void OnCardSelect(lv_event_t* e)
 {
+    debug_println_func("Card select");
+
     auto currentButton = (lv_obj_t*)(e->current_target);
 
     auto resultButtonInfo = std::find_if(listItemCardButton.begin(), listItemCardButton.end(),
@@ -586,6 +613,8 @@ void OnCardSelect(lv_event_t* e)
     if (resultButtonInfo != listItemCardButton.end())
     {
         const auto& item = *resultButtonInfo;
+
+        debug_println_func("Select " + map_ITEM_TYPE[std::get<0>(item)]);
 
         // Set text
         lv_label_set_text(ui_lblCardInfoTitle, mapCardInfoName[std::get<0>(item)].c_str());
@@ -599,8 +628,9 @@ void OnCardSelect(lv_event_t* e)
 
 void OnAdrenalineCancel(lv_event_t * e)
 {
-    itemUsing.data->Unassign(); // Unassign ADRENALINE item
-    itemUsing.itemType = ITEM_TYPE::MIN;
+    debug_println_func("Adrenaline cancel");
+
+    itemUsingData->Unassign(); // Unassign ADRENALINE item
 
     player::DisableAllPlayerTableExcept(*Player);
 
