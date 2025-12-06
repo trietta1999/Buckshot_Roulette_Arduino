@@ -19,7 +19,7 @@ void FSM()
         if (CheckObjectState(ui_btnPlayer1Start, LV_STATE_CHECKED) && CheckObjectState(ui_btnPlayer2Start, LV_STATE_CHECKED))
         {
             // Change screen to main screen
-            _ui_screen_change(&ui_Main, LV_SCR_LOAD_ANIM_FADE_IN, 500, 0, &ui_Main_screen_init);
+            _ui_screen_change(&ui_Main, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_Main_screen_init);
 
             FSMTransit(STATE_TYPE::PLAYER_NEXT);
         }

@@ -62,8 +62,8 @@ static void HideBulletInTable()
 }
 #pragma endregion
 
-#include "FSM.h"
-#include "Effect.h"
+#include "../FSM.h"
+#include "../Effect.h"
 
 void Init()
 {
@@ -590,6 +590,6 @@ void OnButtonHelp(lv_event_t* e)
         lv_obj_set_style_transform_rotation(ui_wndInfo, player::listPlayer[1].angle, LV_PART_MAIN | LV_STATE_DEFAULT);
     }
 
-    _ui_screen_change(&ui_Info, LV_SCR_LOAD_ANIM_MOVE_LEFT, 100, 0, &ui_Info_screen_init);
+    _ui_screen_change(&ui_Info, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_Info_screen_init);
 }
 #pragma endregion

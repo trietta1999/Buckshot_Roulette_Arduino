@@ -143,21 +143,21 @@ void InitData()
     //sys_host::TimeCycle.SetValue(TIMECYCLE_0);
     //sys_gui::SuccessState.SetValue(INCORRECT);
 #else
-    // Get init data from HostTimer
-    auto jsonDoc = CommonSendRequest(WM_SYSINIT_GET);
+    //// Get init data from HostTimer
+    //auto jsonDoc = CommonSendRequest(WM_SYSINIT_GET);
 
-    // Set init data
-    sys_host::RandomSeed.SetValue(jsonDoc[STR(RandomSeed)].as<uint32_t>());
-    sys_host::LabelIndicator.SetValue((LABEL_INDICATOR)jsonDoc[STR(LabelIndicator)].as<uint8_t>());
-    sys_host::BatteryType.SetValue((BATTERY_TYPE)jsonDoc[STR(BatteryType)].as<uint8_t>());
-    sys_host::ComPortType.SetValue((COMPORT_TYPE)jsonDoc[STR(ComPortType)].as<uint8_t>());
-    sys_host::BatteryNum.SetValue(jsonDoc[STR(BatteryNum)].as<uint8_t>());
-    sys_host::SerialNum.SetValue(jsonDoc[STR(SerialNum)].as<const char*>());
-    sys_host::StrikeNum.SetValue(jsonDoc[STR(StrikeNum)].as<uint8_t>());
-    sys_gui::SuccessState.SetValue(INCORRECT);
+    //// Set init data
+    //sys_host::RandomSeed.SetValue(jsonDoc[STR(RandomSeed)].as<uint32_t>());
+    //sys_host::LabelIndicator.SetValue((LABEL_INDICATOR)jsonDoc[STR(LabelIndicator)].as<uint8_t>());
+    //sys_host::BatteryType.SetValue((BATTERY_TYPE)jsonDoc[STR(BatteryType)].as<uint8_t>());
+    //sys_host::ComPortType.SetValue((COMPORT_TYPE)jsonDoc[STR(ComPortType)].as<uint8_t>());
+    //sys_host::BatteryNum.SetValue(jsonDoc[STR(BatteryNum)].as<uint8_t>());
+    //sys_host::SerialNum.SetValue(jsonDoc[STR(SerialNum)].as<const char*>());
+    //sys_host::StrikeNum.SetValue(jsonDoc[STR(StrikeNum)].as<uint8_t>());
+    //sys_gui::SuccessState.SetValue(INCORRECT);
 
-    // Set random seed
-    srand(sys_host::RandomSeed.GetValue());
+    //// Set random seed
+    //srand(sys_host::RandomSeed.GetValue());
 #endif
 
 #ifdef _WIN64
@@ -215,14 +215,14 @@ void CommonServiceProcess()
 
         // Print init data
         if (read == "sys_data") {
-            debug_println("===== Dummy Data Initialized =====");
-            debug_println("RandomSeed: " + std::to_string(sys_host::RandomSeed.GetValue()));
-            debug_println("LabelIndicator: " + map_LABEL_INDICATOR[sys_host::LabelIndicator.GetValue()]);
-            debug_println("BatteryType: " + map_BATTERY_TYPE[sys_host::BatteryType.GetValue()]);
-            debug_println("ComPortType: " + map_COMPORT_TYPE[sys_host::ComPortType.GetValue()]);
-            debug_println("BatteryNum: " + std::to_string(sys_host::BatteryNum.GetValue()));
-            debug_println("SerialNum: " + sys_host::SerialNum.GetValue());
-            debug_println("==================================");
+            //debug_println("===== Dummy Data Initialized =====");
+            //debug_println("RandomSeed: " + std::to_string(sys_host::RandomSeed.GetValue()));
+            //debug_println("LabelIndicator: " + map_LABEL_INDICATOR[sys_host::LabelIndicator.GetValue()]);
+            //debug_println("BatteryType: " + map_BATTERY_TYPE[sys_host::BatteryType.GetValue()]);
+            //debug_println("ComPortType: " + map_COMPORT_TYPE[sys_host::ComPortType.GetValue()]);
+            //debug_println("BatteryNum: " + std::to_string(sys_host::BatteryNum.GetValue()));
+            //debug_println("SerialNum: " + sys_host::SerialNum.GetValue());
+            //debug_println("==================================");
         }
     }
 
@@ -393,12 +393,12 @@ JsonDocument CommonSendRequest(uint32_t msg)
     ::SendMessage(hwnd, WM_SET_CLIENT_HANDLE, msg, NULL);
     ::SendMessage(hwnd, WM_REQUEST, msg, NULL);
 #else
-    data_pack_t byteData = { 0 };
-    strcpy(byteData.source, CLIENT_NAME);
-    byteData.base_msg = WM_REQUEST;
-    byteData.msg = msg;
+    //data_pack_t byteData = { 0 };
+    //strcpy(byteData.source, CLIENT_NAME);
+    //byteData.base_msg = WM_REQUEST;
+    //byteData.msg = msg;
 
-    SendMessage(byteData);
+    //SendMessage(byteData);
 #endif
 
     return JsonResponse.GetValue();
@@ -434,16 +434,16 @@ JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
     ::SendMessage(hwnd, WM_SET_CLIENT_HANDLE, msg, NULL);
     ::SendMessage(hwnd, WM_REQUEST_WITH_DATA, msg, NULL);
 #else
-    char jsonDocStr[MAX_SIZE] = { 0 };
-    serializeJson(jsonValue, jsonDocStr);
+    //char jsonDocStr[MAX_SIZE] = { 0 };
+    //serializeJson(jsonValue, jsonDocStr);
 
-    data_pack_t byteData = { 0 };
-    strcpy(byteData.source, CLIENT_NAME);
-    byteData.base_msg = WM_REQUEST_WITH_DATA;
-    byteData.msg = msg;
-    strcpy(byteData.data, jsonDocStr);
+    //data_pack_t byteData = { 0 };
+    //strcpy(byteData.source, CLIENT_NAME);
+    //byteData.base_msg = WM_REQUEST_WITH_DATA;
+    //byteData.msg = msg;
+    //strcpy(byteData.data, jsonDocStr);
 
-    SendMessage(byteData);
+    //SendMessage(byteData);
 #endif
 
     return JsonResponse.GetValue();
