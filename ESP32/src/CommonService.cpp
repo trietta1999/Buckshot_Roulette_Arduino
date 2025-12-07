@@ -86,6 +86,11 @@ void DebugConsoleProcess()
 
                 debug_data::PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
             }
+            // Battery percent
+            else if (inputParams.at(0) == "battery")
+            {
+                BatteryInd.SetValue(std::stoi(inputParams.at(1)));
+            }
             // Special command
             else
             {
@@ -119,6 +124,8 @@ void InitData()
 #ifndef _WIN64
     HardwareSetup();
 #endif
+
+    BatteryInd.SetValue(-1);
 
 #ifdef HOST_TIMER
 #ifndef _WIN64

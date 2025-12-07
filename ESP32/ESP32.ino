@@ -33,6 +33,22 @@
 #define TOUCH_INT (-1)
 #define TOUCH_RST 38
 
+// --- Tham số Pin (ADC) ---
+const int BATTERY_ADC_PIN = 17;  // ADC sử dụng GPIO 17
+const float VOLTAGE_DIVIDER_MULTIPLIER = 1.68;
+const int ADC_MAX_VALUE = 4095;
+const float V_REF_EFFECTIVE = 3.9;
+const float BATTERY_MAX_V = 4.2;
+const float BATTERY_MIN_V = 3.0;
+
+// --- Biến Trạng thái Thời gian ---
+unsigned long last_battery_check = 0;
+const long BATTERY_INTERVAL = 5000;  // Đo pin mỗi 5 giây
+
+// --- Tham số Lọc Exponential ---
+const float ALPHA = 0.1;  // Hệ số Alpha: 0.1 (lọc mạnh) đến 0.9 (lọc nhẹ)
+int adc_filtered_ema = 0;  // Giá trị ADC đã lọc cuối cùng (Khởi tạo ở 0)
+
 class LGFX : public lgfx::LGFX_Device {
 public:
   lgfx::Bus_RGB _bus_instance;
@@ -163,6 +179,40 @@ void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
     data->state = LV_INDEV_STATE_RELEASED;
 }
 
+//---------------------------------------------------------
+// Hàm đo Pin (GPIO 17 đóng vai trò ADC Input)
+//---------------------------------------------------------
+int measure_battery() {
+  int adc_raw_new = analogRead(BATTERY_ADC_PIN);
+  Serial.println(adc_raw_new);
+  // 1. Khởi tạo EMA lần đầu tiên
+  if (adc_filtered_ema == 0) {
+    adc_filtered_ema = adc_raw_new;
+  } else {
+    // 2. Áp dụng công thức lọc EMA
+    // V_new = (Alpha * V_new_raw) + ((1 - Alpha) * V_old_filtered)
+    adc_filtered_ema = (int)(ALPHA * adc_raw_new + (1.0 - ALPHA) * adc_filtered_ema);
+  }
+
+  // 3. Chuyển đổi giá trị EMA đã lọc thành Pin%
+  float v_adc = (float)adc_filtered_ema * (V_REF_EFFECTIVE / ADC_MAX_VALUE);
+  float v_battery = v_adc * VOLTAGE_DIVIDER_MULTIPLIER;
+
+  // ... (Phần tính toán Percent giữ nguyên) ...
+  float voltage_range = BATTERY_MAX_V - BATTERY_MIN_V;
+  float current_voltage_relative = v_battery - BATTERY_MIN_V;
+
+  float percent_f = (current_voltage_relative / voltage_range) * 100.0;
+
+  if (percent_f > 100.0) percent_f = 100.0;
+  if (percent_f < 0.0) percent_f = 0.0;
+
+  int percent_int = (int)percent_f;
+
+  Serial.printf("(ADC): V_BAT: %.2f V | Percent: %d%%\n", v_battery, percent_int);
+
+  return percent_int;
+}
 
 lv_display_t *disp;
 lv_indev_t *indev;
@@ -236,6 +286,12 @@ void setup() {
   pinMode(TFT_BL, OUTPUT);
   analogWrite(TFT_BL, Brightness.GetValue());
 
+  analogReadResolution(12);
+
+  BatteryInd.SetValue(measure_battery());
+
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_0, 0);
+
   Serial.println("Setup complete");
 }
 
@@ -243,6 +299,12 @@ void IOProcessData() {
   // Change brightness
   if (Brightness.GetState()) {
     analogWrite(TFT_BL, Brightness.GetValue());
+  }
+
+  // Update battery percent
+  if (millis() - last_battery_check >= BATTERY_INTERVAL) {
+    BatteryInd.SetValue(measure_battery());
+    last_battery_check = millis();
   }
 }
 

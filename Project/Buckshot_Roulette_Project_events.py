@@ -47,6 +47,10 @@ def OnCardSelect(event_struct):
     return
 
 
-def OnButtonHelp(event_struct):
+def OnAdrenalineCancel(event_struct):
+    return
+
+
+def OnButtonLock(event_struct):
     return
 

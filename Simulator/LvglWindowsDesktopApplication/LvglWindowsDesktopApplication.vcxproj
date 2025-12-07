@@ -703,6 +703,11 @@
     <ClCompile Include="..\..\ESP32\src\ui\components\ui_comp_hook.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_adrenaline_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_arrow_left_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_full_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_000_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_050_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_075_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_low_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_beer_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_blank_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_burnerphone_png.c" />
@@ -723,6 +728,7 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_inverter_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_live_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_lock_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_magnifyingglass_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_bullet_box_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_table_png.c" />
@@ -733,6 +739,8 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_in_hand_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skull_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_off_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Main.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Start.c" />

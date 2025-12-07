@@ -298,6 +298,42 @@ void AutoUpdate()
             lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
         }
     }
+
+    if (BatteryInd.GetState())
+    {
+        auto value = BatteryInd.GetValue();
+
+        lv_label_set_text_fmt(ui_lblBattery, "%d%%", value);
+
+        if (value < 0)
+        {
+            // Do nothing
+        }
+        else if (value == 0)
+        {
+            OnButtonLock(nullptr);
+        }
+        else if (value <= 5)
+        {
+            lv_img_set_src(ui_imgBattery, &ui_img_battery_horiz_000_png);
+        }
+        else if (value <= 20)
+        {
+            lv_img_set_src(ui_imgBattery, &ui_img_battery_low_png);
+        }
+        else if (value <= 50)
+        {
+            lv_img_set_src(ui_imgBattery, &ui_img_battery_horiz_050_png);
+        }
+        else if (value <= 75)
+        {
+            lv_img_set_src(ui_imgBattery, &ui_img_battery_horiz_075_png);
+        }
+        else if (value <= 100)
+        {
+            lv_img_set_src(ui_imgBattery, &ui_img_battery_full_png);
+        }
+    }
 }
 
 void OnBrightnessChange(lv_event_t* e)
@@ -548,10 +584,10 @@ void OnItemPick(lv_event_t* e)
 
             // Show delayed message
             DelayCallback(MAKE_DELAY_CB{
-            // Hide message
-            lv_label_set_text(ui_lblMessage, "");
+                // Hide message
+                lv_label_set_text(ui_lblMessage, "");
 
-            FSMTransit(STATE_TYPE::PLAYER_NEXT);
+                FSMTransit(STATE_TYPE::PLAYER_NEXT);
                 }, nullptr, WAIT_TIME);
         }
         else
@@ -626,11 +662,12 @@ void OnCardSelect(lv_event_t* e)
     }
 }
 
-void OnAdrenalineCancel(lv_event_t * e)
+void OnAdrenalineCancel(lv_event_t* e)
 {
     debug_println_func("Adrenaline cancel");
 
     itemUsingData->Unassign(); // Unassign ADRENALINE item
+    itemUsingData->itemType = ITEM_TYPE::MIN;
 
     player::DisableAllPlayerTableExcept(*Player);
 
@@ -641,5 +678,12 @@ void OnAdrenalineCancel(lv_event_t * e)
     itemUsingState = false; // Unblock
 
     Shotgun.Enable();
+}
+
+void OnButtonLock(lv_event_t* e)
+{
+#ifndef _WIN64
+    esp_deep_sleep_start();
+#endif
 }
 #pragma endregion

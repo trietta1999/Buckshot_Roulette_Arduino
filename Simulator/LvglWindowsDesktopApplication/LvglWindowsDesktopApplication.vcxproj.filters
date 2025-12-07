@@ -1595,6 +1595,31 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_dart_board_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cancel_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_full_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_000_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_050_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_075_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_low_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_lock_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_off_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LvglWindowsDesktopApplication.manifest" />

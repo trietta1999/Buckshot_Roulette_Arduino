@@ -15,6 +15,7 @@ void Main_OnLoaded(lv_event_t * e);
 void OnItemSelect(lv_event_t * e);
 void OnItemPick(lv_event_t * e);
 void OnBrightnessChange(lv_event_t * e);
+void OnButtonLock(lv_event_t * e);
 void OnShotgunSelect(lv_event_t * e);
 void OnShotgunShot(lv_event_t * e);
 void OnShotgunInside(lv_event_t * e);

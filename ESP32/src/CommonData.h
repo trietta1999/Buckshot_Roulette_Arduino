@@ -24,6 +24,7 @@ extern CData<JsonDocument> JsonResponse;
 extern CData<std::string> ClientName;
 extern CData<STATE_TYPE> CurrentState;
 extern CData<bool> GuiBlockState;
+extern CData<int8_t> BatteryInd;
 
 void UpdateAll();
 

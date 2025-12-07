@@ -19,6 +19,7 @@ CData<JsonDocument> JsonResponse;
 CData<std::string> ClientName;
 CData<STATE_TYPE> CurrentState;
 CData<bool> GuiBlockState;
+CData<int8_t> BatteryInd;
 
 // Add auto reset state for custom data only
 void UpdateAll()
@@ -26,6 +27,7 @@ void UpdateAll()
     Brightness.ResetState();
     CurrentState.ResetState();
     GuiBlockState.ResetState();
+    BatteryInd.ResetState();
 #ifdef _WIN64
     debug_data::CurrentPlayer.ResetState();
     debug_data::CurrentItemType.ResetState();
