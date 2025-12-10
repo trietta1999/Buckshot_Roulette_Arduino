@@ -31,6 +31,8 @@ namespace player
                 memcpy(&this->image, image, sizeof(lv_img_dsc_t));
                 this->itemType = itemType;
                 this->playerType = playerType;
+
+                CommonPlaySound(SOUND_TYPE::ASSIGN);
             }
 
             void Unassign()
@@ -182,11 +184,21 @@ namespace player
             {
                 if (i < player.hpLevel1)
                 {
-                    lv_obj_remove_state(player.listHPLevel1[i], LV_STATE_DISABLED);
+                    if ((lv_obj_get_state(player.listHPLevel1[i]) & LV_STATE_DISABLED) == LV_STATE_DISABLED)
+                    {
+                        lv_obj_remove_state(player.listHPLevel1[i], LV_STATE_DISABLED);
+
+                        CommonPlaySound(SOUND_TYPE::HEALTH);
+                    }
                 }
                 else
                 {
-                    lv_obj_add_state(player.listHPLevel1[i], LV_STATE_DISABLED);
+                    if ((lv_obj_get_state(player.listHPLevel1[i]) & LV_STATE_DISABLED) != LV_STATE_DISABLED)
+                    {
+                        lv_obj_add_state(player.listHPLevel1[i], LV_STATE_DISABLED);
+
+                        CommonPlaySound(SOUND_TYPE::HIT);
+                    }
                 }
             }
 
@@ -195,11 +207,21 @@ namespace player
             {
                 if (i < player.hpLevel2)
                 {
-                    lv_obj_remove_state(player.listHPLevel2[i], LV_STATE_DISABLED);
+                    if ((lv_obj_get_state(player.listHPLevel2[i]) & LV_STATE_DISABLED) == LV_STATE_DISABLED)
+                    {
+                        lv_obj_remove_state(player.listHPLevel2[i], LV_STATE_DISABLED);
+
+                        CommonPlaySound(SOUND_TYPE::HEALTH);
+                    }
                 }
                 else
                 {
-                    lv_obj_add_state(player.listHPLevel2[i], LV_STATE_DISABLED);
+                    if ((lv_obj_get_state(player.listHPLevel2[i]) & LV_STATE_DISABLED) != LV_STATE_DISABLED)
+                    {
+                        lv_obj_add_state(player.listHPLevel2[i], LV_STATE_DISABLED);
+
+                        CommonPlaySound(SOUND_TYPE::HIT);
+                    }
                 }
             }
         }
@@ -292,6 +314,8 @@ namespace shotgun
             lv_image_set_src(this->objHand, &ui_img_shotguncut_png);
 
             this->isCut = true;
+
+            CommonPlaySound(SOUND_TYPE::BREAK);
         }
 
         void ShowInHand(player::player_info_t& player)
@@ -310,6 +334,8 @@ namespace shotgun
 
             // Check current player confirm button
             lv_obj_add_state(player.confirmButton, LV_STATE_CHECKED);
+
+            CommonPlaySound(SOUND_TYPE::WEAPON_PICKUP);
         }
 
         void Shot()
@@ -327,6 +353,8 @@ namespace shotgun
                 if (this->queueBullet.front() == BULLET_TYPE::BLANK)
                 {
                     this->queueBullet.pop(); // Remove bullet
+
+                    CommonPlaySound(SOUND_TYPE::DROP);
                     return;
                 }
                 else

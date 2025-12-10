@@ -14,10 +14,6 @@
 #include <functional>
 #include <unordered_map>
 
-#ifndef HOST_TIMER
-#define HOST_TIMER
-#endif
-
 #define STR(a) #a
 
 #ifdef _WIN64
@@ -32,12 +28,11 @@
 #define MAX_SIZE 1000
 #define BUFFER_SIZE sizeof(char) * MAX_SIZE
 
-#define SAMPLE_RATE 44100
+#define SAMPLE_RATE 22050
 
 #ifdef _WIN64
 #include <Windows.h>
 
-#undef PROGMEM
 #define PROGMEM
 #define MILLISEC_GET ::GetTickCount64()
 #define debug_println(a) std::cout << std::string(a) << "\n"
@@ -45,6 +40,7 @@
 #define SHARED_MEM L"SharedMemoryJson"
 #else
 #include <Arduino.h>
+
 #define WM_USER 0x0400
 #define HWND uint8_t
 
@@ -56,8 +52,6 @@
 
 #define INPUT_PIN 22
 #define BUZZER_PIN 26
-
-#define I2S_PORT I2S_NUM_0
 
 #define IP_ADD_1 192
 #define IP_ADD_2 168
@@ -170,6 +164,15 @@ enum
 
 #define DEF_SOUND_TYPE(e, CREATE) \
         CREATE(e, SHOTGUN_SHOT) \
+        CREATE(e, LOAD_SHELL) \
+        CREATE(e, DROP) \
+        CREATE(e, PICK) \
+        CREATE(e, ASSIGN) \
+        CREATE(e, HIT) \
+        CREATE(e, WEAPON_PICKUP) \
+        CREATE(e, BREAK) \
+        CREATE(e, HEALTH) \
+        CREATE(e, ADRENALINE) \
 
 enum class PLAYER_TYPE
 {

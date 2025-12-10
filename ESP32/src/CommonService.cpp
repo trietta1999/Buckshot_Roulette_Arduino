@@ -18,7 +18,7 @@
 #include "SampleSound.h"
 
 #ifdef _WIN64
-static void PlayRawPCM(const uint8_t* pcmData, uint16_t size)
+static void PlayRawPCM(const uint8_t* pcmData, uint32_t size)
 {
     // Config format (WAVEFORMATEX)
     WAVEFORMATEX wfx = {};
@@ -79,7 +79,7 @@ static void PlayRawPCM(const uint8_t* pcmData, uint16_t size)
 }
 #endif
 
-static void PlaySampleSound(const uint8_t* sample, uint16_t size)
+static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 {
 #ifdef _WIN64
     PlayRawPCM(sample, size);
@@ -158,6 +158,12 @@ void DebugConsoleProcess()
 
                 debug_data::PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
             }
+            // Play sound
+            else if (inputParams.at(0) == "sound")
+            {
+                auto type = std::stoi(inputParams.at(1));
+                CommonPlaySound((SOUND_TYPE)type);
+            }
             // Special command
             else
             {
@@ -190,9 +196,9 @@ void InitData()
 {
 #ifndef _WIN64
     //HardwareSetup();
+    SetupI2S();
 #endif
 
-#ifdef HOST_TIMER
 #ifndef _WIN64
     uint32_t seed = esp_random();
 #else
@@ -214,27 +220,6 @@ void InitData()
     //sys_host::StrikeNum.SetValue(0);
     //sys_host::TimeCycle.SetValue(TIMECYCLE_0);
     //sys_gui::SuccessState.SetValue(INCORRECT);
-#else
-    // Set random seed
-    srand(seed);
-
-    //// Get init data from HostTimer
-    //auto jsonDoc = CommonSendRequest(WM_SYSINIT_GET);
-
-    //// Set init data
-    //sys_host::RandomSeed.SetValue(jsonDoc[STR(RandomSeed)].as<uint32_t>());
-    //sys_host::LabelIndicator.SetValue((LABEL_INDICATOR)jsonDoc[STR(LabelIndicator)].as<uint8_t>());
-    //sys_host::BatteryType.SetValue((BATTERY_TYPE)jsonDoc[STR(BatteryType)].as<uint8_t>());
-    //sys_host::ComPortType.SetValue((COMPORT_TYPE)jsonDoc[STR(ComPortType)].as<uint8_t>());
-    //sys_host::BatteryNum.SetValue(jsonDoc[STR(BatteryNum)].as<uint8_t>());
-    //sys_host::SerialNum.SetValue(jsonDoc[STR(SerialNum)].as<const char*>());
-    //sys_host::StrikeNum.SetValue(jsonDoc[STR(StrikeNum)].as<uint8_t>());
-    //sys_gui::SuccessState.SetValue(INCORRECT);
-
-    //// Set random seed
-    //srand(sys_host::RandomSeed.GetValue());
-    SetupI2S();
-#endif
 
 #ifdef _WIN64
     AttachConsoleWindow();
@@ -307,6 +292,7 @@ void CommonServiceProcess()
 
     // Handle web server
     //ServerHandleClient();
+    //CommonPlaySound(SOUND_TYPE::MIN);
 #endif
 #endif
 }
@@ -315,126 +301,7 @@ JsonDocument ProcessRequest(HWND hwnd, uint32_t msg, JsonDocument jsonDocIn)
 {
     JsonDocument jsonDoc;
 
-    //#ifdef HOST_TIMER
-    //    switch (msg)
-    //    {
-    //    case WM_TIMER_GET:
-    //    {
-    //        auto time = TimeClock.GetValue();
-    //
-    //        jsonDoc["minute"] = std::get<MINUTE_POS>(time);
-    //        jsonDoc["second"] = std::get<SECOND_POS>(time);
-    //    }
-    //    break;
-    //
-    //    case WM_STRIKENUM_GET:
-    //    {
-    //        jsonDoc[STR(StrikeNum)] = sys_host::StrikeNum.GetValue();
-    //    }
-    //    break;
-    //
-    //    case WM_STRIKESTATE_SET:
-    //    {
-    //        if (!StrikeEnable.GetValue())
-    //        {
-    //            sys_host::StrikeState.SetValue(true);
-    //        }
-    //    }
-    //    break;
-    //
-    //    case WM_SUCCESSSTATE_SET:
-    //    {
-    //        auto mapModuleStatus = sys_gui::ModuleStatusMap.GetValue();
-    //
-    //        if (mapModuleStatus[jsonDocIn["module"].as<const char*>()] == MODULE_STATUS::ON)
-    //        {
-    //            mapModuleStatus[jsonDocIn["module"].as<const char*>()] = MODULE_STATUS::SUCCESS;
-    //
-    //            sys_gui::ModuleStatusMap.SetValue(mapModuleStatus);
-    //        }
-    //
-    //        // Find if any module still ON
-    //        auto result = std::find_if(mapModuleStatus.begin(), mapModuleStatus.end(),
-    //            [](const std::pair<std::string, MODULE_STATUS>& item) {
-    //                return item.second == MODULE_STATUS::ON;
-    //            });
-    //
-    //        if (result == mapModuleStatus.end())
-    //        {
-    //            // Stop HostTimer
-    //            sys_host::ModuleStatus.SetValue(false);
-    //
-    //            // Set success state
-    //            sys_gui::SuccessState.SetValue(STATE_CHECKED);
-    //        }
-    //    }
-    //    break;
-    //
-    //    case WM_SYSINIT_GET:
-    //    {
-    //        jsonDoc[STR(RandomSeed)] = sys_host::RandomSeed.GetValue();
-    //        jsonDoc[STR(LabelIndicator)] = (uint8_t)sys_host::LabelIndicator.GetValue();
-    //        jsonDoc[STR(BatteryType)] = (uint8_t)sys_host::BatteryType.GetValue();
-    //        jsonDoc[STR(ComPortType)] = (uint8_t)sys_host::ComPortType.GetValue();
-    //        jsonDoc[STR(BatteryNum)] = sys_host::BatteryNum.GetValue();
-    //        jsonDoc[STR(SerialNum)] = sys_host::SerialNum.GetValue();
-    //        jsonDoc[STR(StrikeNum)] = sys_host::StrikeNum.GetValue();
-    //    }
-    //    break;
-    //
-    //    case WM_STOP_COMPLETE:
-    //    {
-    //        auto mapModuleStatus = sys_gui::ModuleStatusMap.GetValue();
-    //
-    //        // Find if any module still ON
-    //        auto result = std::find_if(mapModuleStatus.begin(), mapModuleStatus.end(),
-    //            [](const std::pair<std::string, MODULE_STATUS>& item) {
-    //                return item.second == MODULE_STATUS::ON;
-    //            });
-    //
-    //        if (result != mapModuleStatus.end())
-    //        {
-    //            // Stop HostTimer
-    //            sys_host::ModuleStatus.SetValue(false);
-    //
-    //            // Set fail state
-    //            sys_gui::SuccessState.SetValue(STATE_UNCHECK);
-    //        }
-    //    }
-    //    break;
-    //
-    //    default:
-    //        break;
-    //    }
-    //
-    //#ifdef _WIN64
-    //    char jsonDocStr[MAX_SIZE] = { 0 };
-    //    serializeJson(jsonDoc, jsonDocStr);
-    //
-    //    HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, BUFFER_SIZE, SHARED_MEM);
-    //    if (!hMapFile)
-    //    {
-    //        return jsonDoc;
-    //    }
-    //
-    //    LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-    //    if (!pBuffer)
-    //    {
-    //        CloseHandle(hMapFile);
-    //        return jsonDoc;
-    //    }
-    //
-    //    strcpy((char*)pBuffer, jsonDocStr);
-    //
-    //    UnmapViewOfFile(pBuffer);
-    //
-    //    ::SendMessage(hwnd, WM_RESPONSE, NULL, NULL);
-    //#else
-    //    return jsonDoc;
-    //#endif
-    //#else
     return jsonDoc;
-    //#endif
 }
 
 JsonDocument CommonSendRequest(uint32_t msg)
@@ -532,6 +399,33 @@ void CommonPlaySound(SOUND_TYPE type)
         switch (type) {
         case SOUND_TYPE::SHOTGUN_SHOT:
             PlaySampleSound(shotgun_sound, _countof(shotgun_sound));
+            break;
+        case SOUND_TYPE::LOAD_SHELL:
+            PlaySampleSound(load_shell_sound, _countof(load_shell_sound));
+            break;
+        case SOUND_TYPE::DROP:
+            PlaySampleSound(shotgun_drop_sound, _countof(shotgun_drop_sound));
+            break;
+        case SOUND_TYPE::PICK:
+            PlaySampleSound(pick_sound, _countof(pick_sound));
+            break;
+        case SOUND_TYPE::ASSIGN:
+            PlaySampleSound(assign_sound, _countof(assign_sound));
+            break;
+        case SOUND_TYPE::HIT:
+            PlaySampleSound(hit_sound, _countof(hit_sound));
+            break;
+        case SOUND_TYPE::WEAPON_PICKUP:
+            PlaySampleSound(weapon_pickup_sound, _countof(weapon_pickup_sound));
+            break;
+        case SOUND_TYPE::BREAK:
+            PlaySampleSound(break_sound, _countof(break_sound));
+            break;
+        case SOUND_TYPE::HEALTH:
+            PlaySampleSound(health_sound, _countof(health_sound));
+            break;
+        case SOUND_TYPE::ADRENALINE:
+            PlaySampleSound(adrenaline_sound, _countof(adrenaline_sound));
             break;
         default:
             PlaySampleSound(null_sound, _countof(null_sound));

@@ -123,6 +123,8 @@ EFFECT_FUNCTION(HANDCUFFS)
         nextPlayer.isSkip = true;
 
         result = true;
+
+        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
     }
 
     itemUsingState = false;
@@ -166,6 +168,8 @@ EFFECT_FUNCTION(INVERTER)
         }
 
         Shotgun.VecToQueue(listBullet);
+
+        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
     }
 
     itemUsingState = false;
@@ -194,6 +198,8 @@ EFFECT_FUNCTION(ADRENALINE)
     lv_obj_remove_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN);
 
     Shotgun.Disable();
+
+    CommonPlaySound(SOUND_TYPE::ADRENALINE);
 
     return true;
 }

@@ -1,23 +1,16 @@
 #include <lvgl.h>
 #include <Wire.h>
+#define LGFX_USE_V1
+#include <LovyanGFX.hpp>
+#include <lgfx/v1/platforms/esp32s3/Panel_RGB.hpp>
+#include <lgfx/v1/platforms/esp32s3/Bus_RGB.hpp>
+
 #include "src/ui/ui.h"
 #include "src/CommonData.h"
 #include "src/CommonLibrary.h"
 #include "src/CommonService.h"
 
-
-
-
-// Extender Pin define
-
 #define TFT_BL 2
-
-
-
-#define LGFX_USE_V1
-#include <LovyanGFX.hpp>
-#include <lgfx/v1/platforms/esp32s3/Panel_RGB.hpp>
-#include <lgfx/v1/platforms/esp32s3/Bus_RGB.hpp>
 
 #define TFT_HOR_RES 800
 #define TFT_VER_RES 480
@@ -45,7 +38,6 @@ public:
       cfg.offset_y = 0;
       _panel_instance.config(cfg);
     }
-
     {
       auto cfg = _bus_instance.config();
       cfg.panel = &_panel_instance;
@@ -114,17 +106,8 @@ public:
   }
 };
 
-LGFX gfx;
+static LGFX gfx;
 
-static const uint32_t screenWidth = 800;
-static const uint32_t screenHeight = 480;
-
-static const int buf_size_in_bytes = screenWidth * screenHeight * 2 / 10;
-static uint8_t *disp_draw_buf, *disp_draw_buf2;
-// Use below if not dynamically allocating memory
-//static uint16_t disp_draw_buf[buf_size_in_bytes / sizeof(lv_color_t)];
-
-// Display flushing
 void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
   uint32_t w = (area->x2 - area->x1 + 1);
   uint32_t h = (area->y2 - area->y1 + 1);
@@ -135,6 +118,7 @@ void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
 
   gfx.pushImage(area->x1, area->y1, w, h, (uint16_t *)px_map);
   gfx.endWrite();
+
   lv_disp_flush_ready(disp);
 }
 
@@ -153,6 +137,8 @@ void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
     data->state = LV_INDEV_STATE_RELEASED;
 }
 
+const uint32_t buf_size_in_bytes = TFT_HOR_RES * TFT_VER_RES * 2 / 10;
+uint8_t *disp_draw_buf, *disp_draw_buf2;
 lv_display_t *disp;
 lv_indev_t *indev;
 
@@ -175,15 +161,17 @@ void setup() {
 
   if (disp_draw_buf == nullptr) {
     Serial.println("LVGL disp_draw_buf allocate failed!");
-    while (1)
-      ;
+    while (true)
+    {
+      delay(10);
+    }
   }
 
   if (disp_draw_buf2 == nullptr) {
     Serial.println("LVGL disp_draw_buf2 allocate failed - carry on anyway we can live without it");
   }
 
-  disp = lv_display_create(screenWidth, screenHeight);
+  disp = lv_display_create(TFT_HOR_RES, TFT_VER_RES);
   lv_display_set_flush_cb(disp, my_disp_flush);
   lv_display_set_buffers(disp, disp_draw_buf, disp_draw_buf2, buf_size_in_bytes, LV_DISPLAY_RENDER_MODE_PARTIAL);
 

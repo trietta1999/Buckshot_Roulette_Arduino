@@ -45,6 +45,8 @@ static void ShowEjectedBullet()
 
     lv_obj_remove_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
+
+    CommonPlaySound(SOUND_TYPE::DROP);
 }
 
 static void ShowTrashBullet()
@@ -53,6 +55,8 @@ static void ShowTrashBullet()
 
     lv_obj_remove_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
+
+    CommonPlaySound(SOUND_TYPE::DROP);
 }
 
 static void HideBulletInTable()
@@ -398,6 +402,8 @@ void OnItemSelect(lv_event_t* e)
 
             if (itemUsingData && (itemUsingData->itemType == ITEM_TYPE::ADRENALINE))
             {
+                debug_println_func("Current using is ADRENALINE");
+
                 for (auto& iPlayer : player::listPlayer)
                 {
                     auto resultButtonInfo = std::find_if(iPlayer.listButtonInfo.begin(), iPlayer.listButtonInfo.end(),
@@ -408,6 +414,8 @@ void OnItemSelect(lv_event_t* e)
 
                     if (resultButtonInfo != iPlayer.listButtonInfo.end())
                     {
+                        debug_println_func("Button found");
+
                         auto& buttonInfo = (*resultButtonInfo); // Get button info
 
                         if ((buttonInfo.playerType != Player->type) && (buttonInfo.itemType != ITEM_TYPE::ADRENALINE) && (!itemUsingState))
@@ -415,6 +423,7 @@ void OnItemSelect(lv_event_t* e)
                             debug_println_func("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
                             debug_println_func("From: " + map_PLAYER_TYPE[buttonInfo.playerType]);
 
+                            auto itemType = buttonInfo.itemType;
                             itemUsingState = true; // Block other action
 
                             if (mapItemImg[buttonInfo.itemType].second(buttonInfo)) // Call item effect
@@ -423,6 +432,7 @@ void OnItemSelect(lv_event_t* e)
 
                                 itemUsingData->Unassign(); // Unassign ADRENALINE item
                                 itemUsingData = &buttonInfo; // Update item using
+                                itemUsingData->itemType = itemType;
 
                                 iPlayer.totalItemCount--;
 
@@ -442,6 +452,8 @@ void OnItemSelect(lv_event_t* e)
             }
             else
             {
+                debug_println_func("Current using is none");
+
                 auto resultButtonInfo = std::find_if(Player->listButtonInfo.begin(), Player->listButtonInfo.end(),
                     [currentButton](const decltype(Player->listButtonInfo.front())& item) {
                         // Button has assigned image
@@ -450,6 +462,8 @@ void OnItemSelect(lv_event_t* e)
 
                 if (resultButtonInfo != Player->listButtonInfo.end())
                 {
+                    debug_println_func("Button found");
+
                     auto& buttonInfo = (*resultButtonInfo); // Get button info
 
                     if (!itemUsingState)
@@ -484,6 +498,18 @@ void OnShotgunSelect(lv_event_t* e)
 
         // Hide message
         lv_label_set_text(ui_lblMessage, "");
+
+        for (const auto& item : Shotgun.listBullet)
+        {
+            CommonPlaySound(SOUND_TYPE::DROP);
+#ifdef _WIN64
+            ::Sleep(500);
+#else
+            delay(500);
+#endif
+        }
+
+        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
 
         FSMTransit(STATE_TYPE::ACTION_TURN);
     }
@@ -557,6 +583,8 @@ void OnItemPick(lv_event_t* e)
         }
         else
         {
+            CommonPlaySound(SOUND_TYPE::PICK);
+
             FSMTransit(STATE_TYPE::PLAYER_ITEM_ARRANGE);
         }
     }
@@ -582,6 +610,8 @@ void OnShotgunInside(lv_event_t* e)
             // Show message
             lv_obj_remove_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
         }
+
+        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
     }
     else
     {
@@ -624,6 +654,8 @@ void OnCardSelect(lv_event_t* e)
 
         // Set image
         lv_image_set_src(ui_imgInfoCardReview, &std::get<1>(item));
+
+        CommonPlaySound(SOUND_TYPE::PICK);
     }
 }
 
@@ -643,6 +675,8 @@ void OnAdrenalineCancel(lv_event_t* e)
     itemUsingState = false; // Unblock
 
     Shotgun.Enable();
+
+    CommonPlaySound(SOUND_TYPE::BREAK);
 }
 
 void OnButtonSound(lv_event_t* e)
