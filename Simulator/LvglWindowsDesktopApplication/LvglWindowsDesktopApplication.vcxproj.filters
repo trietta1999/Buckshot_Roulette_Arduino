@@ -836,6 +836,12 @@
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Info.h">
       <Filter>UI\screens</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ESP32\src\SampleSound.h">
+      <Filter>Library\CommonService\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ESP32\Sound.h">
+      <Filter>Library\CommonService\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\.typos.toml">
@@ -1461,6 +1467,9 @@
     <Filter Include="UI\components">
       <UniqueIdentifier>{f94f154d-a3ae-4d5e-a1c3-09417a967fed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\CommonService\Sound">
+      <UniqueIdentifier>{deb37636-6efd-4f33-8b76-6dcb1d8ff27e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ESP32\src\CommonLibrary.cpp">
@@ -1499,7 +1508,29 @@
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Start.c">
       <Filter>UI\screens</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c">
+      <Filter>UI\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cancel_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_adrenaline_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_arrow_left_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_full_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_000_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_050_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_075_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_low_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_beer_png.c">
@@ -1511,6 +1542,15 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_burnerphone_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cblank_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargeback_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargefront_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_charge_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
@@ -1518,6 +1558,12 @@
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cigarette_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_clive_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_dart_board_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_empty_bullet_png.c">
@@ -1535,10 +1581,16 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_handsaw_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_inverter_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_live_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_lock_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_magnifyingglass_png.c">
@@ -1548,6 +1600,9 @@
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_table_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_party_popper_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_picking_png.c">
@@ -1565,53 +1620,13 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotguncut_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_party_popper_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skull_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c">
-      <Filter>UI\screens</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_arrow_left_png.c">
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_volume_off_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cblank_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargeback_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cchargefront_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_clive_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_dart_board_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cancel_png.c" />
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_full_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_000_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_050_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_horiz_075_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_low_png.c">
-      <Filter>UI\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_lock_png.c">
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_volume_up_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_off_png.c">

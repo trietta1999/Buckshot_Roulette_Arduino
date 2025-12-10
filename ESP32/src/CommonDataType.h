@@ -32,8 +32,13 @@
 #define MAX_SIZE 1000
 #define BUFFER_SIZE sizeof(char) * MAX_SIZE
 
+#define SAMPLE_RATE 44100
+
 #ifdef _WIN64
 #include <Windows.h>
+
+#undef PROGMEM
+#define PROGMEM
 #define MILLISEC_GET ::GetTickCount64()
 #define debug_println(a) std::cout << std::string(a) << "\n"
 #define debug_println_func(a) std::cout << __func__ << " -> " << std::string(a) << "\n"
@@ -47,8 +52,12 @@
 #define debug_println_func(a) Serial.println(String(__FUNCTION__) + " -> " + std::string(a).c_str())
 #define MILLISEC_GET millis()
 
+#define _countof(a) sizeof(a) / sizeof(a[0])
+
 #define INPUT_PIN 22
 #define BUZZER_PIN 26
+
+#define I2S_PORT I2S_NUM_0
 
 #define IP_ADD_1 192
 #define IP_ADD_2 168
@@ -110,9 +119,8 @@ enum
 #define EXTERN_MAP_ENUM_WSTR(enum_name) extern std::unordered_map<enum_name, std::wstring> mapWstr_##enum_name;
 #endif
 
-#define WAIT_TIME 4000
+#define WAIT_TIME 3000
 #define EFFECT_WAIT_TIME 1000
-#define WAIT_1_SEC 1000
 
 #define PLAYER1_ANGLE 1800 // Left
 #define PLAYER2_ANGLE 0 // Right
@@ -160,6 +168,9 @@ enum
         CREATE(e, BLANK) \
         CREATE(e, LIVE) \
 
+#define DEF_SOUND_TYPE(e, CREATE) \
+        CREATE(e, SHOTGUN_SHOT) \
+
 enum class PLAYER_TYPE
 {
     MIN,
@@ -193,10 +204,18 @@ enum class BULLET_TYPE
     MAX
 };
 
+enum class SOUND_TYPE
+{
+    MIN,
+    DEF_SOUND_TYPE(SOUND_TYPE, TO_ENUM)
+    MAX
+};
+
 EXTERN_MAP_ENUM_STR(PLAYER_TYPE)
 EXTERN_MAP_ENUM_STR(STATE_TYPE)
 EXTERN_MAP_ENUM_STR(ITEM_TYPE)
 EXTERN_MAP_ENUM_STR(BULLET_TYPE)
+EXTERN_MAP_ENUM_STR(SOUND_TYPE)
 
 struct card_info_t
 {

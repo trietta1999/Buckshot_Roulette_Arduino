@@ -194,8 +194,9 @@ void Init()
     // Add player list
     player::listPlayer = { player1, player2 };
 
-    // Init state
+    // Init data
     CurrentState.SetValue(STATE_TYPE::STARTUP);
+    SoundEnable.SetValue(true);
 }
 
 void AutoUpdate()
@@ -296,42 +297,6 @@ void AutoUpdate()
             debug_println_func("GUI post-unblock");
 
             lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
-        }
-    }
-
-    if (BatteryInd.GetState())
-    {
-        auto value = BatteryInd.GetValue();
-
-        lv_label_set_text_fmt(ui_lblBattery, "%d%%", value);
-
-        if (value < 0)
-        {
-            // Do nothing
-        }
-        else if (value == 0)
-        {
-            OnButtonLock(nullptr);
-        }
-        else if (value <= 5)
-        {
-            lv_img_set_src(ui_imgBattery, &ui_img_battery_horiz_000_png);
-        }
-        else if (value <= 20)
-        {
-            lv_img_set_src(ui_imgBattery, &ui_img_battery_low_png);
-        }
-        else if (value <= 50)
-        {
-            lv_img_set_src(ui_imgBattery, &ui_img_battery_horiz_050_png);
-        }
-        else if (value <= 75)
-        {
-            lv_img_set_src(ui_imgBattery, &ui_img_battery_horiz_075_png);
-        }
-        else if (value <= 100)
-        {
-            lv_img_set_src(ui_imgBattery, &ui_img_battery_full_png);
         }
     }
 }
@@ -680,10 +645,15 @@ void OnAdrenalineCancel(lv_event_t* e)
     Shotgun.Enable();
 }
 
-void OnButtonLock(lv_event_t* e)
+void OnButtonSound(lv_event_t* e)
 {
-#ifndef _WIN64
-    esp_deep_sleep_start();
-#endif
+    if ((lv_obj_get_state((lv_obj_t*)(e->current_target)) & LV_STATE_CHECKED) == LV_STATE_CHECKED)
+    {
+        SoundEnable.SetValue(false);
+    }
+    else
+    {
+        SoundEnable.SetValue(true);
+    }
 }
 #pragma endregion

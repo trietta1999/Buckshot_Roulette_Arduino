@@ -36,6 +36,7 @@
     </ClCompile>
     <Link>
       <GenerateMapFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateMapFile>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -302,6 +303,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\src\widgets\tileview\lv_tileview.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\src\widgets\win\lv_win.h" />
     <ClInclude Include="..\..\ESP32\Hardware.h" />
+    <ClInclude Include="..\..\ESP32\Sound.h" />
     <ClInclude Include="..\..\ESP32\src\ArduinoJson-v7.4.1.h" />
     <ClInclude Include="..\..\ESP32\src\CData.h" />
     <ClInclude Include="..\..\ESP32\src\CommonData.h" />
@@ -311,6 +313,7 @@
     <ClInclude Include="..\..\ESP32\src\Effect.h" />
     <ClInclude Include="..\..\ESP32\src\Entity.h" />
     <ClInclude Include="..\..\ESP32\src\FSM.h" />
+    <ClInclude Include="..\..\ESP32\src\SampleSound.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Info.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Main.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Start.h" />
@@ -739,6 +742,8 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_in_hand_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skull_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_volume_off_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_volume_up_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_off_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c" />

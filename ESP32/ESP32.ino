@@ -1,11 +1,5 @@
 #include <lvgl.h>
-
-
-#include <Arduino.h>
-
-
-#include "Wire.h"
-
+#include <Wire.h>
 #include "src/ui/ui.h"
 #include "src/CommonData.h"
 #include "src/CommonLibrary.h"
@@ -32,22 +26,6 @@
 #define TOUCH_SCL 20
 #define TOUCH_INT (-1)
 #define TOUCH_RST 38
-
-// --- Tham số Pin (ADC) ---
-const int BATTERY_ADC_PIN = 17;  // ADC sử dụng GPIO 17
-const float VOLTAGE_DIVIDER_MULTIPLIER = 1.68;
-const int ADC_MAX_VALUE = 4095;
-const float V_REF_EFFECTIVE = 3.9;
-const float BATTERY_MAX_V = 4.2;
-const float BATTERY_MIN_V = 3.0;
-
-// --- Biến Trạng thái Thời gian ---
-unsigned long last_battery_check = 0;
-const long BATTERY_INTERVAL = 5000;  // Đo pin mỗi 5 giây
-
-// --- Tham số Lọc Exponential ---
-const float ALPHA = 0.1;  // Hệ số Alpha: 0.1 (lọc mạnh) đến 0.9 (lọc nhẹ)
-int adc_filtered_ema = 0;  // Giá trị ADC đã lọc cuối cùng (Khởi tạo ở 0)
 
 class LGFX : public lgfx::LGFX_Device {
 public:
@@ -138,10 +116,6 @@ public:
 
 LGFX gfx;
 
-static uint32_t my_tick_function(void) {
-  return millis();
-}
-
 static const uint32_t screenWidth = 800;
 static const uint32_t screenHeight = 480;
 
@@ -159,7 +133,6 @@ void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
     gfx.startWrite();
   }
 
-  //lv_draw_sw_rgb565_swap(px_map, w * h);
   gfx.pushImage(area->x1, area->y1, w, h, (uint16_t *)px_map);
   gfx.endWrite();
   lv_disp_flush_ready(disp);
@@ -172,6 +145,7 @@ void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
 
   if (gfx.getTouch(&touchX, &touchY)) {
     data->state = LV_INDEV_STATE_PRESSED;
+
     /*Set the coordinates*/
     data->point.x = touchX;
     data->point.y = touchY;
@@ -179,63 +153,11 @@ void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
     data->state = LV_INDEV_STATE_RELEASED;
 }
 
-//---------------------------------------------------------
-// Hàm đo Pin (GPIO 17 đóng vai trò ADC Input)
-//---------------------------------------------------------
-int measure_battery() {
-  int adc_raw_new = analogRead(BATTERY_ADC_PIN);
-  Serial.println(adc_raw_new);
-  // 1. Khởi tạo EMA lần đầu tiên
-  if (adc_filtered_ema == 0) {
-    adc_filtered_ema = adc_raw_new;
-  } else {
-    // 2. Áp dụng công thức lọc EMA
-    // V_new = (Alpha * V_new_raw) + ((1 - Alpha) * V_old_filtered)
-    adc_filtered_ema = (int)(ALPHA * adc_raw_new + (1.0 - ALPHA) * adc_filtered_ema);
-  }
-
-  // 3. Chuyển đổi giá trị EMA đã lọc thành Pin%
-  float v_adc = (float)adc_filtered_ema * (V_REF_EFFECTIVE / ADC_MAX_VALUE);
-  float v_battery = v_adc * VOLTAGE_DIVIDER_MULTIPLIER;
-
-  // ... (Phần tính toán Percent giữ nguyên) ...
-  float voltage_range = BATTERY_MAX_V - BATTERY_MIN_V;
-  float current_voltage_relative = v_battery - BATTERY_MIN_V;
-
-  float percent_f = (current_voltage_relative / voltage_range) * 100.0;
-
-  if (percent_f > 100.0) percent_f = 100.0;
-  if (percent_f < 0.0) percent_f = 0.0;
-
-  int percent_int = (int)percent_f;
-
-  Serial.printf("(ADC): V_BAT: %.2f V | Percent: %d%%\n", v_battery, percent_int);
-
-  return percent_int;
-}
-
 lv_display_t *disp;
 lv_indev_t *indev;
 
 void setup() {
   Serial.begin(115200);
-  //pinMode(GPIO_INPUT_IO_4, OUTPUT);
-
-  /*
-  Serial.println("IO expander init...");
-  Wire.begin(I2C_MASTER_SDA_IO, I2C_MASTER_SCL_IO);
-  expander = new ESP_IOExpander_CH422G((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS_000);
-  expander->init();
-  expander->begin();
-  expander->multiPinMode(TP_RST_MASK | LCD_BL_MASK | LCD_RST_MASK | SD_CS_MASK | USB_SEL_MASK, OUTPUT);
-
-  expander->digitalWrite(TP_RST, LOW);
-  delay(100);
-  digitalWrite(GPIO_INPUT_IO_4, LOW);
-  delay(100);
-  expander->digitalWrite(TP_RST, HIGH);
-  delay(200);
-*/
 
   gfx.begin();
   gfx.setSwapBytes(true);
@@ -261,9 +183,6 @@ void setup() {
     Serial.println("LVGL disp_draw_buf2 allocate failed - carry on anyway we can live without it");
   }
 
-  // set up LVGL
-  //lv_tick_set_cb(my_tick_function);
-
   disp = lv_display_create(screenWidth, screenHeight);
   lv_display_set_flush_cb(disp, my_disp_flush);
   lv_display_set_buffers(disp, disp_draw_buf, disp_draw_buf2, buf_size_in_bytes, LV_DISPLAY_RENDER_MODE_PARTIAL);
@@ -271,8 +190,6 @@ void setup() {
   indev = lv_indev_create();
   lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
   lv_indev_set_read_cb(indev, my_touchpad_read);
-
-  //lv_demo_widgets();
 
   // Create UI
   ui_init();
@@ -286,11 +203,7 @@ void setup() {
   pinMode(TFT_BL, OUTPUT);
   analogWrite(TFT_BL, Brightness.GetValue());
 
-  analogReadResolution(12);
-
-  BatteryInd.SetValue(measure_battery());
-
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_0, 0);
+  CommonPlaySound(SOUND_TYPE::MIN);
 
   Serial.println("Setup complete");
 }
@@ -299,12 +212,6 @@ void IOProcessData() {
   // Change brightness
   if (Brightness.GetState()) {
     analogWrite(TFT_BL, Brightness.GetValue());
-  }
-
-  // Update battery percent
-  if (millis() - last_battery_check >= BATTERY_INTERVAL) {
-    BatteryInd.SetValue(measure_battery());
-    last_battery_check = millis();
   }
 }
 

@@ -8,12 +8,11 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_metal_table_png.c
     images/ui_img_empty_png.c
     images/ui_img_picking_png.c
-    images/ui_img_wifi_off_png.c
-    images/ui_img_battery_full_png.c
-    images/ui_img_charge_png.c
+    images/ui_img_volume_up_png.c
+    images/ui_img_volume_off_png.c
     images/ui_img_help_center_png.c
-    images/ui_img_lock_png.c
     images/ui_img_chargeback_png.c
+    images/ui_img_charge_png.c
     images/ui_img_shotgun_png.c
     images/ui_img_shotgun_block_png.c
     images/ui_img_live_png.c
@@ -36,14 +35,9 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_clive_png.c
     images/ui_img_cchargeback_png.c
     images/ui_img_arrow_left_png.c
-    images/ui_img_battery_horiz_000_png.c
-    images/ui_img_battery_horiz_050_png.c
-    images/ui_img_battery_horiz_075_png.c
-    images/ui_img_battery_low_png.c
     images/ui_img_blank_png.c
     images/ui_img_shotguncut_png.c
     images/ui_img_shotgun_in_hand_png.c
-    images/ui_img_skull_png.c
-    images/ui_img_wifi_png.c)
+    images/ui_img_skull_png.c)
 
 add_library(ui ${SOURCES})

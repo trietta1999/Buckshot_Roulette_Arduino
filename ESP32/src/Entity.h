@@ -8,6 +8,7 @@
 #include <lvgl.h>
 #include "CommonDataType.h"
 #include "CommonLibrary.h"
+#include "CommonService.h"
 
 namespace player
 {
@@ -331,6 +332,8 @@ namespace shotgun
                 else
                 {
                     lv_obj_remove_flag(this->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN); // Show effect
+
+                    CommonPlaySound(SOUND_TYPE::SHOTGUN_SHOT);
 
                     this->queueBullet.pop(); // Remove bullet
                     this->isGunfire = true;

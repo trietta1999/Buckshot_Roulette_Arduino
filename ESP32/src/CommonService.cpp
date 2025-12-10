@@ -13,8 +13,80 @@
 #include <sstream>
 #else
 #include <esp_random.h>
-#include "../Hardware.h"
+#include "../Sound.h"
 #endif
+#include "SampleSound.h"
+
+#ifdef _WIN64
+static void PlayRawPCM(const uint8_t* pcmData, uint16_t size)
+{
+    // Config format (WAVEFORMATEX)
+    WAVEFORMATEX wfx = {};
+    wfx.wFormatTag = WAVE_FORMAT_PCM;
+    wfx.nChannels = 1; // Mono chanel
+    wfx.nSamplesPerSec = SAMPLE_RATE;
+    wfx.wBitsPerSample = 8; // Bit/sample: 8-bit
+    wfx.nBlockAlign = wfx.nChannels * (wfx.wBitsPerSample / 8); // Block size (bytes)
+    wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign; // Data rate (bytes/sec)
+    wfx.cbSize = 0;
+
+    HWAVEOUT hWaveOut;
+    MMRESULT result;
+
+    // Open sound device
+    result = waveOutOpen(&hWaveOut, WAVE_MAPPER, &wfx, 0, 0, CALLBACK_NULL);
+    if (result != MMSYSERR_NOERROR)
+    {
+        return;
+    }
+
+    // Prepare header
+    WAVEHDR whdr = {};
+    whdr.lpData = (LPSTR)pcmData;
+    whdr.dwBufferLength = (DWORD)size;
+    whdr.dwFlags = 0;
+
+    // Prepare cache
+    result = waveOutPrepareHeader(hWaveOut, &whdr, sizeof(WAVEHDR));
+    if (result != MMSYSERR_NOERROR)
+    {
+        waveOutClose(hWaveOut);
+        return;
+    }
+
+    // Write sound data
+    result = waveOutWrite(hWaveOut, &whdr, sizeof(WAVEHDR));
+    if (result != MMSYSERR_NOERROR)
+    {
+        waveOutUnprepareHeader(hWaveOut, &whdr, sizeof(WAVEHDR));
+        waveOutClose(hWaveOut);
+        return;
+    }
+
+    // Wait until playback is complete
+    // Check the WHDR_DONE flag. This is a bit resource-intensive because it uses a loop,
+    // but it's the simplest way.
+    while (!(whdr.dwFlags & WHDR_DONE))
+    {
+        Sleep(10);
+    }
+
+    // Free header
+    waveOutUnprepareHeader(hWaveOut, &whdr, sizeof(WAVEHDR));
+
+    // Close sound device
+    waveOutClose(hWaveOut);
+}
+#endif
+
+static void PlaySampleSound(const uint8_t* sample, uint16_t size)
+{
+#ifdef _WIN64
+    PlayRawPCM(sample, size);
+#else
+    PlaySound(sample, size);
+#endif
+}
 
 #ifdef _WIN64
 void AttachConsoleWindow()
@@ -86,11 +158,6 @@ void DebugConsoleProcess()
 
                 debug_data::PlayerHP.SetValue(std::make_tuple(resultPlayerInfo->first, level, hp));
             }
-            // Battery percent
-            else if (inputParams.at(0) == "battery")
-            {
-                BatteryInd.SetValue(std::stoi(inputParams.at(1)));
-            }
             // Special command
             else
             {
@@ -113,19 +180,17 @@ void DebugConsoleProcess()
 void CommonBeep(uint16_t frequency, uint16_t duration)
 {
 #ifdef _WIN64
-    ::Beep(frequency, duration);
+    //::Beep(frequency, duration);
 #else
-    HardwareBeep(frequency, duration);
+    //HardwareBeep(frequency, duration);
 #endif
 }
 
 void InitData()
 {
 #ifndef _WIN64
-    HardwareSetup();
+    //HardwareSetup();
 #endif
-
-    BatteryInd.SetValue(-1);
 
 #ifdef HOST_TIMER
 #ifndef _WIN64
@@ -150,6 +215,9 @@ void InitData()
     //sys_host::TimeCycle.SetValue(TIMECYCLE_0);
     //sys_gui::SuccessState.SetValue(INCORRECT);
 #else
+    // Set random seed
+    srand(seed);
+
     //// Get init data from HostTimer
     //auto jsonDoc = CommonSendRequest(WM_SYSINIT_GET);
 
@@ -165,6 +233,7 @@ void InitData()
 
     //// Set random seed
     //srand(sys_host::RandomSeed.GetValue());
+    SetupI2S();
 #endif
 
 #ifdef _WIN64
@@ -234,10 +303,10 @@ void CommonServiceProcess()
     }
 
     // Re-connect WiFi if disconnected
-    WiFiReconnect();
+    //WiFiReconnect();
 
     // Handle web server
-    ServerHandleClient();
+    //ServerHandleClient();
 #endif
 #endif
 }
@@ -454,4 +523,19 @@ JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
 #endif
 
     return JsonResponse.GetValue();
+}
+
+void CommonPlaySound(SOUND_TYPE type)
+{
+    if (SoundEnable.GetValue())
+    {
+        switch (type) {
+        case SOUND_TYPE::SHOTGUN_SHOT:
+            PlaySampleSound(shotgun_sound, _countof(shotgun_sound));
+            break;
+        default:
+            PlaySampleSound(null_sound, _countof(null_sound));
+            break;
+        }
+    }
 }

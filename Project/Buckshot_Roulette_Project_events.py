@@ -54,3 +54,7 @@ def OnAdrenalineCancel(event_struct):
 def OnButtonLock(event_struct):
     return
 
+
+def OnButtonSound(event_struct):
+    return
+
