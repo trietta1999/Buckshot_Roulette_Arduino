@@ -14,6 +14,8 @@
 #define I2S_LRC 18   // Word Select (WS) - Left/Right Clock (LRCK)
 #define I2S_PORT I2S_NUM_0
 
+#define CHUNK_SIZE 20000
+
 void SetupI2S() {
   i2s_config_t i2s_config = {
     .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
@@ -57,6 +59,30 @@ void PlaySound(const uint8_t* sample, uint32_t size) {
   i2s_write(I2S_PORT, output, size * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
 
   free(output);
+
+  i2s_zero_dma_buffer(I2S_PORT);
+}
+
+void PlayMusic(const uint8_t* sample, uint32_t size) {
+  uint32_t start_index = 0;
+
+  while (start_index < size) {
+    uint32_t current_chunk_size = CHUNK_SIZE;
+
+    if (start_index + CHUNK_SIZE > size) {
+      current_chunk_size = size - start_index;
+    }
+
+    uint32_t end_index = start_index + current_chunk_size;
+    auto output = GenerateSound(&sample[start_index], end_index - start_index + 1);
+    size_t bytes_written;
+
+    i2s_write(I2S_PORT, output, (end_index - start_index + 1) * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
+
+    free(output);
+
+    start_index += current_chunk_size;
+  }
 
   i2s_zero_dma_buffer(I2S_PORT);
 }
