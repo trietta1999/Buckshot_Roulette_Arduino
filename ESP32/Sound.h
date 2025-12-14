@@ -41,11 +41,11 @@ void SetupI2S() {
   i2s_zero_dma_buffer(I2S_PORT);
 }
 
-int16_t* GenerateSound(const uint8_t* sample, uint32_t size) {
-  int16_t* output = (int16_t*)heap_caps_malloc(sizeof(int16_t) * size * 2, MALLOC_CAP_SPIRAM);
+uint16_t* GenerateSound(const uint8_t* sample, uint32_t size) {
+  uint16_t* output = (uint16_t*)heap_caps_malloc(sizeof(uint16_t) * size * 2, MALLOC_CAP_SPIRAM);
 
   for (uint32_t i = 0; i < size; i++) {
-    output[2 * i] = (int16_t)sample[i] * 120;  // Left chanel
+    output[2 * i] = (uint16_t)sample[i] * 120;  // Left chanel
     output[2 * i + 1] = 0;                     // Right chanel
   }
 
@@ -56,7 +56,7 @@ void PlaySound(const uint8_t* sample, uint32_t size) {
   auto output = GenerateSound(sample, size);
 
   size_t bytes_written;
-  i2s_write(I2S_PORT, output, size * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
+  i2s_write(I2S_PORT, output, size * 2 * sizeof(uint16_t), &bytes_written, portMAX_DELAY);
 
   free(output);
 
@@ -77,7 +77,7 @@ void PlayMusic(const uint8_t* sample, uint32_t size) {
     auto output = GenerateSound(&sample[start_index], end_index - start_index + 1);
     size_t bytes_written;
 
-    i2s_write(I2S_PORT, output, (end_index - start_index + 1) * 2 * sizeof(int16_t), &bytes_written, portMAX_DELAY);
+    i2s_write(I2S_PORT, output, (end_index - start_index + 1) * 2 * sizeof(uint16_t), &bytes_written, portMAX_DELAY);
 
     free(output);
 
@@ -85,6 +85,39 @@ void PlayMusic(const uint8_t* sample, uint32_t size) {
   }
 
   i2s_zero_dma_buffer(I2S_PORT);
+}
+
+uint32_t bg_start_index = 0;
+uint32_t bg_end_index = 0;
+uint32_t bg_current_chunk_size = CHUNK_SIZE;
+bool bg_is_play = false;
+
+void PlayBackgroundMusic(const uint8_t* sample, uint32_t size) {
+  if (bg_is_play) {
+    if (bg_start_index + CHUNK_SIZE > size) {
+      bg_current_chunk_size = size - bg_start_index;
+    }
+
+    if (bg_start_index >= size) {
+      bg_start_index = 0;
+      bg_end_index = 0;
+      bg_current_chunk_size = CHUNK_SIZE;
+      bg_is_play = false;
+
+      i2s_zero_dma_buffer(I2S_PORT);
+      return;
+    }
+
+    bg_end_index = bg_start_index + bg_current_chunk_size;
+    auto output = GenerateSound(&sample[bg_start_index], bg_end_index - bg_start_index + 1);
+    size_t bytes_written;
+
+    i2s_write(I2S_PORT, output, (bg_end_index - bg_start_index + 1) * 2 * sizeof(uint16_t), &bytes_written, portMAX_DELAY);
+
+    free(output);
+
+    bg_start_index += bg_current_chunk_size;
+  }
 }
 
 #endif

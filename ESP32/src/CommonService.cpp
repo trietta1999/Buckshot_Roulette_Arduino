@@ -18,27 +18,14 @@
 #include "SampleSound.h"
 
 #ifdef _WIN64
+WAVEFORMATEX wfx = {};
+HWAVEOUT hWaveOut;
+#endif
+
+#ifdef _WIN64
 static void PlayRawPCM(const uint8_t* pcmData, uint32_t size)
 {
-    // Config format (WAVEFORMATEX)
-    WAVEFORMATEX wfx = {};
-    wfx.wFormatTag = WAVE_FORMAT_PCM;
-    wfx.nChannels = 1; // Mono chanel
-    wfx.nSamplesPerSec = SAMPLE_RATE;
-    wfx.wBitsPerSample = 8; // Bit/sample: 8-bit
-    wfx.nBlockAlign = wfx.nChannels * (wfx.wBitsPerSample / 8); // Block size (bytes)
-    wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign; // Data rate (bytes/sec)
-    wfx.cbSize = 0;
-
-    HWAVEOUT hWaveOut;
     MMRESULT result;
-
-    // Open sound device
-    result = waveOutOpen(&hWaveOut, WAVE_MAPPER, &wfx, 0, 0, CALLBACK_NULL);
-    if (result != MMSYSERR_NOERROR)
-    {
-        return;
-    }
 
     // Prepare header
     WAVEHDR whdr = {};
@@ -73,9 +60,6 @@ static void PlayRawPCM(const uint8_t* pcmData, uint32_t size)
 
     // Free header
     waveOutUnprepareHeader(hWaveOut, &whdr, sizeof(WAVEHDR));
-
-    // Close sound device
-    waveOutClose(hWaveOut);
 }
 #endif
 
@@ -89,7 +73,7 @@ static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 }
 
 #ifdef _WIN64
-void AttachConsoleWindow()
+static void AttachConsoleWindow()
 {
     AllocConsole();
     FILE* fp;
@@ -98,7 +82,7 @@ void AttachConsoleWindow()
     freopen_s(&fp, "CONIN$", "r", stdin);
 }
 
-void DebugConsoleProcess()
+static void DebugConsoleProcess()
 {
     // Debug console
     if (debug_data::InputParamList.GetState())
@@ -223,6 +207,22 @@ void InitData()
 
 #ifdef _WIN64
     AttachConsoleWindow();
+
+    // Config format (WAVEFORMATEX)
+    wfx.wFormatTag = WAVE_FORMAT_PCM;
+    wfx.nChannels = 1; // Mono chanel
+    wfx.nSamplesPerSec = SAMPLE_RATE;
+    wfx.wBitsPerSample = 8; // Bit/sample: 8-bit
+    wfx.nBlockAlign = wfx.nChannels * (wfx.wBitsPerSample / 8); // Block size (bytes)
+    wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign; // Data rate (bytes/sec)
+    wfx.cbSize = 0;
+
+    // Open sound device
+    MMRESULT result = waveOutOpen(&hWaveOut, WAVE_MAPPER, &wfx, 0, 0, CALLBACK_NULL);
+    if (result != MMSYSERR_NOERROR)
+    {
+        debug_println_func("Open sound device fail!");
+    }
 #endif
 
     // Print init data
@@ -432,4 +432,40 @@ void CommonPlaySound(SOUND_TYPE type)
             break;
         }
     }
+}
+
+void CommonPlayBackgroundMusic(MUSIC_TYPE type)
+{
+#ifndef _WIN64
+    if (SoundEnable.GetValue())
+    {
+        bg_is_play = true;
+        switch (type) {
+        case MUSIC_TYPE::MUSIC0:
+            //PlayBackgroundMusic(music_00, _countof(music_00));
+            break;
+        case MUSIC_TYPE::MUSIC1:
+            //PlayBackgroundMusic(music_01, _countof(music_01));
+            break;
+        case MUSIC_TYPE::MUSIC2:
+            //PlayBackgroundMusic(music_02, _countof(music_02));
+            break;
+        case MUSIC_TYPE::MUSIC3:
+            //PlayBackgroundMusic(music_03, _countof(music_03));
+            break;
+        case MUSIC_TYPE::MAIN:
+            //PlayBackgroundMusic(music_main, _countof(music_main));
+            break;
+        case MUSIC_TYPE::END:
+            //PlayBackgroundMusic(music_end, _countof(music_end));
+            break;
+        default:
+        {
+            bg_is_play = false;
+            PlaySampleSound(null_sound, _countof(null_sound));
+        }
+        break;
+        }
+    }
+#endif
 }

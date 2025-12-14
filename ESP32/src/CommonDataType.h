@@ -180,6 +180,7 @@ enum
         CREATE(e, MUSIC2) \
         CREATE(e, MUSIC3) \
         CREATE(e, MAIN) \
+        CREATE(e, END) \
 
 enum class PLAYER_TYPE
 {
