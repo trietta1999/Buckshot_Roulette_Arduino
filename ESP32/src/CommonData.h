@@ -25,6 +25,7 @@ extern CData<std::string> ClientName;
 extern CData<STATE_TYPE> CurrentState;
 extern CData<bool> GuiBlockState;
 extern CData<bool> SoundEnable;
+extern CData<int32_t> BulletOrder;
 
 void UpdateAll();
 

@@ -20,6 +20,7 @@ CData<std::string> ClientName;
 CData<STATE_TYPE> CurrentState;
 CData<bool> GuiBlockState;
 CData<bool> SoundEnable;
+CData<int32_t> BulletOrder;
 
 // Add auto reset state for custom data only
 void UpdateAll()

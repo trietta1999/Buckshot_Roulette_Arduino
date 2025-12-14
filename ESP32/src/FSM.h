@@ -171,6 +171,9 @@ void FSM()
             // Enable shotgun
             Shotgun.Enable();
 
+            // Reset bullet index
+            Shotgun.currentBulletIndex = 0;
+
             // Hide bullet box cover
             lv_obj_add_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
 

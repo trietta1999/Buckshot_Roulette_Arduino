@@ -260,6 +260,7 @@ namespace shotgun
         bool isCut;
         bool isGunfire;
         uint8_t state;
+        uint8_t currentBulletIndex;
         player::player_info_t* targetPlayer;
         player::player_info_t* currentPlayer;
 
@@ -348,6 +349,8 @@ namespace shotgun
             // Show shot effect
             else if (this->state == 1)
             {
+                this->currentBulletIndex++;
+
                 lv_image_set_src(this->objTrashBullet, &this->mapBulletImg[this->queueBullet.front()]);
 
                 if (this->queueBullet.front() == BULLET_TYPE::BLANK)

@@ -201,6 +201,7 @@ void Init()
     // Init data
     CurrentState.SetValue(STATE_TYPE::STARTUP);
     SoundEnable.SetValue(true);
+    BulletOrder.SetValue(-1);
 }
 
 void AutoUpdate()

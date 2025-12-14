@@ -41,7 +41,15 @@ EFFECT_FUNCTION(BURNERPHONE)
         }
         else
         {
-            auto bulletOrder = RandomRangeNumber(0, Shotgun.queueBullet.size() - 1);
+            int32_t bulletOrder = 0;
+
+            do
+            {
+                bulletOrder = RandomRangeNumber(Shotgun.currentBulletIndex, Shotgun.queueBullet.size() - 1);
+            } while (bulletOrder == BulletOrder.GetValue());
+
+            BulletOrder.SetValue(bulletOrder);
+
             auto bulletType = map_BULLET_TYPE[Shotgun.listBullet[bulletOrder]];
             std::string suffix = "";
 

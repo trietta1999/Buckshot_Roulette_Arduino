@@ -42,10 +42,10 @@ std::vector<BULLET_TYPE> CreateBulletList(uint8_t maxNum)
     std::mt19937 gen(rand());
 
     // The random set must be different from the sample
-    for (uint8_t i = 0; i < 10; i++)
+    do
     {
         std::shuffle(temp.begin(), temp.end(), gen);
-    }
+    } while (temp == sample);
 
     // Update sample
     sample = temp;
