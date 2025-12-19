@@ -8,23 +8,19 @@ import numpy as np
 
 list_wav_path = [
     # (input path, C header name, C array name)
-    (r"..\Sound_AlienShooter1_22050_16\shotgun.wav", "shotgun_sound", "shotgun_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\ammo_pickup.wav", "load_shell_sound", "load_shell_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\drop_shotgunshell.wav", "shotgun_drop_sound", "shotgun_drop_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\mouse_over.wav", "pick_sound", "pick_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\mouse_click.wav", "assign_sound", "assign_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\armor_hit1.wav", "hit_sound", "hit_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\weapon_pickup.wav", "weapon_pickup_sound", "weapon_pickup_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\broke_armor.wav", "break_sound", "break_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\take_healh.wav", "health_sound", "health_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\gib_drop.wav", "adrenaline_sound", "adrenaline_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\null.wav", "null_sound", "null_sound"),
-    (r"..\Sound_AlienShooter1_22050_16\music\mus00.wav", "music_00", "music_00"),
-    (r"..\Sound_AlienShooter1_22050_16\music\mus01.wav", "music_01", "music_01"),
-    (r"..\Sound_AlienShooter1_22050_16\music\mus02.wav", "music_02", "music_02"),
-    (r"..\Sound_AlienShooter1_22050_16\music\mus03.wav", "music_03", "music_03"),
-    (r"..\Sound_AlienShooter1_22050_16\music\end.wav", "music_end", "music_end"),
-    (r"..\Sound_AlienShooter1_22050_16\music\menu_mus.wav", "music_menu", "music_menu"),
+    ########## Sound #########
+    # (r"..\Sound_AlienShooter1_22050_16\shotgun.wav", "shotgun_sound", "shotgun_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\ammo_pickup.wav", "load_shell_sound", "load_shell_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\drop_shotgunshell.wav", "shotgun_drop_sound", "shotgun_drop_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\mouse_over.wav", "pick_sound", "pick_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\mouse_click.wav", "assign_sound", "assign_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\armor_hit1.wav", "hit_sound", "hit_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\weapon_pickup.wav", "weapon_pickup_sound", "weapon_pickup_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\broke_armor.wav", "break_sound", "break_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\take_healh.wav", "health_sound", "health_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\gib_drop.wav", "adrenaline_sound", "adrenaline_sound"),
+    # (r"..\Sound_AlienShooter1_22050_16\null.wav", "null_sound", "null_sound"),
+    ########## Music #########
 ]
 
 sample_rate = 22050

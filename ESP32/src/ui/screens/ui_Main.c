@@ -685,6 +685,7 @@ void ui_Main_screen_init(void)
     lv_obj_set_style_bg_color(ui_btnSound, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_CHECKED);
     lv_obj_set_style_bg_opa(ui_btnSound, 255, LV_PART_MAIN | LV_STATE_CHECKED);
     lv_obj_set_style_bg_image_src(ui_btnSound, &ui_img_volume_off_png, LV_PART_MAIN | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_image_src(ui_btnSound, &ui_img_volume_off_png, LV_PART_MAIN | LV_STATE_DISABLED);
 
     ui_btnHelp = lv_button_create(ui_Container1);
     lv_obj_set_width(ui_btnHelp, 50);

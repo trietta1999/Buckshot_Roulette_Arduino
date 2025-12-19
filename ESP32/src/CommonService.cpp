@@ -433,39 +433,3 @@ void CommonPlaySound(SOUND_TYPE type)
         }
     }
 }
-
-void CommonPlayBackgroundMusic(MUSIC_TYPE type)
-{
-#ifndef _WIN64
-    if (SoundEnable.GetValue())
-    {
-        bg_is_play = true;
-        switch (type) {
-        case MUSIC_TYPE::MUSIC0:
-            //PlayBackgroundMusic(music_00, _countof(music_00));
-            break;
-        case MUSIC_TYPE::MUSIC1:
-            //PlayBackgroundMusic(music_01, _countof(music_01));
-            break;
-        case MUSIC_TYPE::MUSIC2:
-            //PlayBackgroundMusic(music_02, _countof(music_02));
-            break;
-        case MUSIC_TYPE::MUSIC3:
-            //PlayBackgroundMusic(music_03, _countof(music_03));
-            break;
-        case MUSIC_TYPE::MAIN:
-            //PlayBackgroundMusic(music_main, _countof(music_main));
-            break;
-        case MUSIC_TYPE::END:
-            //PlayBackgroundMusic(music_end, _countof(music_end));
-            break;
-        default:
-        {
-            bg_is_play = false;
-            PlaySampleSound(null_sound, _countof(null_sound));
-        }
-        break;
-        }
-    }
-#endif
-}

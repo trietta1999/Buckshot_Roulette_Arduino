@@ -1468,7 +1468,7 @@
       <UniqueIdentifier>{f94f154d-a3ae-4d5e-a1c3-09417a967fed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Library\CommonService\Sound">
-      <UniqueIdentifier>{deb37636-6efd-4f33-8b76-6dcb1d8ff27e}</UniqueIdentifier>
+      <UniqueIdentifier>{731457b6-960e-4278-b48f-216d5b4a8cdd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

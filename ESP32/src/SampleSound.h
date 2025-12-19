@@ -17,11 +17,4 @@
 #include "sound/weapon_pickup_sound.h"
 #include "sound/adrenaline_sound.h"
 
-//#include "music/music_00.h"
-//#include "music/music_01.h"
-//#include "music/music_02.h"
-//#include "music/music_03.h"
-//#include "music/music_end.h"
-//#include "music/music_menu.h"
-
 #endif // _SAMPLESOUND_H

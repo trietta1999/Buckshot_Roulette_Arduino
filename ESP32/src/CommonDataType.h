@@ -174,14 +174,6 @@ enum
         CREATE(e, HEALTH) \
         CREATE(e, ADRENALINE) \
 
-#define DEF_MUSIC_TYPE(e, CREATE) \
-        CREATE(e, MUSIC0) \
-        CREATE(e, MUSIC1) \
-        CREATE(e, MUSIC2) \
-        CREATE(e, MUSIC3) \
-        CREATE(e, MAIN) \
-        CREATE(e, END) \
-
 enum class PLAYER_TYPE
 {
     MIN,
@@ -222,19 +214,11 @@ enum class SOUND_TYPE
     MAX
 };
 
-enum class MUSIC_TYPE
-{
-    MIN,
-    DEF_MUSIC_TYPE(MUSIC_TYPE, TO_ENUM)
-    MAX
-};
-
 EXTERN_MAP_ENUM_STR(PLAYER_TYPE)
 EXTERN_MAP_ENUM_STR(STATE_TYPE)
 EXTERN_MAP_ENUM_STR(ITEM_TYPE)
 EXTERN_MAP_ENUM_STR(BULLET_TYPE)
 EXTERN_MAP_ENUM_STR(SOUND_TYPE)
-EXTERN_MAP_ENUM_STR(MUSIC_TYPE)
 
 struct card_info_t
 {

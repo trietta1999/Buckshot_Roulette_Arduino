@@ -5325,6 +5325,20 @@
                               }
                             ],
                             "InheritedType": 1
+                          },
+                          {
+                            "nid": 40000,
+                            "strtype": "_style/StyleState",
+                            "strval": "DISABLED",
+                            "childs": [
+                              {
+                                "nid": 40610,
+                                "strtype": "_style/Bg_Image",
+                                "strval": "assets/volume_off.png",
+                                "InheritedType": 5
+                              }
+                            ],
+                            "InheritedType": 1
                           }
                         ],
                         "nid": 1010,
@@ -28908,7 +28922,7 @@
     "uiExportFolderPath": "D:\\Git\\Buckshot_Roulette_Arduino\\ESP32\\src\\ui",
     "projectExportFolderPath": "D:\\Git\\Buckshot_Roulette_Arduino\\Project",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 257,
+    "backup_cnt": 258,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.1.0",
