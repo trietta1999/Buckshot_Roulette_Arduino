@@ -13,7 +13,6 @@
 #else
 #include <esp_random.h>
 #include "../Sound.h"
-#include "../Music.h"
 #endif
 #include "SampleSound.h"
 
@@ -81,7 +80,7 @@ static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 #ifdef _WIN64
     PlayRawPCM(sample, size);
 #else
-    sound::PlaySound(sample, size);
+    PlaySoundFromSample(sample, size);
 #endif
 }
 
@@ -159,7 +158,7 @@ static void DebugConsoleProcess()
             else if (inputParams.at(0) == "sound")
             {
                 auto type = std::stoi(inputParams.at(1));
-                CommonPlaySound((SOUND_TYPE)type);
+                PlaySoundWrapper((SOUND_TYPE)type);
             }
             // Music EOF
             else if (inputParams.at(0) == "musiceof")
@@ -198,6 +197,8 @@ void InitData()
 {
 #ifndef _WIN64
     uint32_t seed = esp_random();
+
+    SetupSound();
 #else
     uint32_t seed = time(0);
 #endif
@@ -224,7 +225,7 @@ void InitData()
     // Config format (WAVEFORMATEX)
     wfx.wFormatTag = WAVE_FORMAT_PCM;
     wfx.nChannels = 1; // Mono chanel
-    wfx.nSamplesPerSec = SAMPLE_RATE;
+    wfx.nSamplesPerSec = 44100;
     wfx.wBitsPerSample = 8; // Bit/sample: 8-bit
     wfx.nBlockAlign = wfx.nChannels * (wfx.wBitsPerSample / 8); // Block size (bytes)
     wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign; // Data rate (bytes/sec)
@@ -306,7 +307,7 @@ void CommonServiceProcess()
     // Handle web server
     //ServerHandleClient();
 
-    music::RunMusicTask();
+    RunMusicTask();
 #endif
 #endif
 }
@@ -406,21 +407,7 @@ JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
     return JsonResponse.GetValue();
 }
 
-void SetupSound()
-{
-#ifndef _WIN64
-    sound::Setup();
-#endif
-}
-
-void UninstallSound()
-{
-#ifndef _WIN64
-    sound::Uninstall();
-#endif
-}
-
-void CommonPlaySound(SOUND_TYPE type)
+void PlaySoundWrapper(SOUND_TYPE type)
 {
     if (SoundEnable.GetValue())
     {
@@ -462,56 +449,42 @@ void CommonPlaySound(SOUND_TYPE type)
     }
 }
 
-void SetupMusic()
-{
-#ifndef _WIN64
-    music::Setup();
-#endif
-}
-
-void UninstallMusic()
-{
-#ifndef _WIN64
-    music::Uninstall();
-#endif
-}
-
-std::vector<std::string> CommonExportListMusicFiles()
+std::vector<std::string> ExportListMusicFilesWrapper()
 {
 #ifdef _WIN64
     return dummyPlaylist;
 #else
-    return music::ExportListMusicFiles();
+    return ExportListMusicFiles();
 #endif
 }
 
-void CommonPlayMusic(std::string name)
+void PlayMusicWrapper(std::string name)
 {
 #ifndef _WIN64
-    music::audio->stopSong();
-    music::PlayTrack(name.c_str());
+    audio.stopSong();
+    PlayTrack(name.c_str());
 #endif
 }
 
-void SetMusicState(MUSIC_STATE_TYPE state)
+void SetMusicStateWrapper(MUSIC_STATE_TYPE state)
 {
 #ifndef _WIN64
     switch (state)
     {
     case MUSIC_STATE_TYPE::RESUME:
-        if (!music::audio->isRunning())
+        if (!audio.isRunning())
         {
-            music::audio->pauseResume();
+            audio.pauseResume();
         }
         break;
     case MUSIC_STATE_TYPE::PAUSE:
-        if (music::audio->isRunning())
+        if (audio.isRunning())
         {
-            music::audio->pauseResume();
+            audio.pauseResume();
         }
         break;
     case MUSIC_STATE_TYPE::STOP:
-        music::audio->stopSong();
+        audio.stopSong();
         break;
     default:
         break;
@@ -521,30 +494,30 @@ void SetMusicState(MUSIC_STATE_TYPE state)
     MusicState.SetValue(state);
 }
 
-uint8_t GetMusicMaxVolume()
+uint8_t GetMusicMaxVolumeWrapper()
 {
 #ifdef _WIN64
     return 0;
 #else
-    return music::audio->maxVolume();
+    return audio.maxVolume();
 #endif
 }
 
-void SetMusicVolume(uint8_t vol)
+void SetMusicVolumeWrapper(uint8_t vol)
 {
 #ifndef _WIN64
-    music::audio->setVolume(vol);
+    audio.setVolume(vol);
 #endif
 }
 
-uint8_t GetCurrentMusicPercent()
+uint8_t GetCurrentMusicPercentWrapper()
 {
 #ifndef _WIN64
     uint8_t percent = 0;
 
-    if (music::audio->getAudioFileDuration())
+    if (audio.getAudioFileDuration())
     {
-        percent = music::audio->getAudioCurrentTime() / 2 * 100 / music::audio->getAudioFileDuration();
+        percent = audio.getAudioCurrentTime() / 2 * 100 / audio.getAudioFileDuration();
         if (percent > 100)
         {
             percent = 100;

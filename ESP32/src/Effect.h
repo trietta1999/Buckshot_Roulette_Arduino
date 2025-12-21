@@ -132,7 +132,7 @@ EFFECT_FUNCTION(HANDCUFFS)
 
         result = true;
 
-        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
+        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL);
     }
 
     itemUsingState = false;
@@ -177,7 +177,7 @@ EFFECT_FUNCTION(INVERTER)
 
         Shotgun.VecToQueue(listBullet);
 
-        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
+        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL);
     }
 
     itemUsingState = false;
@@ -207,7 +207,7 @@ EFFECT_FUNCTION(ADRENALINE)
 
     Shotgun.Disable();
 
-    CommonPlaySound(SOUND_TYPE::ADRENALINE);
+    PlaySoundWrapper(SOUND_TYPE::ADRENALINE);
 
     return true;
 }

@@ -29,8 +29,6 @@
 #define MAX_SIZE 1000
 #define BUFFER_SIZE sizeof(char) * MAX_SIZE
 
-#define SAMPLE_RATE 22050
-
 #ifdef _WIN64
 #include <Windows.h>
 

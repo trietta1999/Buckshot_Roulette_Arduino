@@ -47,7 +47,7 @@ static void ShowEjectedBullet()
     lv_obj_remove_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
 
-    CommonPlaySound(SOUND_TYPE::DROP);
+    PlaySoundWrapper(SOUND_TYPE::DROP);
 }
 
 static void ShowTrashBullet()
@@ -57,7 +57,7 @@ static void ShowTrashBullet()
     lv_obj_remove_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
 
-    CommonPlaySound(SOUND_TYPE::DROP);
+    PlaySoundWrapper(SOUND_TYPE::DROP);
 }
 
 static void HideBulletInTable()
@@ -201,12 +201,11 @@ void Init()
 
     // Init data
     CurrentState.SetValue(STATE_TYPE::STARTUP);
-    SoundEnable.SetValue(true);
     BulletOrder.SetValue(-1);
     MusicState.SetValue(MUSIC_STATE_TYPE::MIN);
     CurrentMusicIndex.SetValue(-1);
 
-    CommonPlaySound(SOUND_TYPE::MIN);
+    PlaySoundWrapper(SOUND_TYPE::MIN);
 }
 
 void AutoUpdate()
@@ -297,7 +296,7 @@ void AutoUpdate()
     {
         if ((MusicState.GetValue() == MUSIC_STATE_TYPE::RESUME) || (MusicState.GetValue() == MUSIC_STATE_TYPE::PLAY))
         {
-            auto percent = GetCurrentMusicPercent();
+            auto percent = GetCurrentMusicPercentWrapper();
 
             if (CurrentMusicPercent.GetState())
             {
@@ -315,12 +314,13 @@ void AutoUpdate()
 
                 auto currentMusicIndex = CurrentMusicIndex.GetValue();
 
-                CommonPlayMusic(Playlist.GetValue()[++currentMusicIndex]);
+                PlayMusicWrapper(Playlist.GetValue()[++currentMusicIndex]);
                 lv_roller_set_selected(ui_rlMusicList, currentMusicIndex, LV_ANIM_OFF);
 
                 MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
-
                 CurrentMusicIndex.SetValue(currentMusicIndex);
+
+                tempMusicIndex = currentMusicIndex;
             }
         }
     }
@@ -386,14 +386,19 @@ void OnBrightnessChange(lv_event_t* e)
 #pragma region Screen_events
 void Start_OnLoaded(lv_event_t* e)
 {
-    SetupMusic();
+
 }
 
 void Main_OnLoaded(lv_event_t* e)
 {
-    SetMusicState(MUSIC_STATE_TYPE::STOP);
+    SetMusicStateWrapper(MUSIC_STATE_TYPE::STOP);
 
     MusicEnable.SetValue(false);
+
+    if ((lv_obj_get_state(ui_btnSound) & LV_STATE_CHECKED) != LV_STATE_CHECKED)
+    {
+        SoundEnable.SetValue(true);
+    }
 }
 
 void Music_OnLoaded(lv_event_t* e)
@@ -404,22 +409,23 @@ void Music_OnLoaded(lv_event_t* e)
         debug_println_func("Update playlist, update volume");
 
         // Update playlist
-        Playlist.SetValue(CommonExportListMusicFiles());
+        Playlist.SetValue(ExportListMusicFilesWrapper());
         CurrentMusicIndex.SetValue(lv_roller_get_selected(ui_rlMusicList));
 
         // Update volume slider
-        lv_slider_set_range(ui_sldVolume, 0, GetMusicMaxVolume());
+        lv_slider_set_range(ui_sldVolume, 0, GetMusicMaxVolumeWrapper());
         lv_slider_set_value(ui_sldVolume, DEFAULT_VOLUME, LV_ANIM_OFF);
 
         //Update playlist roller
         lv_roller_set_options(ui_rlMusicList, JoinString("\n", Playlist.GetValue()).c_str(), LV_ROLLER_MODE_NORMAL);
 
-        SetMusicVolume(DEFAULT_VOLUME);
+        SetMusicVolumeWrapper(DEFAULT_VOLUME);
     }
 
     // Update current index
     OnPlaylistChange(nullptr);
 
+    SoundEnable.SetValue(false);
     MusicEnable.SetValue(true);
 
     // Reset music time
@@ -606,7 +612,7 @@ void OnShotgunSelect(lv_event_t* e)
 
         for (const auto& item : Shotgun.listBullet)
         {
-            CommonPlaySound(SOUND_TYPE::DROP);
+            PlaySoundWrapper(SOUND_TYPE::DROP);
 #ifdef _WIN64
             ::Sleep(500);
 #else
@@ -614,7 +620,7 @@ void OnShotgunSelect(lv_event_t* e)
 #endif
         }
 
-        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
+        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL);
 
         FSMTransit(STATE_TYPE::ACTION_TURN);
     }
@@ -688,7 +694,7 @@ void OnItemPick(lv_event_t* e)
         }
         else
         {
-            CommonPlaySound(SOUND_TYPE::PICK);
+            PlaySoundWrapper(SOUND_TYPE::PICK);
 
             FSMTransit(STATE_TYPE::PLAYER_ITEM_ARRANGE);
         }
@@ -716,7 +722,7 @@ void OnShotgunInside(lv_event_t* e)
             lv_obj_remove_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
         }
 
-        CommonPlaySound(SOUND_TYPE::LOAD_SHELL);
+        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL);
     }
     else
     {
@@ -760,7 +766,7 @@ void OnCardSelect(lv_event_t* e)
         // Set image
         lv_image_set_src(ui_imgInfoCardReview, &std::get<1>(item));
 
-        CommonPlaySound(SOUND_TYPE::PICK);
+        PlaySoundWrapper(SOUND_TYPE::PICK);
     }
 }
 
@@ -781,7 +787,7 @@ void OnAdrenalineCancel(lv_event_t* e)
 
     Shotgun.Enable();
 
-    CommonPlaySound(SOUND_TYPE::BREAK);
+    PlaySoundWrapper(SOUND_TYPE::BREAK);
 }
 
 void OnButtonSound(lv_event_t* e)
@@ -801,16 +807,15 @@ void OnMusicControl(lv_event_t* e)
     auto currentMusicIndex = CurrentMusicIndex.GetValue();
     auto playlist = Playlist.GetValue();
 
-    MusicState.SetValue(MUSIC_STATE_TYPE::MIN);
-
     if (e->current_target == ui_btnPlay)
     {
-        if ((MusicState.GetOldValue() == MUSIC_STATE_TYPE::STOP) || (tempMusicIndex != CurrentMusicIndex.GetValue()))
+        if ((MusicState.GetValue() == MUSIC_STATE_TYPE::STOP) || (tempMusicIndex != CurrentMusicIndex.GetValue()))
         {
             debug_println_func("Play music");
 
-            CommonPlayMusic(playlist[tempMusicIndex]);
+            PlayMusicWrapper(playlist[tempMusicIndex]);
 
+            MusicState.SetValue(MUSIC_STATE_TYPE::STOP);
             MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
 
             if (tempMusicIndex != CurrentMusicIndex.GetValue())
@@ -822,13 +827,13 @@ void OnMusicControl(lv_event_t* e)
         {
             debug_println_func("Resume music");
 
-            SetMusicState(MUSIC_STATE_TYPE::RESUME);
+            SetMusicStateWrapper(MUSIC_STATE_TYPE::RESUME);
         }
         else
         {
             debug_println_func("Pause music");
 
-            SetMusicState(MUSIC_STATE_TYPE::PAUSE);
+            SetMusicStateWrapper(MUSIC_STATE_TYPE::PAUSE);
         }
     }
     else if (e->current_target == ui_btnPrev)
@@ -837,9 +842,10 @@ void OnMusicControl(lv_event_t* e)
         {
             debug_println_func("Prev music");
 
-            CommonPlayMusic(playlist[--tempMusicIndex]);
+            PlayMusicWrapper(playlist[--tempMusicIndex]);
             lv_roller_set_selected(ui_rlMusicList, tempMusicIndex, LV_ANIM_OFF);
 
+            MusicState.SetValue(MUSIC_STATE_TYPE::STOP);
             MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
 
             currentMusicIndex = tempMusicIndex;
@@ -852,9 +858,10 @@ void OnMusicControl(lv_event_t* e)
         {
             debug_println_func("Next music");
 
-            CommonPlayMusic(playlist[++tempMusicIndex]);
+            PlayMusicWrapper(playlist[++tempMusicIndex]);
             lv_roller_set_selected(ui_rlMusicList, tempMusicIndex, LV_ANIM_OFF);
 
+            MusicState.SetValue(MUSIC_STATE_TYPE::STOP);
             MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
 
             currentMusicIndex = tempMusicIndex;
@@ -866,7 +873,7 @@ void OnMusicControl(lv_event_t* e)
 
 void OnVolumeChange(lv_event_t* e)
 {
-    SetMusicVolume(lv_slider_get_value(ui_sldVolume));
+    SetMusicVolumeWrapper(lv_slider_get_value(ui_sldVolume));
 }
 
 void OnPlaylistChange(lv_event_t* e)

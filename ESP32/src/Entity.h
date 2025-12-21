@@ -32,7 +32,7 @@ namespace player
                 this->itemType = itemType;
                 this->playerType = playerType;
 
-                CommonPlaySound(SOUND_TYPE::ASSIGN);
+                PlaySoundWrapper(SOUND_TYPE::ASSIGN);
             }
 
             void Unassign()
@@ -188,7 +188,7 @@ namespace player
                     {
                         lv_obj_remove_state(player.listHPLevel1[i], LV_STATE_DISABLED);
 
-                        CommonPlaySound(SOUND_TYPE::HEALTH);
+                        PlaySoundWrapper(SOUND_TYPE::HEALTH);
                     }
                 }
                 else
@@ -197,7 +197,7 @@ namespace player
                     {
                         lv_obj_add_state(player.listHPLevel1[i], LV_STATE_DISABLED);
 
-                        CommonPlaySound(SOUND_TYPE::HIT);
+                        PlaySoundWrapper(SOUND_TYPE::HIT);
                     }
                 }
             }
@@ -211,7 +211,7 @@ namespace player
                     {
                         lv_obj_remove_state(player.listHPLevel2[i], LV_STATE_DISABLED);
 
-                        CommonPlaySound(SOUND_TYPE::HEALTH);
+                        PlaySoundWrapper(SOUND_TYPE::HEALTH);
                     }
                 }
                 else
@@ -220,7 +220,7 @@ namespace player
                     {
                         lv_obj_add_state(player.listHPLevel2[i], LV_STATE_DISABLED);
 
-                        CommonPlaySound(SOUND_TYPE::HIT);
+                        PlaySoundWrapper(SOUND_TYPE::HIT);
                     }
                 }
             }
@@ -316,7 +316,7 @@ namespace shotgun
 
             this->isCut = true;
 
-            CommonPlaySound(SOUND_TYPE::BREAK);
+            PlaySoundWrapper(SOUND_TYPE::BREAK);
         }
 
         void ShowInHand(player::player_info_t& player)
@@ -336,7 +336,7 @@ namespace shotgun
             // Check current player confirm button
             lv_obj_add_state(player.confirmButton, LV_STATE_CHECKED);
 
-            CommonPlaySound(SOUND_TYPE::WEAPON_PICKUP);
+            PlaySoundWrapper(SOUND_TYPE::WEAPON_PICKUP);
         }
 
         void Shot()
@@ -357,14 +357,14 @@ namespace shotgun
                 {
                     this->queueBullet.pop(); // Remove bullet
 
-                    CommonPlaySound(SOUND_TYPE::DROP);
+                    PlaySoundWrapper(SOUND_TYPE::DROP);
                     return;
                 }
                 else
                 {
                     lv_obj_remove_flag(this->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN); // Show effect
 
-                    CommonPlaySound(SOUND_TYPE::SHOTGUN_SHOT);
+                    PlaySoundWrapper(SOUND_TYPE::SHOTGUN_SHOT);
 
                     this->queueBullet.pop(); // Remove bullet
                     this->isGunfire = true;

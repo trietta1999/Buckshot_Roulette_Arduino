@@ -2,28 +2,24 @@ import wave
 import os
 import numpy as np
 
-
-"D:\Git\Buckshot_Roulette_Arduino\Tools\Sound_AlienShooter1_22050_16\music\end.ogg"
-"D:\Git\Buckshot_Roulette_Arduino\Tools\Sound_AlienShooter1_22050_16\music\menu_mus.ogg"
-
 list_wav_path = [
     # (input path, C header name, C array name)
     ########## Sound #########
-    # (r"..\Sound_AlienShooter1_22050_16\shotgun.wav", "shotgun_sound", "shotgun_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\ammo_pickup.wav", "load_shell_sound", "load_shell_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\drop_shotgunshell.wav", "shotgun_drop_sound", "shotgun_drop_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\mouse_over.wav", "pick_sound", "pick_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\mouse_click.wav", "assign_sound", "assign_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\armor_hit1.wav", "hit_sound", "hit_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\weapon_pickup.wav", "weapon_pickup_sound", "weapon_pickup_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\broke_armor.wav", "break_sound", "break_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\take_healh.wav", "health_sound", "health_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\gib_drop.wav", "adrenaline_sound", "adrenaline_sound"),
-    # (r"..\Sound_AlienShooter1_22050_16\null.wav", "null_sound", "null_sound"),
+    (r"..\Sound_AlienShooter1\shotgun.wav", "shotgun_sound", "shotgun_sound"),
+    (r"..\Sound_AlienShooter1\ammo_pickup.wav", "load_shell_sound", "load_shell_sound"),
+    (r"..\Sound_AlienShooter1\drop_shotgunshell.wav", "shotgun_drop_sound", "shotgun_drop_sound"),
+    (r"..\Sound_AlienShooter1\mouse_over.wav", "pick_sound", "pick_sound"),
+    (r"..\Sound_AlienShooter1\mouse_click.wav", "assign_sound", "assign_sound"),
+    (r"..\Sound_AlienShooter1\armor_hit1.wav", "hit_sound", "hit_sound"),
+    (r"..\Sound_AlienShooter1\weapon_pickup.wav", "weapon_pickup_sound", "weapon_pickup_sound"),
+    (r"..\Sound_AlienShooter1\broke_armor.wav", "break_sound", "break_sound"),
+    (r"..\Sound_AlienShooter1\take_healh.wav", "health_sound", "health_sound"),
+    (r"..\Sound_AlienShooter1\gib_drop.wav", "adrenaline_sound", "adrenaline_sound"),
+    (r"..\Sound_AlienShooter1\null.wav", "null_sound", "null_sound"),
     ########## Music #########
 ]
 
-sample_rate = 22050
+sample_rate = 44100
 
 def convert_wav_to_c_array(wav_file_path, output_c_header_path, array_name, target_samplerate):
     # Convert the WAV file to an 8-bit C-array.
