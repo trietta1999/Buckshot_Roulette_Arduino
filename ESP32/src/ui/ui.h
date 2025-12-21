@@ -19,8 +19,9 @@ extern "C" {
 ///////////////////// SCREENS ////////////////////
 
 #include "screens/ui_Start.h"
-#include "screens/ui_Main.h"
 #include "screens/ui_Info.h"
+#include "screens/ui_Music.h"
+#include "screens/ui_Main.h"
 
 ///////////////////// VARIABLES ////////////////////
 
@@ -31,22 +32,6 @@ extern lv_obj_t * ui____initial_actions0;
 
 // IMAGES AND IMAGE SETS
 LV_IMG_DECLARE(ui_img_metal_table_png);    // assets/metal_table.png
-LV_IMG_DECLARE(ui_img_empty_png);    // assets/Empty.png
-LV_IMG_DECLARE(ui_img_picking_png);    // assets/picking.png
-LV_IMG_DECLARE(ui_img_volume_up_png);    // assets/volume_up.png
-LV_IMG_DECLARE(ui_img_volume_off_png);    // assets/volume_off.png
-LV_IMG_DECLARE(ui_img_help_center_png);    // assets/help_center.png
-LV_IMG_DECLARE(ui_img_chargeback_png);    // assets/ChargeBack.png
-LV_IMG_DECLARE(ui_img_charge_png);    // assets/Charge.png
-LV_IMG_DECLARE(ui_img_shotgun_png);    // assets/Shotgun.png
-LV_IMG_DECLARE(ui_img_shotgun_block_png);    // assets/shotgun_block.png
-LV_IMG_DECLARE(ui_img_live_png);    // assets/Live.png
-LV_IMG_DECLARE(ui_img_cchargefront_png);    // assets/CChargeFront.png
-LV_IMG_DECLARE(ui_img_metal_bullet_box_png);    // assets/metal_bullet_box.png
-LV_IMG_DECLARE(ui_img_empty_bullet_png);    // assets/empty_bullet.png
-LV_IMG_DECLARE(ui_img_dart_board_png);    // assets/dart_board.png
-LV_IMG_DECLARE(ui_img_cancel_png);    // assets/cancel.png
-LV_IMG_DECLARE(ui_img_party_popper_png);    // assets/party_popper.png
 LV_IMG_DECLARE(ui_img_beer_png);    // assets/Beer.png
 LV_IMG_DECLARE(ui_img_burnerphone_png);    // assets/BurnerPhone.png
 LV_IMG_DECLARE(ui_img_cigarette_png);    // assets/Cigarette.png
@@ -58,12 +43,36 @@ LV_IMG_DECLARE(ui_img_magnifyingglass_png);    // assets/MagnifyingGlass.png
 LV_IMG_DECLARE(ui_img_adrenaline_png);    // assets/Adrenaline.png
 LV_IMG_DECLARE(ui_img_cblank_png);    // assets/CBlank.png
 LV_IMG_DECLARE(ui_img_clive_png);    // assets/CLive.png
+LV_IMG_DECLARE(ui_img_cchargefront_png);    // assets/CChargeFront.png
 LV_IMG_DECLARE(ui_img_cchargeback_png);    // assets/CChargeBack.png
 LV_IMG_DECLARE(ui_img_arrow_left_png);    // assets/arrow_left.png
+LV_IMG_DECLARE(ui_img_charge_png);    // assets/Charge.png
+LV_IMG_DECLARE(ui_img_skip_previous_png);    // assets/skip_previous.png
+LV_IMG_DECLARE(ui_img_play_png);    // assets/play.png
+LV_IMG_DECLARE(ui_img_pause_png);    // assets/pause.png
+LV_IMG_DECLARE(ui_img_skip_next_png);    // assets/skip_next.png
+LV_IMG_DECLARE(ui_img_volume_up_png);    // assets/volume_up.png
+LV_IMG_DECLARE(ui_img_empty_png);    // assets/Empty.png
+LV_IMG_DECLARE(ui_img_picking_png);    // assets/picking.png
+LV_IMG_DECLARE(ui_img_volume_off_png);    // assets/volume_off.png
+LV_IMG_DECLARE(ui_img_library_music_png);    // assets/library_music.png
+LV_IMG_DECLARE(ui_img_help_center_png);    // assets/help_center.png
+LV_IMG_DECLARE(ui_img_chargeback_png);    // assets/ChargeBack.png
+LV_IMG_DECLARE(ui_img_shotgun_png);    // assets/Shotgun.png
+LV_IMG_DECLARE(ui_img_shotgun_block_png);    // assets/shotgun_block.png
+LV_IMG_DECLARE(ui_img_live_png);    // assets/Live.png
+LV_IMG_DECLARE(ui_img_metal_bullet_box_png);    // assets/metal_bullet_box.png
+LV_IMG_DECLARE(ui_img_empty_bullet_png);    // assets/empty_bullet.png
+LV_IMG_DECLARE(ui_img_dart_board_png);    // assets/dart_board.png
+LV_IMG_DECLARE(ui_img_cancel_png);    // assets/cancel.png
+LV_IMG_DECLARE(ui_img_party_popper_png);    // assets/party_popper.png
 LV_IMG_DECLARE(ui_img_blank_png);    // assets/Blank.png
 LV_IMG_DECLARE(ui_img_shotguncut_png);    // assets/ShotgunCut.png
 LV_IMG_DECLARE(ui_img_shotgun_in_hand_png);    // assets/shotgun_in_hand.png
 LV_IMG_DECLARE(ui_img_skull_png);    // assets/skull.png
+
+// FONTS
+LV_FONT_DECLARE(ui_font_Arial24);
 
 // UI INIT
 void ui_init(void);

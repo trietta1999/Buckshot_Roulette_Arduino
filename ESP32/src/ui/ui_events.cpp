@@ -6,8 +6,8 @@
 #ifdef _WIN64
 #include <iostream>
 #endif
-#include <algorithm>
 #include "ui.h"
+#include "ui_events.h"
 #include "../CommonData.h"
 #include "../CommonLibrary.h"
 #include "../CommonService.h"
@@ -25,6 +25,7 @@ static bool itemUsingState = false;
 static player::player_info_t::player_slot_button_t* itemUsingData = nullptr;
 static uint64_t lastShotgunTime = 0;
 static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
+static uint32_t tempMusicIndex = 0;
 
 #pragma region Internal_functions
 static void ResetPlayerTable()
@@ -202,6 +203,10 @@ void Init()
     CurrentState.SetValue(STATE_TYPE::STARTUP);
     SoundEnable.SetValue(true);
     BulletOrder.SetValue(-1);
+    MusicState.SetValue(MUSIC_STATE_TYPE::MIN);
+    CurrentMusicIndex.SetValue(-1);
+
+    CommonPlaySound(SOUND_TYPE::MIN);
 }
 
 void AutoUpdate()
@@ -288,6 +293,73 @@ void AutoUpdate()
 
     FSM();
 
+    if (MusicEnable.GetValue())
+    {
+        if ((MusicState.GetValue() == MUSIC_STATE_TYPE::RESUME) || (MusicState.GetValue() == MUSIC_STATE_TYPE::PLAY))
+        {
+            auto percent = GetCurrentMusicPercent();
+
+            if (CurrentMusicPercent.GetState())
+            {
+                lv_arc_set_value(ui_arcTime, percent);
+            }
+        }
+        else if (MusicState.GetValue() == MUSIC_STATE_TYPE::MSG_EOF)
+        {
+            MusicState.SetValue(MUSIC_STATE_TYPE::STOP);
+
+            // Auto next music
+            if (tempMusicIndex < Playlist.GetValue().size() - 1)
+            {
+                debug_println_func("Auto next music");
+
+                auto currentMusicIndex = CurrentMusicIndex.GetValue();
+
+                CommonPlayMusic(Playlist.GetValue()[++currentMusicIndex]);
+                lv_roller_set_selected(ui_rlMusicList, currentMusicIndex, LV_ANIM_OFF);
+
+                MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
+
+                CurrentMusicIndex.SetValue(currentMusicIndex);
+            }
+        }
+    }
+
+    if (MusicState.GetState())
+    {
+        auto state = MusicState.GetValue();
+
+        debug_println_func("Music state: " + map_MUSIC_STATE_TYPE[state]);
+
+        switch (state)
+        {
+        case MUSIC_STATE_TYPE::PLAY:
+        case MUSIC_STATE_TYPE::RESUME:
+        {
+            if (state == MUSIC_STATE_TYPE::PLAY)
+            {
+                lv_label_set_text(ui_lblMusicTitle, Playlist.GetValue()[CurrentMusicIndex.GetValue()].c_str());
+            }
+
+            lv_obj_add_state(ui_btnPlay, LV_STATE_CHECKED);
+        }
+        break;
+        case MUSIC_STATE_TYPE::PAUSE:
+        case MUSIC_STATE_TYPE::STOP:
+        {
+            if (state == MUSIC_STATE_TYPE::STOP)
+            {
+                lv_label_set_text(ui_lblMusicTitle, "");
+            }
+
+            lv_obj_remove_state(ui_btnPlay, LV_STATE_CHECKED);
+        }
+        break;
+        default:
+            break;
+        }
+    }
+
     // Post-block check
     if (GuiBlockState.GetState())
     {
@@ -314,12 +386,44 @@ void OnBrightnessChange(lv_event_t* e)
 #pragma region Screen_events
 void Start_OnLoaded(lv_event_t* e)
 {
-
+    SetupMusic();
 }
 
 void Main_OnLoaded(lv_event_t* e)
 {
+    SetMusicState(MUSIC_STATE_TYPE::STOP);
 
+    MusicEnable.SetValue(false);
+}
+
+void Music_OnLoaded(lv_event_t* e)
+{
+    // Get playlist
+    if (!Playlist.GetValue().size())
+    {
+        debug_println_func("Update playlist, update volume");
+
+        // Update playlist
+        Playlist.SetValue(CommonExportListMusicFiles());
+        CurrentMusicIndex.SetValue(lv_roller_get_selected(ui_rlMusicList));
+
+        // Update volume slider
+        lv_slider_set_range(ui_sldVolume, 0, GetMusicMaxVolume());
+        lv_slider_set_value(ui_sldVolume, DEFAULT_VOLUME, LV_ANIM_OFF);
+
+        //Update playlist roller
+        lv_roller_set_options(ui_rlMusicList, JoinString("\n", Playlist.GetValue()).c_str(), LV_ROLLER_MODE_NORMAL);
+
+        SetMusicVolume(DEFAULT_VOLUME);
+    }
+
+    // Update current index
+    OnPlaylistChange(nullptr);
+
+    MusicEnable.SetValue(true);
+
+    // Reset music time
+    lv_arc_set_value(ui_arcTime, 0);
 }
 
 void Info_OnLoaded(lv_event_t* e)
@@ -690,5 +794,83 @@ void OnButtonSound(lv_event_t* e)
     {
         SoundEnable.SetValue(true);
     }
+}
+
+void OnMusicControl(lv_event_t* e)
+{
+    auto currentMusicIndex = CurrentMusicIndex.GetValue();
+    auto playlist = Playlist.GetValue();
+
+    MusicState.SetValue(MUSIC_STATE_TYPE::MIN);
+
+    if (e->current_target == ui_btnPlay)
+    {
+        if ((MusicState.GetOldValue() == MUSIC_STATE_TYPE::STOP) || (tempMusicIndex != CurrentMusicIndex.GetValue()))
+        {
+            debug_println_func("Play music");
+
+            CommonPlayMusic(playlist[tempMusicIndex]);
+
+            MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
+
+            if (tempMusicIndex != CurrentMusicIndex.GetValue())
+            {
+                currentMusicIndex = tempMusicIndex;
+            }
+        }
+        else if ((lv_obj_get_state(ui_btnPlay) & LV_STATE_CHECKED) == LV_STATE_CHECKED)
+        {
+            debug_println_func("Resume music");
+
+            SetMusicState(MUSIC_STATE_TYPE::RESUME);
+        }
+        else
+        {
+            debug_println_func("Pause music");
+
+            SetMusicState(MUSIC_STATE_TYPE::PAUSE);
+        }
+    }
+    else if (e->current_target == ui_btnPrev)
+    {
+        if (tempMusicIndex > 0)
+        {
+            debug_println_func("Prev music");
+
+            CommonPlayMusic(playlist[--tempMusicIndex]);
+            lv_roller_set_selected(ui_rlMusicList, tempMusicIndex, LV_ANIM_OFF);
+
+            MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
+
+            currentMusicIndex = tempMusicIndex;
+        }
+
+    }
+    else if (e->current_target == ui_btnNext)
+    {
+        if (tempMusicIndex < Playlist.GetValue().size() - 1)
+        {
+            debug_println_func("Next music");
+
+            CommonPlayMusic(playlist[++tempMusicIndex]);
+            lv_roller_set_selected(ui_rlMusicList, tempMusicIndex, LV_ANIM_OFF);
+
+            MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
+
+            currentMusicIndex = tempMusicIndex;
+        }
+    }
+
+    CurrentMusicIndex.SetValue(currentMusicIndex);
+}
+
+void OnVolumeChange(lv_event_t* e)
+{
+    SetMusicVolume(lv_slider_get_value(ui_sldVolume));
+}
+
+void OnPlaylistChange(lv_event_t* e)
+{
+    tempMusicIndex = lv_roller_get_selected(ui_rlMusicList);
 }
 #pragma endregion

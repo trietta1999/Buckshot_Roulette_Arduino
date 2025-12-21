@@ -20,7 +20,12 @@ CData<std::string> ClientName;
 CData<STATE_TYPE> CurrentState;
 CData<bool> GuiBlockState;
 CData<bool> SoundEnable;
+CData<bool> MusicEnable;
 CData<int32_t> BulletOrder;
+CData<uint32_t> CurrentMusicIndex;
+CData<uint8_t> CurrentMusicPercent;
+CData<MUSIC_STATE_TYPE> MusicState;
+CData<std::vector<std::string>> Playlist;
 
 // Add auto reset state for custom data only
 void UpdateAll()
@@ -28,6 +33,9 @@ void UpdateAll()
     Brightness.ResetState();
     CurrentState.ResetState();
     GuiBlockState.ResetState();
+    MusicState.ResetState();
+    CurrentMusicIndex.ResetState();
+    CurrentMusicPercent.ResetState();
 #ifdef _WIN64
     debug_data::CurrentPlayer.ResetState();
     debug_data::CurrentItemType.ResetState();

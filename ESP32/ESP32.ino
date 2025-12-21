@@ -191,8 +191,6 @@ void setup() {
   pinMode(TFT_BL, OUTPUT);
   analogWrite(TFT_BL, Brightness.GetValue());
 
-  CommonPlaySound(SOUND_TYPE::MIN);
-
   Serial.println("Setup complete");
 }
 

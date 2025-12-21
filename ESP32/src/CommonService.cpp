@@ -2,7 +2,6 @@
  * @brief Common service library
  */
 
-#include <algorithm>
 #include "CommonService.h"
 #include "CommonData.h"
 #include "CommonLibrary.h"
@@ -14,12 +13,26 @@
 #else
 #include <esp_random.h>
 #include "../Sound.h"
+#include "../Music.h"
 #endif
 #include "SampleSound.h"
 
 #ifdef _WIN64
 WAVEFORMATEX wfx = {};
 HWAVEOUT hWaveOut;
+
+std::vector<std::string> dummyPlaylist = {
+    "Music_1",
+    "Music_2",
+    "Music_3",
+    "Music_4",
+    "Music_5",
+    "Music_6",
+    "Music_7",
+    "Music_8",
+    "Music_9",
+    "Music_10",
+};
 #endif
 
 #ifdef _WIN64
@@ -68,7 +81,7 @@ static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 #ifdef _WIN64
     PlayRawPCM(sample, size);
 #else
-    PlaySound(sample, size);
+    sound::PlaySound(sample, size);
 #endif
 }
 
@@ -148,6 +161,11 @@ static void DebugConsoleProcess()
                 auto type = std::stoi(inputParams.at(1));
                 CommonPlaySound((SOUND_TYPE)type);
             }
+            // Music EOF
+            else if (inputParams.at(0) == "musiceof")
+            {
+                MusicState.SetValue(MUSIC_STATE_TYPE::MSG_EOF);
+            }
             // Special command
             else
             {
@@ -178,11 +196,6 @@ void CommonBeep(uint16_t frequency, uint16_t duration)
 
 void InitData()
 {
-#ifndef _WIN64
-    //HardwareSetup();
-    SetupI2S();
-#endif
-
 #ifndef _WIN64
     uint32_t seed = esp_random();
 #else
@@ -292,7 +305,8 @@ void CommonServiceProcess()
 
     // Handle web server
     //ServerHandleClient();
-    //CommonPlaySound(SOUND_TYPE::MIN);
+
+    music::RunMusicTask();
 #endif
 #endif
 }
@@ -392,6 +406,20 @@ JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
     return JsonResponse.GetValue();
 }
 
+void SetupSound()
+{
+#ifndef _WIN64
+    sound::Setup();
+#endif
+}
+
+void UninstallSound()
+{
+#ifndef _WIN64
+    sound::Uninstall();
+#endif
+}
+
 void CommonPlaySound(SOUND_TYPE type)
 {
     if (SoundEnable.GetValue())
@@ -432,4 +460,100 @@ void CommonPlaySound(SOUND_TYPE type)
             break;
         }
     }
+}
+
+void SetupMusic()
+{
+#ifndef _WIN64
+    music::Setup();
+#endif
+}
+
+void UninstallMusic()
+{
+#ifndef _WIN64
+    music::Uninstall();
+#endif
+}
+
+std::vector<std::string> CommonExportListMusicFiles()
+{
+#ifdef _WIN64
+    return dummyPlaylist;
+#else
+    return music::ExportListMusicFiles();
+#endif
+}
+
+void CommonPlayMusic(std::string name)
+{
+#ifndef _WIN64
+    music::audio->stopSong();
+    music::PlayTrack(name.c_str());
+#endif
+}
+
+void SetMusicState(MUSIC_STATE_TYPE state)
+{
+#ifndef _WIN64
+    switch (state)
+    {
+    case MUSIC_STATE_TYPE::RESUME:
+        if (!music::audio->isRunning())
+        {
+            music::audio->pauseResume();
+        }
+        break;
+    case MUSIC_STATE_TYPE::PAUSE:
+        if (music::audio->isRunning())
+        {
+            music::audio->pauseResume();
+        }
+        break;
+    case MUSIC_STATE_TYPE::STOP:
+        music::audio->stopSong();
+        break;
+    default:
+        break;
+    }
+#endif
+
+    MusicState.SetValue(state);
+}
+
+uint8_t GetMusicMaxVolume()
+{
+#ifdef _WIN64
+    return 0;
+#else
+    return music::audio->maxVolume();
+#endif
+}
+
+void SetMusicVolume(uint8_t vol)
+{
+#ifndef _WIN64
+    music::audio->setVolume(vol);
+#endif
+}
+
+uint8_t GetCurrentMusicPercent()
+{
+#ifndef _WIN64
+    uint8_t percent = 0;
+
+    if (music::audio->getAudioFileDuration())
+    {
+        percent = music::audio->getAudioCurrentTime() / 2 * 100 / music::audio->getAudioFileDuration();
+        if (percent > 100)
+        {
+            percent = 100;
+        }
+    }
+
+    CurrentMusicPercent.SetValue(percent);
+
+    return percent;
+#endif
+    return 0;
 }

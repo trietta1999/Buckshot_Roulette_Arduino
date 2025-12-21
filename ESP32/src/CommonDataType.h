@@ -13,6 +13,7 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+#include <algorithm>
 
 #define STR(a) #a
 
@@ -52,6 +53,11 @@
 
 #define INPUT_PIN 22
 #define BUZZER_PIN 26
+
+#define I2S_DOUT 17 // Data Out
+#define I2S_BCLK 0  // Bit Clock
+#define I2S_LRC 18  // Word Select (WS) - Left/Right Clock (LRCK)
+#define I2S_PORT I2S_NUM_0
 
 #define IP_ADD_1 192
 #define IP_ADD_2 168
@@ -131,6 +137,8 @@ enum
 #define MSG_BURNERPHONE "%d%s shell is... %s!"
 #define MSG_HOW_UNFORTUNATE "How Unfortunate..."
 
+#define DEFAULT_VOLUME 10
+
 #define DEF_PLAYER_TYPE(e, CREATE) \
         CREATE(e, PLAYER1) \
         CREATE(e, PLAYER2) \
@@ -174,6 +182,13 @@ enum
         CREATE(e, HEALTH) \
         CREATE(e, ADRENALINE) \
 
+#define DEF_MUSIC_STATE_TYPE(e, CREATE) \
+        CREATE(e, PLAY) \
+        CREATE(e, PAUSE) \
+        CREATE(e, RESUME) \
+        CREATE(e, STOP) \
+        CREATE(e, MSG_EOF) \
+
 enum class PLAYER_TYPE
 {
     MIN,
@@ -214,11 +229,19 @@ enum class SOUND_TYPE
     MAX
 };
 
+enum class MUSIC_STATE_TYPE
+{
+    MIN,
+    DEF_MUSIC_STATE_TYPE(MUSIC_STATE_TYPE, TO_ENUM)
+    MAX
+};
+
 EXTERN_MAP_ENUM_STR(PLAYER_TYPE)
 EXTERN_MAP_ENUM_STR(STATE_TYPE)
 EXTERN_MAP_ENUM_STR(ITEM_TYPE)
 EXTERN_MAP_ENUM_STR(BULLET_TYPE)
 EXTERN_MAP_ENUM_STR(SOUND_TYPE)
+EXTERN_MAP_ENUM_STR(MUSIC_STATE_TYPE)
 
 struct card_info_t
 {

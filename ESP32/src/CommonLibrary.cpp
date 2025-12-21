@@ -2,7 +2,6 @@
  * @brief Common library
  */
 
-#include <algorithm>
 #include <random>
 #include "CommonLibrary.h"
 #include "CommonData.h"
@@ -131,9 +130,16 @@ std::string JoinString(std::string delimeter, const std::vector<std::string>& li
 {
     std::string output;
 
-    for (const auto& line : list)
+    for (uint32_t i = 0; i < list.size(); i++)
     {
-        output += line + delimeter;
+        if (i < list.size() - 1)
+        {
+            output += list[i] + delimeter;
+        }
+        else
+        {
+            output += list[i];
+        }
     }
 
     return output;

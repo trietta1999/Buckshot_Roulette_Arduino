@@ -25,7 +25,12 @@ extern CData<std::string> ClientName;
 extern CData<STATE_TYPE> CurrentState;
 extern CData<bool> GuiBlockState;
 extern CData<bool> SoundEnable;
+extern CData<bool> MusicEnable;
 extern CData<int32_t> BulletOrder;
+extern CData<uint32_t> CurrentMusicIndex;
+extern CData<uint8_t> CurrentMusicPercent;
+extern CData<MUSIC_STATE_TYPE> MusicState;
+extern CData<std::vector<std::string>> Playlist;
 
 void UpdateAll();
 

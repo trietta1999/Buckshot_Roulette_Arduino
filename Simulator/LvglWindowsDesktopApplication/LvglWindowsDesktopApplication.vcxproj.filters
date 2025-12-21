@@ -842,6 +842,12 @@
     <ClInclude Include="..\..\ESP32\Sound.h">
       <Filter>Library\CommonService\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Music.h">
+      <Filter>UI\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ESP32\Music.h">
+      <Filter>Library\CommonService</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\.typos.toml">
@@ -1470,6 +1476,9 @@
     <Filter Include="Library\CommonService\Sound">
       <UniqueIdentifier>{731457b6-960e-4278-b48f-216d5b4a8cdd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\fonts">
+      <UniqueIdentifier>{f972ba94-902c-450f-a9a3-32d9d999d418}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ESP32\src\CommonLibrary.cpp">
@@ -1511,7 +1520,6 @@
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c">
       <Filter>UI\screens</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cancel_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_adrenaline_png.c">
       <Filter>UI\images</Filter>
     </ClCompile>
@@ -1634,6 +1642,30 @@
     </ClCompile>
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_png.c">
       <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_cancel_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Music.c">
+      <Filter>UI\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_library_music_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_pause_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_play_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skip_next_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skip_previous_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\fonts\ui_font_Arial24.c">
+      <Filter>UI\fonts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

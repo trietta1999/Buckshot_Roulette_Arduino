@@ -303,6 +303,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\src\widgets\tileview\lv_tileview.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\LvglPlatform\lvgl\src\widgets\win\lv_win.h" />
     <ClInclude Include="..\..\ESP32\Hardware.h" />
+    <ClInclude Include="..\..\ESP32\Music.h" />
     <ClInclude Include="..\..\ESP32\Sound.h" />
     <ClInclude Include="..\..\ESP32\src\ArduinoJson-v7.4.1.h" />
     <ClInclude Include="..\..\ESP32\src\CData.h" />
@@ -316,6 +317,7 @@
     <ClInclude Include="..\..\ESP32\src\SampleSound.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Info.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Main.h" />
+    <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Music.h" />
     <ClInclude Include="..\..\ESP32\src\ui\screens\ui_Start.h" />
     <ClInclude Include="..\..\ESP32\src\ui\ui.h" />
     <ClInclude Include="..\..\ESP32\src\ui\ui_events.h" />
@@ -704,6 +706,7 @@
     <ClCompile Include="..\..\ESP32\src\CommonLibrary.cpp" />
     <ClCompile Include="..\..\ESP32\src\CommonService.cpp" />
     <ClCompile Include="..\..\ESP32\src\ui\components\ui_comp_hook.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\fonts\ui_font_Arial24.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_adrenaline_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_arrow_left_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_battery_full_png.c" />
@@ -730,17 +733,22 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_handsaw_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_inverter_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_library_music_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_live_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_lock_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_magnifyingglass_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_bullet_box_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_metal_table_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_party_popper_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_pause_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_picking_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_play_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotguncut_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_block_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_in_hand_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_shotgun_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skip_next_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skip_previous_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_skull_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_volume_off_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_volume_up_png.c" />
@@ -748,6 +756,7 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_wifi_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Info.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Main.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Music.c" />
     <ClCompile Include="..\..\ESP32\src\ui\screens\ui_Start.c" />
     <ClCompile Include="..\..\ESP32\src\ui\ui.c" />
     <ClCompile Include="..\..\ESP32\src\ui\ui_events.cpp" />

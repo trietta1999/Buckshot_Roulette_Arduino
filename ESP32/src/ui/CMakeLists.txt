@@ -1,27 +1,12 @@
 SET(SOURCES screens/ui_Start.c
-    screens/ui_Main.c
     screens/ui_Info.c
+    screens/ui_Music.c
+    screens/ui_Main.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c
     ui_events.cpp
     images/ui_img_metal_table_png.c
-    images/ui_img_empty_png.c
-    images/ui_img_picking_png.c
-    images/ui_img_volume_up_png.c
-    images/ui_img_volume_off_png.c
-    images/ui_img_help_center_png.c
-    images/ui_img_chargeback_png.c
-    images/ui_img_charge_png.c
-    images/ui_img_shotgun_png.c
-    images/ui_img_shotgun_block_png.c
-    images/ui_img_live_png.c
-    images/ui_img_cchargefront_png.c
-    images/ui_img_metal_bullet_box_png.c
-    images/ui_img_empty_bullet_png.c
-    images/ui_img_dart_board_png.c
-    images/ui_img_cancel_png.c
-    images/ui_img_party_popper_png.c
     images/ui_img_beer_png.c
     images/ui_img_burnerphone_png.c
     images/ui_img_cigarette_png.c
@@ -33,11 +18,33 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_adrenaline_png.c
     images/ui_img_cblank_png.c
     images/ui_img_clive_png.c
+    images/ui_img_cchargefront_png.c
     images/ui_img_cchargeback_png.c
     images/ui_img_arrow_left_png.c
+    images/ui_img_charge_png.c
+    images/ui_img_skip_previous_png.c
+    images/ui_img_play_png.c
+    images/ui_img_pause_png.c
+    images/ui_img_skip_next_png.c
+    images/ui_img_volume_up_png.c
+    images/ui_img_empty_png.c
+    images/ui_img_picking_png.c
+    images/ui_img_volume_off_png.c
+    images/ui_img_library_music_png.c
+    images/ui_img_help_center_png.c
+    images/ui_img_chargeback_png.c
+    images/ui_img_shotgun_png.c
+    images/ui_img_shotgun_block_png.c
+    images/ui_img_live_png.c
+    images/ui_img_metal_bullet_box_png.c
+    images/ui_img_empty_bullet_png.c
+    images/ui_img_dart_board_png.c
+    images/ui_img_cancel_png.c
+    images/ui_img_party_popper_png.c
     images/ui_img_blank_png.c
     images/ui_img_shotguncut_png.c
     images/ui_img_shotgun_in_hand_png.c
-    images/ui_img_skull_png.c)
+    images/ui_img_skull_png.c
+    fonts/ui_font_Arial24.c)
 
 add_library(ui ${SOURCES})

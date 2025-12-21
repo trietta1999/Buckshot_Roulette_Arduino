@@ -58,3 +58,19 @@ def OnButtonLock(event_struct):
 def OnButtonSound(event_struct):
     return
 
+
+def Music_OnLoaded(event_struct):
+    return
+
+
+def OnMusicControl(event_struct):
+    return
+
+
+def OnVolumeChange(event_struct):
+    return
+
+
+def OnPlaylistChange(event_struct):
+    return
+

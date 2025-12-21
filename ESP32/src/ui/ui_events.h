@@ -11,6 +11,12 @@ extern "C" {
 #endif
 
 void Start_OnLoaded(lv_event_t * e);
+void Info_OnLoaded(lv_event_t * e);
+void OnCardSelect(lv_event_t * e);
+void Music_OnLoaded(lv_event_t * e);
+void OnPlaylistChange(lv_event_t * e);
+void OnMusicControl(lv_event_t * e);
+void OnVolumeChange(lv_event_t * e);
 void Main_OnLoaded(lv_event_t * e);
 void OnItemSelect(lv_event_t * e);
 void OnItemPick(lv_event_t * e);
@@ -20,8 +26,6 @@ void OnShotgunSelect(lv_event_t * e);
 void OnShotgunShot(lv_event_t * e);
 void OnShotgunInside(lv_event_t * e);
 void OnAdrenalineCancel(lv_event_t * e);
-void Info_OnLoaded(lv_event_t * e);
-void OnCardSelect(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/
