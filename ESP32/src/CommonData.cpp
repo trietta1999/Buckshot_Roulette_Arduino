@@ -21,7 +21,6 @@ CData<STATE_TYPE> CurrentState;
 CData<bool> GuiBlockState;
 CData<bool> SoundEnable;
 CData<bool> MusicEnable;
-CData<int32_t> BulletOrder;
 CData<uint32_t> CurrentMusicIndex;
 CData<uint8_t> CurrentMusicPercent;
 CData<MUSIC_STATE_TYPE> MusicState;

@@ -201,7 +201,6 @@ void Init()
 
     // Init data
     CurrentState.SetValue(STATE_TYPE::STARTUP);
-    BulletOrder.SetValue(-1);
     MusicState.SetValue(MUSIC_STATE_TYPE::MIN);
     CurrentMusicIndex.SetValue(-1);
 
