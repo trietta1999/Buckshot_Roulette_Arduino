@@ -22,7 +22,7 @@ static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<bool(
 static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton;
 static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
 static bool itemUsingState = false;
-static player::player_info_t::player_slot_button_t* itemUsingData = nullptr;
+static ITEM_TYPE itemUsingType = ITEM_TYPE::MIN;
 static uint64_t lastShotgunTime = 0;
 static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
 static uint32_t tempMusicIndex = 0;
@@ -510,7 +510,7 @@ void OnItemSelect(lv_event_t* e)
         {
             debug_println_func("Item action");
 
-            if (itemUsingData && (itemUsingData->itemType == ITEM_TYPE::ADRENALINE))
+            if (itemUsingType == ITEM_TYPE::ADRENALINE)
             {
                 debug_println_func("Current using is ADRENALINE");
 
@@ -536,13 +536,11 @@ void OnItemSelect(lv_event_t* e)
                             auto itemType = buttonInfo.itemType;
                             itemUsingState = true; // Block other action
 
-                            if (mapItemImg[buttonInfo.itemType].second(buttonInfo)) // Call item effect
+                            if (mapItemImg[itemType].second(buttonInfo)) // Call item effect
                             {
                                 debug_println_func("Using done");
 
-                                itemUsingData->Unassign(); // Unassign ADRENALINE item
-                                itemUsingData = &buttonInfo; // Update item using
-                                itemUsingData->itemType = itemType;
+                                itemUsingType = itemType;
 
                                 iPlayer.totalItemCount--;
 
@@ -580,7 +578,7 @@ void OnItemSelect(lv_event_t* e)
                     {
                         debug_println_func("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
 
-                        itemUsingData = &buttonInfo; // Update item using
+                        itemUsingType = buttonInfo.itemType; // Update item using
 
                         itemUsingState = true; // Block other action
                         mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
@@ -706,14 +704,14 @@ void OnShotgunInside(lv_event_t* e)
 
     if (eventCode == LV_EVENT_PRESSED)
     {
-        if (itemUsingData->itemType == ITEM_TYPE::MAGNIFYINGGLASS)
+        if (itemUsingType == ITEM_TYPE::MAGNIFYINGGLASS)
         {
             debug_println_func("Use Magnifying Glass");
 
             // Show first bullet
             lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[Shotgun.queueBullet.front()]);
         }
-        else if (itemUsingData->itemType == ITEM_TYPE::BURNERPHONE)
+        else if (itemUsingType == ITEM_TYPE::BURNERPHONE)
         {
             debug_println_func("Use Burner Phone");
 
@@ -773,8 +771,7 @@ void OnAdrenalineCancel(lv_event_t* e)
 {
     debug_println_func("Adrenaline cancel");
 
-    itemUsingData->Unassign(); // Unassign ADRENALINE item
-    itemUsingData->itemType = ITEM_TYPE::MIN;
+    itemUsingType = ITEM_TYPE::MIN;
 
     player::DisableAllPlayerTableExcept(*Player);
 

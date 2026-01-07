@@ -39,7 +39,7 @@ namespace player
             {
                 memset(&this->image, 0, sizeof(this->image));
                 lv_image_set_src(this->buttonImg, &ui_img_empty_png);
-                // this->itemType = ITEM_TYPE::MIN; // For external using
+                this->itemType = ITEM_TYPE::MIN;
                 this->playerType = PLAYER_TYPE::MIN;
             }
         };

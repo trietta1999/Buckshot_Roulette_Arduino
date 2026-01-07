@@ -189,6 +189,8 @@ EFFECT_FUNCTION(MAGNIFYINGGLASS)
 
 EFFECT_FUNCTION(ADRENALINE)
 {
+    buttonSlot.Unassign();
+
     player::EnableAllPlayerTableExcept(*Player);
 
     itemUsingState = false;
