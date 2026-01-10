@@ -73,18 +73,7 @@ static void PlayRawPCM(const uint8_t* pcmData, uint32_t size)
     // Free header
     waveOutUnprepareHeader(hWaveOut, &whdr, sizeof(WAVEHDR));
 }
-#endif
 
-static void PlaySampleSound(const uint8_t* sample, uint32_t size)
-{
-#ifdef _WIN64
-    PlayRawPCM(sample, size);
-#else
-    PlaySoundFromSample(sample, size);
-#endif
-}
-
-#ifdef _WIN64
 static void AttachConsoleWindow()
 {
     AllocConsole();
@@ -184,13 +173,18 @@ static void DebugConsoleProcess()
 }
 #endif
 
-void CommonBeep(uint16_t frequency, uint16_t duration)
+static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 {
 #ifdef _WIN64
-    //::Beep(frequency, duration);
+    PlayRawPCM(sample, size);
 #else
-    //HardwareBeep(frequency, duration);
+    PlaySoundFromSample(sample, size);
 #endif
+}
+
+void CommonBeep(uint16_t frequency, uint16_t duration)
+{
+
 }
 
 void InitData()
@@ -205,19 +199,6 @@ void InitData()
 
     // Set random seed
     srand(seed);
-
-    // Create random init data
-    //sys_host::RandomSeed.SetValue(seed);
-    //sys_host::LabelIndicator.SetValue((LABEL_INDICATOR)RandomRange(0, (uint8_t)LABEL_INDICATOR::MAX));
-    //sys_host::BatteryType.SetValue((BATTERY_TYPE)RandomRange(0, (uint8_t)BATTERY_TYPE::MAX));
-    //sys_host::ComPortType.SetValue((COMPORT_TYPE)RandomRange(0, (uint8_t)COMPORT_TYPE::MAX));
-    //sys_host::BatteryNum.SetValue(RandomRange(1, 5));
-    //sys_host::SerialNum.SetValue(GenerateSerialNumber());
-    //sys_host::EndlessTimeClock.SetValue(std::make_tuple(0, 0, 0));
-
-    //sys_host::StrikeNum.SetValue(0);
-    //sys_host::TimeCycle.SetValue(TIMECYCLE_0);
-    //sys_gui::SuccessState.SetValue(INCORRECT);
 
 #ifdef _WIN64
     AttachConsoleWindow();
@@ -238,23 +219,10 @@ void InitData()
         debug_println_func("Open sound device fail!");
     }
 #endif
-
-    // Print init data
-#ifdef _WIN64
-    debug_println("===== Dummy Data Initialized =====");
-    //debug_println("RandomSeed: " + std::to_string(sys_host::RandomSeed.GetValue()));
-    //debug_println("LabelIndicator: " + map_LABEL_INDICATOR[sys_host::LabelIndicator.GetValue()]);
-    //debug_println("BatteryType: " + map_BATTERY_TYPE[sys_host::BatteryType.GetValue()]);
-    //debug_println("ComPortType: " + map_COMPORT_TYPE[sys_host::ComPortType.GetValue()]);
-    //debug_println("BatteryNum: " + std::to_string(sys_host::BatteryNum.GetValue()));
-    //debug_println("SerialNum: " + sys_host::SerialNum.GetValue());
-    debug_println("==================================");
-#endif
 }
 
 void CommonServiceProcess()
 {
-#ifndef UNIT_TEST
 #ifdef _WIN64
     std::thread([] {
         std::string inputConsole;
@@ -287,124 +255,10 @@ void CommonServiceProcess()
     // Read data from serial
     if (Serial.available()) {
         String read = Serial.readStringUntil('\n');
-
-        // Print init data
-        if (read == "sys_data") {
-            //debug_println("===== Dummy Data Initialized =====");
-            //debug_println("RandomSeed: " + std::to_string(sys_host::RandomSeed.GetValue()));
-            //debug_println("LabelIndicator: " + map_LABEL_INDICATOR[sys_host::LabelIndicator.GetValue()]);
-            //debug_println("BatteryType: " + map_BATTERY_TYPE[sys_host::BatteryType.GetValue()]);
-            //debug_println("ComPortType: " + map_COMPORT_TYPE[sys_host::ComPortType.GetValue()]);
-            //debug_println("BatteryNum: " + std::to_string(sys_host::BatteryNum.GetValue()));
-            //debug_println("SerialNum: " + sys_host::SerialNum.GetValue());
-            //debug_println("==================================");
-        }
     }
-
-    // Re-connect WiFi if disconnected
-    //WiFiReconnect();
-
-    // Handle web server
-    //ServerHandleClient();
 
     RunMusicTask();
 #endif
-#endif
-}
-
-JsonDocument ProcessRequest(HWND hwnd, uint32_t msg, JsonDocument jsonDocIn)
-{
-    JsonDocument jsonDoc;
-
-    return jsonDoc;
-}
-
-JsonDocument CommonSendRequest(uint32_t msg)
-{
-#ifdef _WIN64
-    JsonDocument jsonDoc;
-
-    jsonDoc["client_name"] = CLIENT_NAME_FOR_JSON;
-    char jsonDocStr[MAX_SIZE] = { 0 };
-
-    serializeJson(jsonDoc, jsonDocStr);
-
-    HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, BUFFER_SIZE, SHARED_MEM);
-    if (!hMapFile)
-    {
-        return jsonDoc;
-    }
-
-    LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-    if (!pBuffer)
-    {
-        CloseHandle(hMapFile);
-        return jsonDoc;
-    }
-
-    strcpy((char*)pBuffer, jsonDocStr);
-
-    UnmapViewOfFile(pBuffer);
-
-    HWND hwnd = ::FindWindow(NULL, HOST_NAME);
-
-    ::SendMessage(hwnd, WM_SET_CLIENT_HANDLE, msg, NULL);
-    ::SendMessage(hwnd, WM_REQUEST, msg, NULL);
-#else
-    //data_pack_t byteData = { 0 };
-    //strcpy(byteData.source, CLIENT_NAME);
-    //byteData.base_msg = WM_REQUEST;
-    //byteData.msg = msg;
-
-    //SendMessage(byteData);
-#endif
-
-    return JsonResponse.GetValue();
-}
-
-JsonDocument CommonSendRequestWithData(uint32_t msg, JsonDocument jsonValue)
-{
-#ifdef _WIN64
-    char jsonDocStr[MAX_SIZE] = { 0 };
-    jsonValue["client_name"] = CLIENT_NAME_FOR_JSON;
-
-    serializeJson(jsonValue, jsonDocStr);
-
-    HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, BUFFER_SIZE, SHARED_MEM);
-    if (!hMapFile)
-    {
-        return JsonDocument();
-    }
-
-    LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-    if (!pBuffer)
-    {
-        CloseHandle(hMapFile);
-        return JsonDocument();
-    }
-
-    strcpy((char*)pBuffer, jsonDocStr);
-
-    UnmapViewOfFile(pBuffer);
-
-    HWND hwnd = ::FindWindow(NULL, HOST_NAME);
-
-    ::SendMessage(hwnd, WM_SET_CLIENT_HANDLE, msg, NULL);
-    ::SendMessage(hwnd, WM_REQUEST_WITH_DATA, msg, NULL);
-#else
-    //char jsonDocStr[MAX_SIZE] = { 0 };
-    //serializeJson(jsonValue, jsonDocStr);
-
-    //data_pack_t byteData = { 0 };
-    //strcpy(byteData.source, CLIENT_NAME);
-    //byteData.base_msg = WM_REQUEST_WITH_DATA;
-    //byteData.msg = msg;
-    //strcpy(byteData.data, jsonDocStr);
-
-    //SendMessage(byteData);
-#endif
-
-    return JsonResponse.GetValue();
 }
 
 void PlaySoundWrapper(SOUND_TYPE type)

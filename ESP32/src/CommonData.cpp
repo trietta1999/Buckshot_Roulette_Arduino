@@ -14,9 +14,8 @@ namespace debug_data
     CData<std::string> SpecialCommand;
 }
 #endif
+
 CData<uint8_t> Brightness;
-CData<JsonDocument> JsonResponse;
-CData<std::string> ClientName;
 CData<STATE_TYPE> CurrentState;
 CData<bool> GuiBlockState;
 CData<bool> SoundEnable;

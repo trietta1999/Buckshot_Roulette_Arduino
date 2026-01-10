@@ -12,148 +12,6 @@
 #include "CommonService.h"
 #include "CommonLibrary.h"
 
-WNDPROC OriginalWndProc = NULL;
-HWND ClientHandle = NULL;
-
-LRESULT CALLBACK MyNewWinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-#ifdef HOST_TIMER
-    case WM_SET_CLIENT_HANDLE:
-    {
-        HANDLE hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHARED_MEM);
-        if (!hMapFile)
-        {
-            return FALSE;
-        }
-
-        LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-        if (!pBuffer)
-        {
-            CloseHandle(hMapFile);
-            return FALSE;
-        }
-
-        auto receivedJsonString = (const char*)pBuffer;
-        if (!receivedJsonString)
-        {
-            UnmapViewOfFile(pBuffer);
-            CloseHandle(hMapFile);
-            return FALSE;
-        }
-
-        JsonDocument jsonDoc;
-        deserializeJson(jsonDoc, receivedJsonString);
-
-        UnmapViewOfFile(pBuffer);
-
-        if (!wParam)
-        {
-            CloseHandle(hMapFile);
-        }
-
-        const char* clientName = jsonDoc["client_name"];
-        ClientHandle = ::FindWindowA(NULL, clientName);
-
-        if (!ClientHandle)
-        {
-            return FALSE;
-        }
-
-        // If client name is not HostTimer
-        if (clientName && strcmp(clientName, CLIENT_NAME_FOR_JSON))
-        {
-            ClientName.SetValue(clientName);
-        }
-    }
-    break;
-
-    case WM_REQUEST:
-    {
-        JsonDocument jsonDoc;
-        ProcessRequest(ClientHandle, wParam, jsonDoc);
-    }
-    break;
-
-    case WM_REQUEST_WITH_DATA:
-    {
-        HANDLE hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHARED_MEM);
-        if (!hMapFile)
-        {
-            return FALSE;
-        }
-
-        LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-        if (!pBuffer)
-        {
-            CloseHandle(hMapFile);
-            return FALSE;
-        }
-
-        auto receivedJsonString = (const char*)pBuffer;
-        if (!receivedJsonString)
-        {
-            UnmapViewOfFile(pBuffer);
-            CloseHandle(hMapFile);
-            return FALSE;
-        }
-
-        JsonDocument jsonDoc;
-        deserializeJson(jsonDoc, receivedJsonString);
-
-        UnmapViewOfFile(pBuffer);
-        CloseHandle(hMapFile);
-
-        ProcessRequest(ClientHandle, wParam, jsonDoc);
-    }
-    break;
-#endif
-    case WM_RESPONSE:
-    {
-        HANDLE hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHARED_MEM);
-        if (!hMapFile)
-        {
-            return FALSE;
-        }
-
-        LPVOID pBuffer = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, BUFFER_SIZE);
-        if (!pBuffer)
-        {
-            CloseHandle(hMapFile);
-            return FALSE;
-        }
-
-        auto receivedJsonString = (const char*)pBuffer;
-        if (!receivedJsonString)
-        {
-            UnmapViewOfFile(pBuffer);
-            CloseHandle(hMapFile);
-            return FALSE;
-        }
-
-        JsonDocument jsonDoc;
-        deserializeJson(jsonDoc, receivedJsonString);
-        JsonResponse.SetValue(jsonDoc);
-
-        UnmapViewOfFile(pBuffer);
-        CloseHandle(hMapFile);
-    }
-    break;
-
-    case WM_QUIT:
-    case WM_DESTROY:
-    case WM_NCDESTROY:
-        ::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)OriginalWndProc);
-        break;
-
-    default:
-        break;
-    }
-
-    return CallWindowProc(OriginalWndProc, hwnd, uMsg, wParam, lParam);
-}
-
 int WINAPI wWinMain(
     _In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -170,7 +28,7 @@ int WINAPI wWinMain(
     bool allow_dpi_override = false;
     bool simulator_mode = false;
     lv_display_t* display = ::lv_windows_create_display(
-        HOST_NAME,
+        L"Buckshot_Roulette",
         800,
         480,
         zoom_level,
@@ -218,12 +76,6 @@ int WINAPI wWinMain(
 
     lv_indev_t* encoder_indev = ::lv_windows_acquire_encoder_indev(display);
     if (!encoder_indev)
-    {
-        return -1;
-    }
-
-    OriginalWndProc = (WNDPROC)::SetWindowLongPtr(window_handle, GWLP_WNDPROC, (LONG_PTR)MyNewWinProc);
-    if (!OriginalWndProc)
     {
         return -1;
     }

@@ -17,6 +17,11 @@
 #define SPI_MISO 13
 #define SPI_SCK 12
 
+#define I2S_DOUT 17  // Data Out
+#define I2S_BCLK 0   // Bit Clock
+#define I2S_LRC 18   // Word Select (WS) - Left/Right Clock (LRCK)
+#define I2S_PORT I2S_NUM_0
+
 #define CHUNK_SIZE 20000
 
 Audio audio;

@@ -18,92 +18,19 @@
 #define STR(a) #a
 
 #ifdef _WIN64
-#define HOST_NAME L"Buckshot_Roulette"
-#define CLIENT_NAME L"Buckshot_Roulette"
-#define CLIENT_NAME_FOR_JSON "Buckshot_Roulette"
-#else
-#define HOST_NAME map_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#define CLIENT_NAME map_MODULE_NAME[MODULE_NAME::HostTimer].c_str()
-#endif
-
-#define MAX_SIZE 1000
-#define BUFFER_SIZE sizeof(char) * MAX_SIZE
-
-#ifdef _WIN64
 #include <Windows.h>
-
 #define PROGMEM
 #define MILLISEC_GET ::GetTickCount64()
 #define debug_println(a) std::cout << std::string(a) << "\n"
 #define debug_println_func(a) std::cout << __func__ << " -> " << std::string(a) << "\n"
-#define SHARED_MEM L"SharedMemoryJson"
 #else
 #include <Arduino.h>
-
-#define WM_USER 0x0400
-#define HWND uint8_t
-
+#define MILLISEC_GET millis()
 #define debug_println(a) Serial.println(std::string(a).c_str())
 #define debug_println_func(a) Serial.println(String(__FUNCTION__) + " -> " + std::string(a).c_str())
-#define MILLISEC_GET millis()
 
 #define _countof(a) sizeof(a) / sizeof(a[0])
-
-#define INPUT_PIN 22
-#define BUZZER_PIN 26
-
-#define I2S_DOUT 17 // Data Out
-#define I2S_BCLK 0  // Bit Clock
-#define I2S_LRC 18  // Word Select (WS) - Left/Right Clock (LRCK)
-#define I2S_PORT I2S_NUM_0
-
-#define IP_ADD_1 192
-#define IP_ADD_2 168
-#define IP_ADD_3 0
-#define IP_ADD_4 1
-
-#define NETMASK_1 255
-#define NETMASK_2 255
-#define NETMASK_3 255
-#define NETMASK_4 0
-
-#define HTTP_OK 200
-#define HTTP_NOT_FOUND 404
-
-struct data_pack_t {
-    char source[20];
-    uint32_t base_msg;
-    uint32_t msg;
-    char data[MAX_SIZE];
-};
 #endif
-
-enum
-{
-    WM_USER_MIN = WM_USER,
-    WM_SET_CLIENT_HANDLE, // Save client handle
-    WM_REQUEST,           // Request/get from other message
-    WM_REQUEST_WITH_DATA, // Request/get from other message with data
-    WM_RESPONSE,          // Response message from host to client
-    WM_CLIENT_RESPONSE,   // Response message from client to host
-    WM_SET_CLIENTSTATE,   // Notify to set ON/OFF status to selected clients
-    WM_TIMER_GET,         // Client get timer from host
-    WM_STRIKENUM_GET,     // Client get strike count from host
-    WM_STRIKESTATE_SET,   // Client notify host to set strike status
-    WM_SUCCESSSTATE_SET,  // Client notify host to set client success status
-    WM_SYSINIT_GET,       // Client get init system data from host
-    WM_STOP_ALL,          // Notify for stoping all client
-    WM_STOP_COMPLETE,     // Notify for all client stopped to Host
-};
-
-#define INCORRECT (uint8_t)(-1)
-
-#define BEEP_FRE 3000
-#define BEEP_INCREASE_DURATION 50
-#define BEEP_TIMEOUT 3000
-
-#define STATE_CHECKED 3
-#define STATE_UNCHECK 2
 
 #define TO_ENUM(enum_name, item) item,
 #define TO_STRING(enum_name, item) { enum_name::item, #item },
