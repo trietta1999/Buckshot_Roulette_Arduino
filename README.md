@@ -49,10 +49,42 @@ Thay vì sử dụng thẻ bài vật lý, hệ thống quản lý vật phẩm 
 
 Đây là sự kết hợp hoàn hảo giữa tính gọn nhẹ của công nghệ nhúng và sức hấp dẫn của lối chơi chiến thuật đỉnh cao, tạo nên một thiết bị giải trí độc đáo cho những tín đồ của dòng game kinh dị tâm lý.
 
+### **Màn hình hiển thị**
+
+Màn hình **Guition HMI W5 (JC8048W550)** là một bo mạch hiển thị thông minh (Smart Display/HMI) tích hợp vi điều khiển mạnh mẽ **ESP32-S3**. Với cấu hình bộ nhớ lớn và tấm nền IPS sắc nét, đây là phần cứng lý tưởng cho các dự án phát triển giao diện đồ họa nhúng (GUI) sử dụng thư viện như **LVGL**, đảm bảo hiệu năng mượt mà ở độ phân giải 800x480.
+
 ![](Images/hmi_front.jpg)
 ![](Images/hmi_back.jpg)
 
-**Tìm hiểu thêm:** [Màn hình cảm ứng Guition HMI W5 ESP32-S3-N16R8 JC8048W550 5.0 inch IPS 800*480](https://www.surenoo.com/products/23291185)
+### **1. Thông số cấu hình phần cứng chính**
+
+**Bộ vi xử lý và bộ nhớ (Core & Memory)**
+
+* **MCU:** ESP32-S3-WROOM-1 (Dual-core Xtensa LX7, xung nhịp lên đến 240MHz, tích hợp tập lệnh tăng tốc vector cho AI/đồ họa).
+* **Flash:** 16 MB (N16) – Thoải mái lưu trữ firmware lớn, font chữ, và các file assets hình ảnh nhúng trực tiếp.
+* **PSRAM:** 8 MB Octal PSRAM (R8) – Chạy ở chế độ Octal tốc độ cao, đóng vai trò cực kỳ quan trọng để cấp phát bộ đệm khung hình (framebuffers) lớn cho màn hình 800x480 mà không lo tràn bộ nhớ tĩnh (SRAM).
+* **Kết nối không dây:** Wi-Fi 4 (802.11 b/g/n) và Bluetooth 5.0 (LE) / BLE.
+
+**Thông số màn hình và cảm ứng (Display & Touch)**
+
+* **Kích thước:** 5.0 inch.
+* **Công nghệ tấm nền:** IPS (Góc nhìn rộng, màu sắc trung thực và độ tương phản tốt hơn nhiều so với màn TN thông thường).
+* **Độ phân giải:** 800 x 480 pixels.
+* **Driver hiển thị:** ST7262 (Được kết nối qua giao tiếp **16-bit RGB** trực tiếp của ESP32-S3, tối ưu hóa tối đa tốc độ làm tươi màn hình).
+* **Độ sâu màu:** RGB 16-bit (65K màu - RGB565).
+* **Cảm ứng:** Cảm ứng điện dung (Capacitive Touch Panel - CTP), điều khiển qua chip GT911 (Giao tiếp I2C).
+
+### **2. Khả năng tương thích phần mềm phát triển**
+
+Mạch được hỗ trợ rất tốt bởi cộng đồng mã nguồn mở và các framework đồ họa nhúng:
+
+* **LVGL:** Nhờ có 8MB PSRAM kết nối qua bus Octal tốc độ cao, có thể dễ dàng cấu hình cơ chế Double Buffering (hoặc tối thiểu là 1/10 frame buffer trên PSRAM) trong LVGL để đạt tốc độ render tối đa và loại bỏ hoàn toàn hiện tượng xé hình (tearing). Tương thích tốt khi dùng kèm các thư viện driver như `Arduino_GFX` hoặc `LovyanGFX`.
+* **ESPHome:** Được hỗ trợ chính thức qua các cấu hình phần cứng có sẵn, cho phép kéo trực tiếp các thực thể từ Home Assistant lên màn hình thông qua mô-đun LVGL của ESPHome mà không cần code C++ thủ công.
+* **openHASP:** Hoạt động rất mượt mà (mã thiết bị: `JC8048W550`), giúp thiết kế nhanh giao diện điều khiển nhà thông minh thông qua các file cấu hình định dạng JSON.
+* **Môi trường lập trình:** Hỗ trợ toàn diện ESP-IDF, Arduino IDE, và MicroPython.
+
+### **Tìm hiểu thêm:**
+[Màn hình cảm ứng Guition HMI W5 ESP32-S3-N16R8 JC8048W550 5.0 inch IPS 800*480](https://www.surenoo.com/products/23291185)
 
 ## **Tính Năng Mở Rộng: Trình Phát Nhạc Hi-Fi Từ Thẻ Nhớ**
 Không chỉ dừng lại ở một máy chơi game chuyên dụng, thiết bị tận dụng tối đa sức mạnh xử lý âm thanh của ESP32 để trở thành một trình phát nhạc MP3 chuyên nghiệp. Thông qua khe cắm thẻ nhớ mở rộng, người chơi có thể biến thiết bị thành một máy nghe nhạc cá nhân với những đặc điểm nổi bật:
@@ -72,35 +104,35 @@ LVGL (viết tắt của Light and Versatile Graphics Library) là một thư vi
 LVGL cung cấp một bộ sưu tập phong phú các đối tượng giao diện dựng sẵn (gọi là widget) như nút, nhãn, thanh trượt, biểu đồ, danh sách, vùng văn bản..., cùng với hệ thống styling mạnh mẽ cho phép tùy chỉnh giao diện theo ý muốn.
 Hơn nữa, LVGL hoạt động độc lập với phần cứng và hệ điều hành, cho phép dễ dàng tích hợp vào nhiều nền tảng vi điều khiển khác nhau (như ESP32, STM32, RP2040, v.v.) và chạy trên cả môi trường bare-metal hoặc cùng với các hệ điều hành thời gian thực (RTOS) phổ biến. Sự hỗ trợ từ cộng đồng lớn mạnh và khả năng tương thích với các công cụ thiết kế GUI trực quan như Squareline Studio càng làm tăng tốc độ và hiệu quả trong quá trình phát triển.
 
-![](img/lvgl_home_banner.jpg)
+![](Images/lvgl_home_banner.jpg)
 
 # 2. Phần mềm
 Dự án được xây dựng dựa trên kiến trúc phần mềm phân lớp, được thiết kế để tách biệt rõ ràng các trách nhiệm (separation of concerns) giữa hiển thị, logic xử lý, thư viện dùng chung và môi trường phát triển mô phỏng. Cấu trúc này bao gồm bốn thành phần chính: **GUI, LIB, SER,** và **SIM**.
 
-1. **GUI (Graphical User Interface)**
-    * **Trách nhiệm:** **GUI** chịu trách nhiệm hoàn toàn về khía cạnh hiển thị và tương tác với người dùng trên màn hình cảm ứng.
-    - **Chức năng:** Sử dụng thư viện đồ họa **LVGL** để vẽ và quản lý tất cả các yếu tố hình ảnh của trò chơi (nút, vật phẩm, màn hình, hiệu ứng...). Lắng nghe và xử lý các sự kiện đầu vào từ màn hình cảm ứng (chạm, vuốt, nhấn giữ...).
-    - **Tương tác:** Khi người dùng thực hiện một thao tác (ví dụ: chạm vào nút, chọn vật phẩm, ...), **GUI** sẽ thu nhận sự kiện này và gửi một yêu cầu xử lý tương ứng đến lớp xử lý (thông qua **LIB** đến **SER** trên phần cứng hoặc **SIM** cho môi trường mô phỏng). **GUI** cũng nhận dữ liệu trạng thái cập nhật từ lớp xử lý để cập nhật lại hiển thị trên màn hình.
+## **1. GUI (Graphical User Interface)**
+- **Trách nhiệm:** **GUI** chịu trách nhiệm hoàn toàn về khía cạnh hiển thị và tương tác với người dùng trên màn hình cảm ứng.
+- **Chức năng:** Sử dụng thư viện đồ họa **LVGL** để vẽ và quản lý tất cả các yếu tố hình ảnh của trò chơi (nút, vật phẩm, màn hình, hiệu ứng...). Lắng nghe và xử lý các sự kiện đầu vào từ màn hình cảm ứng (chạm, vuốt, nhấn giữ...).
+- **Tương tác:** Khi người dùng thực hiện một thao tác (ví dụ: chạm vào nút, chọn vật phẩm, ...), **GUI** sẽ thu nhận sự kiện này và gửi một yêu cầu xử lý tương ứng đến lớp xử lý nội bộ. **GUI** cũng nhận dữ liệu trạng thái cập nhật từ **SER** để cập nhật lại hiển thị trên màn hình.
 
-2. **LIB (Library)**
-    - **Trách nhiệm:** **LIB** là thư viện chứa các hàm và cấu trúc dữ liệu cốt lõi, được thiết kế để dùng chung giữa lớp xử lý chính (**SER**) và môi trường mô phỏng (**SIM**), và có thể được sử dụng bởi **GUI** để định nghĩa cấu trúc dữ liệu.
+## **2. LIB (Library)**
+- **Trách nhiệm:** **LIB** là thư viện chứa các hàm và cấu trúc dữ liệu cốt lõi, được thiết kế để dùng chung giữa lớp xử lý phần cứng (**SER**) và môi trường mô phỏng (**SIM**), và có thể được sử dụng bởi **GUI** để định nghĩa cấu trúc dữ liệu.
+- **Tương tác:** Nhận yêu cầu từ **GUI**, gọi hàm trong **LIB**, cập nhật trạng thái nội bộ, và gửi dữ liệu trạng thái cập nhật trở lại cho GUI để hiển thị.
 
-3. **SER (Service)**
-    - **Trách nhiệm:** **SER** là trung tâm xử lý dành cho phần cứng khi dự án chạy trên phần cứng **ESP32** thực tế.
-    - **Chức năng:** Nhận các yêu cầu xử lý thao tác từ **GUI**, cập nhật trạng thái nội bộ của trò chơi ở phía phần cứng (ví dụ: kích hoạt âm thanh, thay đổi độ sáng đèn màn hình, ...).
-    - **Tương tác:** Nhận yêu cầu từ **GUI**, gọi hàm trong **LIB**, cập nhật trạng thái nội bộ, và gửi dữ liệu trạng thái cập nhật trở lại cho GUI để hiển thị. **SER** chịu trách nhiệm tương tác với các tài nguyên phần cứng nếu cần (ví dụ: điều khiển đèn LED, âm thanh, mạng, ...).
+## **3. SER (Service)**
+- **Trách nhiệm:** **SER** là trung tâm xử lý dành cho phần cứng khi dự án chạy trên phần cứng **ESP32** thực tế.
+- **Chức năng:** Nhận các yêu cầu xử lý thao tác từ **GUI**, cập nhật trạng thái nội bộ của trò chơi ở phía phần cứng (ví dụ: kích hoạt âm thanh, thay đổi độ sáng đèn màn hình, ...).
 
-4.  **SIM (Simulator)**
-    - **Trách nhiệm:** **SIM** là môi trường mô phỏng hoàn chỉnh chạy trên máy tính (ví dụ: Visual Studio), được thiết kế để hỗ trợ phát triển **GUI** và các xử lý mà không cần phần cứng ESP32.
-    - **Chức năng:** **SIM** thay thế hoàn toàn vai trò của **SER** trong môi trường phát triển. Nó hiển thị giao diện **GUI** (sử dụng **LVGL** được port cho PC) và nhận các yêu cầu thao tác từ **GUI** giống hệt như **SER** thật sẽ làm. Tuy nhiên, thay vì xử lý trên phần cứng ESP32, **SIM** sẽ giả lập quá trình xử lý bằng cách cũng gọi các hàm kiểm tra quy tắc trong **LIB**.
-    - **Tương tác:** Giao tiếp với lớp **GUI** và sử dụng **LIB** tương tự như **SER**, nhưng hoàn toàn trong môi trường phần mềm trên máy tính. Giúp lập trình viên phát triển và debug **GUI** cũng như các xử lý của **LIB** một cách nhanh chóng, hiệu quả trước khi triển khai lên phần cứng ESP32.
+## **4. SIM (Simulator)**
+- **Trách nhiệm:** **SIM** là môi trường mô phỏng hoàn chỉnh chạy trên máy tính (ví dụ: Visual Studio), được thiết kế để hỗ trợ phát triển **GUI** và các xử lý mà không cần phần cứng ESP32.
+- **Chức năng:** **SIM** thay thế hoàn toàn vai trò của **SER** trong môi trường phát triển. Nó hiển thị giao diện **GUI** (sử dụng **LVGL** được port cho PC) và nhận các yêu cầu thao tác từ **GUI** giống hệt như **SER** thật sẽ làm. Tuy nhiên, thay vì xử lý trên phần cứng ESP32, **SIM** sẽ giả lập quá trình xử lý bằng cách cũng gọi các hàm kiểm tra quy tắc trong **LIB**.
+- **Tương tác:** Giao tiếp với lớp **GUI** và sử dụng **LIB** tương tự như **SER**, nhưng hoàn toàn trong môi trường phần mềm trên máy tính. Giúp lập trình viên phát triển và debug **GUI** cũng như các xử lý của **LIB** một cách nhanh chóng, hiệu quả trước khi triển khai lên phần cứng ESP32.
 
-**Lợi ích của Kiến trúc này:**
+### **Lợi ích của Kiến trúc này:**
 
-* **Phân tách trách nhiệm:** Mỗi lớp có một nhiệm vụ rõ ràng, giúp code sạch sẽ, dễ đọc và bảo trì.
-* **Tái sử dụng code:** Logic cốt lõi trong LIB được sử dụng ở cả SER và SIM, tránh trùng lặp code.
-* **Phát triển song song:** Có thể phát triển lớp GUI/SIM và lớp SER/Hardware một cách song song, tăng tốc độ dự án.
-* **Dễ kiểm thử:** Việc tách biệt logic vào LIB giúp dễ dàng viết các unit test cho từng quy tắc gỡ bom. Môi trường SIM giúp kiểm thử GUI và luồng xử lý mà không phụ thuộc vào phần cứng.
+- **Phân tách trách nhiệm:** Mỗi lớp có một nhiệm vụ rõ ràng, giúp code sạch sẽ, dễ đọc và bảo trì.
+- **Tái sử dụng code:** Logic cốt lõi trong LIB được sử dụng ở cả SER và SIM, tránh trùng lặp code.
+- **Phát triển song song:** Có thể phát triển lớp GUI/SIM và lớp SER/Hardware một cách song song, tăng tốc độ dự án.
+- **Dễ kiểm thử:** Việc tách biệt logic vào LIB giúp dễ dàng viết các unit test cho từng quy tắc gỡ bom. Môi trường SIM giúp kiểm thử GUI và luồng xử lý mà không phụ thuộc vào phần cứng.
 
 # 3. Sản phẩm hoàn thiện
 Chi tiết về sản phẩm đã hoàn thiện, xem tại [PRODUCT.md](PRODUCT.md)
