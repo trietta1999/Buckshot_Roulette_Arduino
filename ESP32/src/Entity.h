@@ -53,6 +53,7 @@ namespace player
         lv_obj_t* confirmButton;
         lv_obj_t* gunfireEffect;
         lv_obj_t* adrenalinefEffect;
+        lv_obj_t* imgSkip;
         std::vector<lv_obj_t*> listHPLevel1;
         std::vector<lv_obj_t*> listHPLevel2;
 
@@ -101,6 +102,20 @@ namespace player
         void DisablePickButton()
         {
             lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
+        }
+
+        void SetSkip(bool value)
+        {
+            this->isSkip = value;
+
+            if (value)
+            {
+                lv_obj_remove_flag(this->imgSkip, LV_OBJ_FLAG_HIDDEN);
+            }
+            else
+            {
+                lv_obj_add_flag(this->imgSkip, LV_OBJ_FLAG_HIDDEN);
+            }
         }
     };
 

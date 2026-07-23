@@ -140,6 +140,7 @@ void Init()
     player1.confirmButton = ui_btnPlayerLeftConfirm;
     player1.gunfireEffect = ui_wndShotgunShotEffectLeft;
     player1.adrenalinefEffect = ui_wndAdrenalineEffectLeft;
+    player1.imgSkip = ui_imgPlayer1Skip;
     player1.listButtonInfo = {
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot1, ui_imgItemSlot1, { 0 } },
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot2, ui_imgItemSlot2, { 0 } },
@@ -172,6 +173,7 @@ void Init()
     player2.confirmButton = ui_btnPlayerRightConfirm;
     player2.gunfireEffect = ui_wndShotgunShotEffectRight;
     player2.adrenalinefEffect = ui_wndAdrenalineEffectRight;
+    player2.imgSkip = ui_imgPlayer2Skip;
     player2.listButtonInfo = {
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot7, ui_imgItemSlot7, { 0 } },
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot8, ui_imgItemSlot8, { 0 } },

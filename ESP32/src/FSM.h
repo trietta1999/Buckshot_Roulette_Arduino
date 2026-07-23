@@ -191,8 +191,9 @@ void FSM()
                     if (Player->isNext)
                     {
                         // Already to be the next turn
-                        Player->isSkip = false;
+                        Player->SetSkip(false);
                         Player->isNext = false;
+
                         break;
                     }
                     else if (Player->isSkip)

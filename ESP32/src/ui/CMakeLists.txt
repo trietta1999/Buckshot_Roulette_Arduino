@@ -33,8 +33,8 @@ SET(SOURCES screens/ui_Start.c
     images/ui_img_library_music_png.c
     images/ui_img_help_center_png.c
     images/ui_img_chargeback_png.c
-    images/ui_img_shotgun_png.c
     images/ui_img_shotgun_block_png.c
+    images/ui_img_shotgun_png.c
     images/ui_img_live_png.c
     images/ui_img_metal_bullet_box_png.c
     images/ui_img_empty_bullet_png.c

@@ -120,7 +120,7 @@ EFFECT_FUNCTION(HANDCUFFS)
     {
         buttonSlot.Unassign();
 
-        nextPlayer.isSkip = true;
+        nextPlayer.SetSkip(true);
 
         result = true;
 

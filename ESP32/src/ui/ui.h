@@ -58,8 +58,8 @@ LV_IMG_DECLARE(ui_img_volume_off_png);    // assets/volume_off.png
 LV_IMG_DECLARE(ui_img_library_music_png);    // assets/library_music.png
 LV_IMG_DECLARE(ui_img_help_center_png);    // assets/help_center.png
 LV_IMG_DECLARE(ui_img_chargeback_png);    // assets/ChargeBack.png
-LV_IMG_DECLARE(ui_img_shotgun_png);    // assets/Shotgun.png
 LV_IMG_DECLARE(ui_img_shotgun_block_png);    // assets/shotgun_block.png
+LV_IMG_DECLARE(ui_img_shotgun_png);    // assets/Shotgun.png
 LV_IMG_DECLARE(ui_img_live_png);    // assets/Live.png
 LV_IMG_DECLARE(ui_img_metal_bullet_box_png);    // assets/metal_bullet_box.png
 LV_IMG_DECLARE(ui_img_empty_bullet_png);    // assets/empty_bullet.png
