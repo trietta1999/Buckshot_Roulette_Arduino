@@ -1658,6 +1658,9 @@
     <ClCompile Include="..\..\ESP32\src\ui\fonts\ui_font_Arial24.c">
       <Filter>UI\fonts</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_intro_png.c">
+      <Filter>UI\images</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LvglWindowsDesktopApplication.manifest" />

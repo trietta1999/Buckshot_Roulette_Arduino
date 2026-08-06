@@ -31,6 +31,7 @@ extern "C" {
 extern lv_obj_t * ui____initial_actions0;
 
 // IMAGES AND IMAGE SETS
+LV_IMG_DECLARE(ui_img_intro_png);    // assets/intro.png
 LV_IMG_DECLARE(ui_img_metal_table_png);    // assets/metal_table.png
 LV_IMG_DECLARE(ui_img_beer_png);    // assets/Beer.png
 LV_IMG_DECLARE(ui_img_burnerphone_png);    // assets/BurnerPhone.png

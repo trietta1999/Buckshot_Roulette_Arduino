@@ -729,6 +729,7 @@
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_handcuffs_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_handsaw_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_help_center_png.c" />
+    <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_intro_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_inverter_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_library_music_png.c" />
     <ClCompile Include="..\..\ESP32\src\ui\images\ui_img_live_png.c" />

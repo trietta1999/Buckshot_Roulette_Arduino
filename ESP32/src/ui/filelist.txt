@@ -6,6 +6,7 @@ ui.c
 components/ui_comp_hook.c
 ui_helpers.c
 ui_events.cpp
+images/ui_img_intro_png.c
 images/ui_img_metal_table_png.c
 images/ui_img_beer_png.c
 images/ui_img_burnerphone_png.c

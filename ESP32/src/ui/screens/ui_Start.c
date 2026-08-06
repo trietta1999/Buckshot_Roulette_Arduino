@@ -6,8 +6,10 @@
 #include "../ui.h"
 
 lv_obj_t * ui_Start = NULL;
+lv_obj_t * ui_Label2 = NULL;
 lv_obj_t * ui_btnPlayer2Start = NULL;
 lv_obj_t * ui_Label3 = NULL;
+lv_obj_t * ui_Label4 = NULL;
 lv_obj_t * ui_btnPlayer1Start = NULL;
 lv_obj_t * ui_Label1 = NULL;
 // event funtions
@@ -44,13 +46,30 @@ void ui_Start_screen_init(void)
 {
     ui_Start = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Start, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_set_flex_flow(ui_Start, LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(ui_Start, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_bg_image_src(ui_Start, &ui_img_metal_table_png, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_flex_flow(ui_Start, LV_FLEX_FLOW_ROW_WRAP);
+    lv_obj_set_flex_align(ui_Start, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_SPACE_BETWEEN);
+    lv_obj_set_style_bg_image_src(ui_Start, &ui_img_intro_png, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui_Start, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui_Start, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_Start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_Start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_Start, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_Start, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Label2 = lv_label_create(ui_Start);
+    lv_obj_set_width(ui_Label2, 780);
+    lv_obj_set_height(ui_Label2, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Label2, -46);
+    lv_obj_set_y(ui_Label2, 183);
+    lv_obj_set_align(ui_Label2, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Label2, "Inspired by the game from Mike Klubnika");
+    lv_obj_remove_flag(ui_Label2, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_color(ui_Label2, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_Label2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_Label2, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_Label2, &lv_font_montserrat_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_Label2, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_Label2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_btnPlayer2Start = lv_button_create(ui_Start);
     lv_obj_set_width(ui_btnPlayer2Start, 210);
@@ -83,6 +102,23 @@ void ui_Start_screen_init(void)
     lv_obj_set_style_text_color(ui_Label3, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label3, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Label4 = lv_label_create(ui_Start);
+    lv_obj_set_width(ui_Label4, 335);
+    lv_obj_set_height(ui_Label4, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Label4, -46);
+    lv_obj_set_y(ui_Label4, 183);
+    lv_obj_set_align(ui_Label4, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Label4, "Copyright 2023 Mike Klubnika.\nThe project is for non-commercial use.");
+    lv_obj_remove_flag(ui_Label4, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_color(ui_Label4, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_Label4, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_Label4, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_Label4, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_Label4, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_Label4, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_btnPlayer1Start = lv_button_create(ui_Start);
     lv_obj_set_width(ui_btnPlayer1Start, 210);
@@ -128,8 +164,10 @@ void ui_Start_screen_destroy(void)
 
     // NULL screen variables
     ui_Start = NULL;
+    ui_Label2 = NULL;
     ui_btnPlayer2Start = NULL;
     ui_Label3 = NULL;
+    ui_Label4 = NULL;
     ui_btnPlayer1Start = NULL;
     ui_Label1 = NULL;
 
