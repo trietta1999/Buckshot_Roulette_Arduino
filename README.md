@@ -14,17 +14,25 @@ Buckshot Roulette không chỉ là một trò chơi, đó là một trải nghi�
 
 Trang web chính thức của trò chơi: [https://buckshotroulette.com](https://buckshotroulette.com/home)
 
-## 1.2. Các vật phẩm
+## 1.2. Các vật phẩm & Cơ chế sinh mạng
 Trong thế giới của Buckshot Roulette, may mắn chỉ là một biến số mà bạn có thể thao túng. Các vật phẩm (Items) không chỉ là công cụ hỗ trợ, chúng là những quân bài chiến lược giúp bạn lật ngược thế cờ khi họng súng đang chĩa thẳng vào đầu.
 
-Dưới đây là mô tả về kho khí tài mà bạn sẽ sử dụng để đối đầu với cái chết:
+Dưới đây là mô tả về **kho khí tài gồm 9 vật phẩm chiến thuật** mà bạn sẽ sử dụng để đối đầu với cái chết:
 
-- **Kính Lúp (Magnifying Glass)**: Xuyên thấu sự thật. Cho phép bạn soi thẳng vào buồng đạn để biết chắc chắn viên đạn tiếp theo là thật hay giả. Một cái nhìn giúp xóa tan mọi nỗi sợ hãi về sự ngẫu nhiên.
-- **Cưa Tay (Hand Saw)**: Tàn bạo và dứt khoát. Dùng để cưa nòng khẩu shotgun, biến viên đạn thật tiếp theo thành đòn tấn công hủy diệt với sát thương gấp đôi. Một lựa chọn "được ăn cả, ngã về không".
+- **Kính Lúp (Magnifying Glass):** Xuyên thấu sự thật. Cho phép bạn soi thẳng vào buồng đạn để biết chắc chắn viên đạn tiếp theo là thật hay giả. Một cái nhìn giúp xóa tan mọi nỗi sợ hãi về sự ngẫu nhiên.
+- **Cưa Tay (Hand Saw):** Tàn bạo và dứt khoát. Dùng để cưa nòng khẩu shotgun, biến viên đạn thật tiếp theo thành đòn tấn công hủy diệt với sát thương gấp đôi (2 máu). Một lựa chọn "được ăn cả, ngã về không".
 - **Còng Tay (Handcuffs):** Khống chế cuộc chơi. Khóa chặt đối thủ, khiến họ mất đi lượt đi tiếp theo. Trong một trò chơi mà mỗi giây đều quý giá, việc khiến đối thủ bất động là lợi thế vô giá.
-- **Bao Thuốc (Cigarettes):** Xoa dịu thần kinh. Một hơi thuốc để lấy lại sự bình tĩnh giữa cơn ác mộng. Vật phẩm này giúp bạn hồi phục một đơn vị máu (Defib Charge), kéo dài sự sống thêm một khoảnh khắc.
-- **Lon Bia (Can of Beer):** Vứt bỏ rủi ro. Bằng cách bật nắp và uống hết lon, bạn tống khứ viên đạn hiện tại ra khỏi nòng súng mà không cần bóp cò. Một cách an toàn để loại bỏ những mối nguy hiểm không mong muốn.
-- **Máy Khử Rung Tim (Defibrillator):** Cơ hội cuối cùng. Khi trái tim đã ngừng đập, đây là thiết bị đưa bạn trở về từ cõi chết. Một mạng sống dự phòng giúp bạn dám dấn thân vào những nước đi mạo hiểm nhất.
+- **Bao Thuốc (Cigarettes):** Xoa dịu thần kinh. Một hơi thuốc để lấy lại sự bình tĩnh giữa cơn ác mộng. Vật phẩm này giúp bạn hồi phục một đơn vị máu (Charge), kéo dài sự sống thêm một khoảnh khắc.
+- **Lon Bia (Beer):** Vứt bỏ rủi ro. Bằng cách kéo nòng đẩy viên đạn hiện tại ra khỏi buồng súng mà không cần bóp cò. Một cách an toàn để loại bỏ những mối nguy hiểm không mong muốn.
+- **Điện Thoại Dùng Một Lần (Burner Phone):** Nguồn tin bí ẩn. Bắt máy để được giọng nói bên kia đầu dây tiết lộ vị trí và loại đạn của một viên ngẫu nhiên còn lại trong buồng súng (ví dụ: *"Second shell is... Live!"*). Nếu chỉ còn duy nhất 1 viên trong nòng, điện thoại sẽ chỉ vang lên câu nói tiếc nuối *"How Unfortunate..."*.
+- **Thuốc Hết Hạn (Expired Medicine):** Canh bạc may rủi. Uống viên thuốc để đặt cược số phận với tỉ lệ 50/50: hoặc hồi phục ngay 2 đơn vị máu, hoặc phải trả giá đắt bằng cách tự mất đi 1 đơn vị máu.
+- **Bộ Đảo Cực Đạn (Inverter):** Nghịch đảo thực tại. Tác động từ tính làm biến đổi viên đạn đang nằm trong buồng súng: đạn thật chuyển thành đạn giả, và đạn giả biến thành đạn thật.
+- **Thuốc Tiêm Kích Thích (Adrenaline):** Trộm cắp trong chớp mắt. Tiêm một liều thuốc kích thích để ngay lập tức cướp lấy 1 vật phẩm bất kỳ trên bàn của đối phương và sử dụng nó ngay trong lượt đó.
+
+### **Hệ thống sinh mạng: Máy Khử Rung Tim (Defibrillator Charges)**
+Không giống các vật phẩm cầm tay trong túi đồ, sinh mạng của người chơi được biểu thị bằng các nấc sốc điện (Charges) từ bộ khử rung tim với 2 cấp độ:
+- **Máu Thường (Normal Charge - Level 1):** Nấc máu thông thường, có thể hồi phục lại bằng Bao thuốc lá hoặc Thuốc hết hạn.
+- **Máu Sinh Tử (Faded Charge - Level 2):** Nấc máu báo động cuối cùng, không thể hồi phục bằng bất kỳ vật phẩm nào. Một khi toàn bộ máu cạn kiệt về 0, tim ngừng đập và người chơi bị xử thua ngay lập tức.
 
 ![](Images/items.jpg)
 
@@ -37,15 +45,15 @@ Trái tim của dự án là màn hình cảm ứng điện dung, nơi mọi tha
 
 ### **Kho Vật Phẩm Kỹ Thuật Số (Virtual Items)**
 
-Thay vì sử dụng thẻ bài vật lý, hệ thống quản lý vật phẩm được tích hợp ngay trên màn hình. Người chơi sẽ quản lý "túi đồ" của mình thông qua các biểu tượng đặc trưng:
-
-- **Kính lúp, Cưa tay, Lon bia, Bao thuốc...** hiện diện dưới dạng các ô chọn thông minh.
-- Chỉ với một cú chạm, hiệu ứng vật phẩm sẽ được thực thi ngay lập tức thông qua các hoạt ảnh (animation) trên màn hình, thay đổi trực tiếp thông số trận đấu.
+Thay vì sử dụng thẻ bài vật lý, hệ thống quản lý vật phẩm được tích hợp ngay trên màn hình. Mỗi người chơi sở hữu một khay trang bị gồm 6 ô chứa đồ:
+- Toàn bộ 9 vật phẩm chiến lược (*Kính lúp, Cưa tay, Lon bia, Bao thuốc, Điện thoại, Thuốc hết hạn, Còng tay, Đảo cực, Adrenaline*) hiện diện dưới dạng các ô chọn thông minh.
+- Mỗi vòng người chơi được nhấn nút rút ngẫu nhiên tối đa 3 món (tối đa 6 món dự trữ).
+- Chỉ với một cú chạm, hiệu ứng vật phẩm sẽ được thực thi ngay lập tức thông qua các hoạt ảnh (animation) trên màn hình và tác động trực tiếp vào các thông số trận đấu.
 
 ### **Cơ Chế Nạp Đạn & Quản Lý Máu Thông Minh**
 
-- **Số hóa sinh mạng:** Lượng máu của người chơi và đối thủ được hiển thị bằng các biểu tượng bộ khử rung tim (Defib) sắc nét, tự động cập nhật sau mỗi phát súng.
-- **Thuật toán nạp đạn:** Trước mỗi vòng, hệ thống sẽ thông báo số đạn Thật/Giả. Thuật toán ngẫu nhiên của ESP32 sẽ "xáo trộn" các viên đạn trong buồng đạn ảo, đảm bảo mỗi lần bóp cò là một khoảnh khắc đối mặt với vận may hoàn toàn công bằng và không thể đoán trước.
+- **Số hóa sinh mạng:** Lượng máu của hai người chơi được hiển thị bằng các biểu tượng bộ khử rung tim (Defib) sắc nét 2 tầng (Level 1 và Level 2), tự động cập nhật và phát âm thanh sau mỗi phát súng hoặc lần hồi máu.
+- **Thuật toán nạp đạn:** Trước mỗi vòng, nắp hộp đạn ảo sẽ mở ra để công khai tổng số lượng đạn Thật (Live) và đạn Giả (Blank) được đưa vào súng (ngẫu nhiên từ 2 đến 8 viên, đảm bảo luôn có ít nhất 1 đạn thật). Sau đó, hộp đạn đậy nắp và thuật toán ngẫu nhiên của ESP32 sẽ xáo trộn buồng đạn, đảm bảo mỗi lần bóp cò là một khoảnh khắc đối mặt với vận may hoàn toàn công bằng và không thể đoán trước.
 
 Đây là sự kết hợp hoàn hảo giữa tính gọn nhẹ của công nghệ nhúng và sức hấp dẫn của lối chơi chiến thuật đỉnh cao, tạo nên một thiết bị giải trí độc đáo cho những tín đồ của dòng game kinh dị tâm lý.
 
@@ -87,52 +95,67 @@ Mạch được hỗ trợ rất tốt bởi cộng đồng mã nguồn mở và
 [Màn hình cảm ứng Guition HMI W5 ESP32-S3-N16R8 JC8048W550 5.0 inch IPS 800*480](https://www.surenoo.com/products/23291185)
 
 ## **Tính Năng Mở Rộng: Trình Phát Nhạc Hi-Fi Từ Thẻ Nhớ**
-Không chỉ dừng lại ở một máy chơi game chuyên dụng, thiết bị tận dụng tối đa sức mạnh xử lý âm thanh của ESP32 để trở thành một trình phát nhạc MP3 chuyên nghiệp. Thông qua khe cắm thẻ nhớ mở rộng, người chơi có thể biến thiết bị thành một máy nghe nhạc cá nhân với những đặc điểm nổi bật:
+Không chỉ dừng lại ở một máy chơi game chuyên dụng, thiết bị tận dụng tối đa khả năng giải mã âm thanh số của ESP32 qua giao tiếp I2S để trở thành một trình phát nhạc chuyên nghiệp. Thông qua khe cắm thẻ nhớ micro-SD, người chơi có thể biến thiết bị thành một máy nghe nhạc cá nhân với những đặc điểm nổi bật:
 
-- **Quản Lý Thư Viện Nhạc Trực Quan:** Toàn bộ danh sách bài hát trong thẻ nhớ được hiển thị danh sách rõ ràng trên màn hình cảm ứng. Bạn có thể dễ dàng vuốt để chọn bài, chuyển bài (Next/Previous), tạm dừng (Pause) hoặc điều chỉnh âm lượng chỉ với một cú chạm nhẹ.
-- **Âm Thanh Chất Lượng Cao:** Nhờ khả năng giải mã âm thanh mượt mà, thiết bị hỗ trợ phát các định dạng phổ biến với độ ổn định cao. Bạn có thể tự tạo cho mình những "playlist" mang phong cách *Industrial* hay *Dark Techno* để đồng bộ với không khí u tối của trò chơi, hoặc đơn giản là thưởng thức những bản nhạc yêu thích lúc nghỉ ngơi.
-- **Cá Nhân Hóa Trải Nghiệm:** Giao diện nghe nhạc được thiết kế tinh giản nhưng hiện đại, đồng bộ với phong cách thẩm mỹ tổng thể của thiết bị. Đây là tính năng "bên lề" cực kỳ giá trị, giúp tăng tính ứng dụng của sản phẩm trong cuộc sống hàng ngày, biến nó từ một máy chơi game thuần túy thành một món đồ công nghệ đa nhiệm đầy cá tính.
+- **Quản Lý Thư Viện Nhạc Trực Quan:** Toàn bộ danh sách bài hát trong thẻ nhớ được quét tự động và hiển thị trên màn hình cảm ứng dưới dạng con lăn (Roller). Bạn có thể dễ dàng cuộn chọn bài, chuyển bài (Next/Previous), tạm dừng (Pause), theo dõi tiến trình bài hát qua vòng cung thời gian (Time Arc) hoặc điều chỉnh âm lượng chỉ với một cú chạm nhẹ.
+- **Định Dạng Âm Thanh Hỗ Trợ Đa Dạng:** Nhờ thư viện giải mã âm thanh I2S tối ưu, thiết bị hỗ trợ phát **6 định dạng âm thanh phổ biến**: `.mp3`, `.wav`, `.aac`, `.m4a`, `.flac`, `.ogg`. Bạn có thể tự tạo cho mình những danh sách nhạc mang phong cách *Industrial* hay *Dark Techno* để đồng bộ với không khí u tối của trò chơi, hoặc thưởng thức những bản nhạc chất lượng cao khi thư giãn.
+- **Tự Động Chuyển Bài (Auto Next):** Khi bài hát phát hết (`MSG_EOF`), hệ thống tự động nhận diện và chuyển sang phát bài tiếp theo trong danh sách mà không cần thao tác thủ công.
+- **Cá Nhân Hóa Trải Nghiệm:** Giao diện nghe nhạc được thiết kế tinh giản nhưng hiện đại, đồng bộ với phong cách thẩm mỹ tổng thể của thiết bị.
 
-## 1.4. LVGL
-LVGL (viết tắt của Light and Versatile Graphics Library) là một thư viện đồ họa mã nguồn mở và miễn phí, được thiết kế đặc biệt để giúp các nhà phát triển dễ dàng xây dựng giao diện người dùng đồ họa (GUI) đẹp mắt, hiện đại và mượt mà trên các hệ thống nhúng có tài nguyên hạn chế như vi điều khiển.
+## 1.4. LVGL & SquareLine Studio
+Giao diện người dùng của dự án được phát triển bằng **LVGL (Light and Versatile Graphics Library) phiên bản 9.1**, kết hợp cùng công cụ thiết kế giao diện trực quan **SquareLine Studio (v1.5.3)**.
 
-Điểm mạnh cốt lõi của LVGL nằm ngay trong tên gọi của nó:
-
-- Light (Nhẹ nhàng): LVGL được tối ưu hóa để hoạt động hiệu quả trên các chip có bộ nhớ RAM và flash khiêm tốn, cũng như tốc độ xử lý không quá cao. Điều này làm cho nó trở thành lựa chọn lý tưởng cho các thiết bị nhúng giá rẻ hoặc năng lượng thấp.
-- Versatile (Linh hoạt): Thư viện hỗ trợ rất nhiều loại màn hình khác nhau (bao gồm cả màn hình màu TFT, màn hình đơn sắc, màn hình e-paper...) và các thiết bị nhập liệu đa dạng (màn hình cảm ứng điện trở/điện dung, nút nhấn, encoder, bàn phím...). 
-
-LVGL cung cấp một bộ sưu tập phong phú các đối tượng giao diện dựng sẵn (gọi là widget) như nút, nhãn, thanh trượt, biểu đồ, danh sách, vùng văn bản..., cùng với hệ thống styling mạnh mẽ cho phép tùy chỉnh giao diện theo ý muốn.
-Hơn nữa, LVGL hoạt động độc lập với phần cứng và hệ điều hành, cho phép dễ dàng tích hợp vào nhiều nền tảng vi điều khiển khác nhau (như ESP32, STM32, RP2040, v.v.) và chạy trên cả môi trường bare-metal hoặc cùng với các hệ điều hành thời gian thực (RTOS) phổ biến. Sự hỗ trợ từ cộng đồng lớn mạnh và khả năng tương thích với các công cụ thiết kế GUI trực quan như Squareline Studio càng làm tăng tốc độ và hiệu quả trong quá trình phát triển.
+Điểm mạnh cốt lõi của giải pháp này:
+- **Light (Nhẹ nhàng & Tối ưu):** LVGL được tối ưu hóa sâu cho ESP32-S3 với bộ đệm vẽ DMA kết hợp tận dụng 8MB Octal PSRAM tốc độ cao, giúp loại bỏ hoàn toàn hiện tượng giật xé hình (tearing) ngay cả ở độ phân giải lớn 800x480.
+- **Versatile (Linh hoạt & Đa nền tảng):** Hỗ trợ đầy đủ widget hiện đại (Arc, Roller, Slider, Image Button, Modal Container...), hệ thống animation mượt mà và hoàn toàn độc lập với phần cứng nền tảng bên dưới.
+- **Phát triển trực quan:** SquareLine Studio cho phép thiết kế layout, quản lý assets hình ảnh/font chữ, cấu hình styling và xuất ra mã nguồn C chuẩn mực (`ESP32/src/ui/`), giúp tăng tốc tối đa quá trình phát triển và kiểm thử GUI.
 
 ![](Images/lvgl_home_banner.jpg)
 
-# 2. Phần mềm
-Dự án được xây dựng dựa trên kiến trúc phần mềm phân lớp, được thiết kế để tách biệt rõ ràng các trách nhiệm (separation of concerns) giữa hiển thị, logic xử lý, thư viện dùng chung và môi trường phát triển mô phỏng. Cấu trúc này bao gồm bốn thành phần chính: **GUI, LIB, SER,** và **SIM**.
+# 2. Phần mềm & Kiến trúc hệ thống
+Dự án được xây dựng dựa trên kiến trúc phân lớp hướng sự kiện và máy trạng thái hữu hạn (**FSM**), được thiết kế để tách biệt rõ ràng trách nhiệm giữa hiển thị giao diện, quản lý dữ liệu, quy tắc logic trò chơi và tầng giao tiếp phần cứng. Kiến trúc bao gồm 5 thành phần chính: **GUI, DATA, LIB, SER,** và **SIM**.
 
-## **1. GUI (Graphical User Interface)**
-- **Trách nhiệm:** **GUI** chịu trách nhiệm hoàn toàn về khía cạnh hiển thị và tương tác với người dùng trên màn hình cảm ứng.
-- **Chức năng:** Sử dụng thư viện đồ họa **LVGL** để vẽ và quản lý tất cả các yếu tố hình ảnh của trò chơi (nút, vật phẩm, màn hình, hiệu ứng...). Lắng nghe và xử lý các sự kiện đầu vào từ màn hình cảm ứng (chạm, vuốt, nhấn giữ...).
-- **Tương tác:** Khi người dùng thực hiện một thao tác (ví dụ: chạm vào nút, chọn vật phẩm, ...), **GUI** sẽ thu nhận sự kiện này và gửi một yêu cầu xử lý tương ứng đến lớp xử lý nội bộ. **GUI** cũng nhận dữ liệu trạng thái cập nhật từ **SER** để cập nhật lại hiển thị trên màn hình.
+## **1. GUI (Graphical User Interface - `ESP32/src/ui/`)**
+- **Trách nhiệm:** Đảm nhiệm toàn bộ khía cạnh hiển thị đồ họa và tương tác cảm ứng người dùng.
+- **Chức năng:** 
+  - Bao gồm 4 màn hình chính: Màn hình khởi động (`ui_Start`), Màn hình chính chơi game (`ui_Main`), Màn hình trợ giúp (`ui_Info`), và Màn hình nghe nhạc (`ui_Music`).
+  - Tích hợp các cửa sổ hộp thoại nổi (Modal Popups) trong trận đấu: Hộp thoại xác nhận bắn Shotgun (`ui_wndShotgunConfirm`), Cửa sổ soi nòng súng / nghe điện thoại (`ui_imgbtnShotgunInside`), Hộp thoại trộm đồ Adrenaline (`ui_wndAdrenalineEffect`), và Cửa sổ vinh danh kết quả (`ui_wndResult`).
+- **Tương tác:** Lắng nghe các sự kiện chạm từ màn hình cảm ứng điện dung GT911 (hoặc chuột trên PC), chuyển tiếp các yêu cầu tương tác sang `ui_events.cpp` để xử lý và cập nhật lại hiển thị dựa trên trạng thái từ **DATA**/**LIB**.
 
-## **2. LIB (Library)**
-- **Trách nhiệm:** **LIB** là thư viện chứa các hàm và cấu trúc dữ liệu cốt lõi, được thiết kế để dùng chung giữa lớp xử lý phần cứng (**SER**) và môi trường mô phỏng (**SIM**), và có thể được sử dụng bởi **GUI** để định nghĩa cấu trúc dữ liệu.
-- **Tương tác:** Nhận yêu cầu từ **GUI**, gọi hàm trong **LIB**, cập nhật trạng thái nội bộ, và gửi dữ liệu trạng thái cập nhật trở lại cho GUI để hiển thị.
+## **2. DATA (Reactive Data Layer - `CommonData.*`, `CommonDataType.*`, `CData.h`)**
+- **Trách nhiệm:** Định nghĩa cấu trúc dữ liệu cốt lõi và cung cấp cơ chế dữ liệu phản ứng (reactive state) dùng chung cho toàn bộ dự án.
+- **Chức năng:**
+  - Định nghĩa các kiểu dữ liệu và enumeration: `ITEM_TYPE` (9 vật phẩm), `BULLET_TYPE` (Live/Blank), `STATE_TYPE` (các trạng thái FSM), `PLAYER_TYPE`, `SOUND_TYPE`, `MUSIC_STATE_TYPE`.
+  - Triển khai lớp mẫu `CData<T>`: Đóng gói dữ liệu kèm cờ phát hiện biến động trạng thái (`state`), cho phép các tầng lắng nghe và phản ứng tự động mỗi khi dữ liệu trận đấu (máu, lượt chơi, độ sáng, danh sách bài hát, trạng thái FSM...) thay đổi.
 
-## **3. SER (Service)**
-- **Trách nhiệm:** **SER** là trung tâm xử lý dành cho phần cứng khi dự án chạy trên phần cứng **ESP32** thực tế.
-- **Chức năng:** Nhận các yêu cầu xử lý thao tác từ **GUI**, cập nhật trạng thái nội bộ của trò chơi ở phía phần cứng (ví dụ: kích hoạt âm thanh, thay đổi độ sáng đèn màn hình, ...).
+## **3. LIB (Game Logic Library - `CommonLibrary.*`, `FSM.h`, `Entity.h`, `Effect.h`)**
+- **Trách nhiệm:** Chứa toàn bộ "trái tim" logic và quy tắc vận hành trò chơi, độc lập hoàn toàn với phần cứng và môi trường biên dịch.
+- **Chức năng:**
+  - **Máy trạng thái hữu hạn (FSM):** Điều phối toàn bộ chu trình ván đấu qua 10 trạng thái tuần tự: `STARTUP` (chờ 2 người chơi Ready) $\rightarrow$ `PLAYER_NEXT` $\rightarrow$ `PICK` (rút đồ) $\rightarrow$ `PLAYER_ITEM_ARRANGE` $\rightarrow$ `LOAD_SHELL` (nạp đạn) $\rightarrow$ `ACTION_TURN` (lượt bắn) $\rightarrow$ `ACTION_ITEM` (dùng vật phẩm) $\rightarrow$ `UPDATE_HP` $\rightarrow$ `SHOTGUN_SHOT` $\rightarrow$ `RESULT` (kết thúc trận).
+  - **Thuật toán sinh đạn ngẫu nhiên:** Hàm `CreateBulletList()` ngẫu nhiên số lượng đạn từ 2 đến 8 viên với tỉ lệ Thật/Giả bảo đảm luôn có ít nhất 1 đạn thật, sau đó xáo trộn ngẫu nhiên vào buồng súng.
+  - **Xử lý hiệu ứng vật phẩm:** File `Effect.h` hiện thực hóa chính xác chức năng của 9 vật phẩm chiến lược (soi đạn, cưa nòng x2 dame, đảo cực đạn, còng tay bỏ lượt, trộm đồ adrenaline, hồi máu, cược máu 50/50...).
+  - **Quản lý thực thể (`Entity.h`):** Quản lý thông số người chơi (`player_info_t`: bàn chơi, khay đồ 6 slot, 2 tầng máu, trạng thái skip) và khẩu súng (`shotgun_info_t`: hàng đợi đạn, trạng thái cưa nòng, góc xoay).
 
-## **4. SIM (Simulator)**
-- **Trách nhiệm:** **SIM** là môi trường mô phỏng hoàn chỉnh chạy trên máy tính (ví dụ: Visual Studio), được thiết kế để hỗ trợ phát triển **GUI** và các xử lý mà không cần phần cứng ESP32.
-- **Chức năng:** **SIM** thay thế hoàn toàn vai trò của **SER** trong môi trường phát triển. Nó hiển thị giao diện **GUI** (sử dụng **LVGL** được port cho PC) và nhận các yêu cầu thao tác từ **GUI** giống hệt như **SER** thật sẽ làm. Tuy nhiên, thay vì xử lý trên phần cứng ESP32, **SIM** sẽ giả lập quá trình xử lý bằng cách cũng gọi các hàm kiểm tra quy tắc trong **LIB**.
-- **Tương tác:** Giao tiếp với lớp **GUI** và sử dụng **LIB** tương tự như **SER**, nhưng hoàn toàn trong môi trường phần mềm trên máy tính. Giúp lập trình viên phát triển và debug **GUI** cũng như các xử lý của **LIB** một cách nhanh chóng, hiệu quả trước khi triển khai lên phần cứng ESP32.
+## **4. SER (Service Layer - `CommonService.*`, `Sound.h`)**
+- **Trách nhiệm:** Tầng trừu tượng hóa phần cứng (HAL) và dịch vụ hệ điều hành/hệ thống.
+- **Chức năng:**
+  - **Trên phần cứng ESP32 thực tế:**
+    - Điều khiển âm thanh chất lượng cao qua I2S DAC bằng thư viện `ESP32-audioI2S` (kênh âm thanh đơn/đa nhiệm cho hiệu ứng game và nhạc nền).
+    - Quản lý giao tiếp SPI với khe cắm thẻ nhớ micro-SD (`FS`/`SD`) để quét và nạp danh sách bài hát.
+    - Điều khiển độ sáng đèn nền màn hình TFT qua tín hiệu PWM (`analogWrite`).
+  - **Trên máy tính mô phỏng (PC Simulator):**
+    - Sử dụng Win32 Multimedia API (`waveOutOpen`, `waveOutWrite`) để phát âm thanh mẫu PCM thô.
+    - Khởi tạo cửa sổ Debug Console thời gian thực (`AllocConsole`), cho phép lập trình viên gõ các lệnh kiểm thử trực tiếp (`transit <state>`, `player <1|2>`, `setitem <id>`, `sethp <player> <level> <hp>`, `sound <id>`, `bulletbox`) mà không cần chờ phần cứng.
+
+## **5. SIM (Windows Desktop Simulator - `Simulator/`)**
+- **Trách nhiệm:** Môi trường mô phỏng đầy đủ chạy trên hệ điều hành Windows (qua Visual Studio), phục vụ việc thiết kế GUI, debug logic FSM và kiểm thử toàn bộ trò chơi trước khi triển khai lên chip ESP32.
+- **Chức năng:** Tích hợp driver hiển thị và con trỏ chuột của LVGL Windows (`lv_windows_create_display`) ở đúng độ phân giải chuẩn 800x480. Biên dịch và liên kết trực tiếp các module GUI, DATA và LIB của ESP32 sang mã máy x64, giúp lập trình viên phát triển nhanh gấp nhiều lần mà không phụ thuộc vào thời gian nạp flash của vi điều khiển.
 
 ### **Lợi ích của Kiến trúc này:**
-
-- **Phân tách trách nhiệm:** Mỗi lớp có một nhiệm vụ rõ ràng, giúp code sạch sẽ, dễ đọc và bảo trì.
-- **Tái sử dụng code:** Logic cốt lõi trong LIB được sử dụng ở cả SER và SIM, tránh trùng lặp code.
-- **Phát triển song song:** Có thể phát triển lớp GUI/SIM và lớp SER/Hardware một cách song song, tăng tốc độ dự án.
-- **Dễ kiểm thử:** Việc tách biệt logic vào LIB giúp dễ dàng viết các unit test cho từng quy tắc gỡ bom. Môi trường SIM giúp kiểm thử GUI và luồng xử lý mà không phụ thuộc vào phần cứng.
+- **Phân tách trách nhiệm triệt để:** Mỗi lớp đảm nhận một nhiệm vụ riêng biệt, giữ mã nguồn gọn gàng, có tính module hóa cao và dễ dàng mở rộng.
+- **Tái sử dụng mã nguồn tối đa:** Toàn bộ logic trò chơi trong LIB, mô hình dữ liệu trong DATA và giao diện trong GUI được dùng chung 100% giữa ESP32 và Windows Simulator.
+- **Phát triển & Gỡ lỗi song song:** Giao diện và các quy tắc game có thể được hoàn thiện trên PC Simulator độc lập với tiến độ hàn mạch phần cứng hay nạp nạp firmware.
+- **Dễ dàng kiểm thử & Đảm bảo chất lượng:** Tách biệt logic vào LIB giúp dễ dàng viết các bài kiểm thử cho từng quy tắc của trò chơi Buckshot Roulette, trong khi console debug của SIM hỗ trợ test mọi kịch bản góc hẹp (edge cases) cực kỳ tiện lợi.
 
 # 3. Sản phẩm hoàn thiện
-Chi tiết về sản phẩm đã hoàn thiện, xem tại [PRODUCT.md](PRODUCT.md)
+Chi tiết về sản phẩm đã hoàn thiện cùng hình ảnh và hướng dẫn sử dụng các màn hình, xem tại [PRODUCT.md](PRODUCT.md)
