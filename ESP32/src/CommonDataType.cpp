@@ -1,9 +1,10 @@
 /**
- * @brief Common data type
+ * @brief Global data type mappings and game information strings
  */
 
 #include "CommonDataType.h"
 
+// Generate string-to-enum mapping for debug and UI labels
 MAP_ENUM_STR(PLAYER_TYPE, DEF_PLAYER_TYPE)
 MAP_ENUM_STR(STATE_TYPE, DEF_STATE_TYPE)
 MAP_ENUM_STR(ITEM_TYPE, DEF_ITEM_TYPE)
@@ -11,6 +12,7 @@ MAP_ENUM_STR(BULLET_TYPE, DEF_BULLET_TYPE)
 MAP_ENUM_STR(SOUND_TYPE, DEF_SOUND_TYPE)
 MAP_ENUM_STR(MUSIC_STATE_TYPE, DEF_MUSIC_STATE_TYPE)
 
+// Human-readable names for items
 std::unordered_map<ITEM_TYPE, std::string> mapCardInfoName = {
     { ITEM_TYPE::BEER           , "Beer"             },
     { ITEM_TYPE::BURNERPHONE    , "Burner Phone"     },
@@ -27,7 +29,10 @@ std::unordered_map<ITEM_TYPE, std::string> mapCardInfoName = {
     { ITEM_TYPE::FADED_CHARGE   , "Faded Charge"     },
 };
 
-// Referd to https://buckshot-roulette.fandom.com/wiki/Category:Items
+/**
+ * @brief Full descriptions for items, following the wiki context
+ * Referd to https://buckshot-roulette.fandom.com/wiki/Category:Items
+ */
 std::unordered_map<ITEM_TYPE, card_info_t> mapCardInfoDesc = {
     {
         ITEM_TYPE::BEER,

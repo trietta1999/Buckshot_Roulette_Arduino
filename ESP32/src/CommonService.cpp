@@ -1,5 +1,5 @@
 /**
- * @brief Common service library
+ * @brief Common service library implementation
  */
 
 #include "CommonService.h"
@@ -17,10 +17,10 @@
 #include "SampleSound.h"
 
 #ifdef _WIN64
-WAVEFORMATEX wfx = {};
-HWAVEOUT hWaveOut;
+WAVEFORMATEX wfx = {}; // Windows wave format configuration
+HWAVEOUT hWaveOut; // Windows audio device handle
 
-std::vector<std::string> dummyPlaylist = {
+std::vector<std::string> dummyPlaylist = { // Mock playlist for Windows simulator
     "Music_1",
     "Music_2",
     "Music_3",
@@ -35,6 +35,7 @@ std::vector<std::string> dummyPlaylist = {
 #endif
 
 #ifdef _WIN64
+// Plays raw PCM data on Windows using WinMM
 static void PlayRawPCM(const uint8_t* pcmData, uint32_t size)
 {
     MMRESULT result;
@@ -74,6 +75,7 @@ static void PlayRawPCM(const uint8_t* pcmData, uint32_t size)
     waveOutUnprepareHeader(hWaveOut, &whdr, sizeof(WAVEHDR));
 }
 
+// Redirects standard output to a new console window on Windows
 static void AttachConsoleWindow()
 {
     AllocConsole();
@@ -83,6 +85,7 @@ static void AttachConsoleWindow()
     freopen_s(&fp, "CONIN$", "r", stdin);
 }
 
+// Handles debug commands from Windows console
 static void DebugConsoleProcess()
 {
     // Debug console
@@ -173,6 +176,7 @@ static void DebugConsoleProcess()
 }
 #endif
 
+// Plays a sample from memory (abstracted for Win/ESP32)
 static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 {
 #ifdef _WIN64
@@ -184,32 +188,32 @@ static void PlaySampleSound(const uint8_t* sample, uint32_t size)
 
 void CommonBeep(uint16_t frequency, uint16_t duration)
 {
-
+    // Implementation for buzzer if needed
 }
 
+// Global data and hardware initialization
 void InitData()
 {
 #ifndef _WIN64
-    uint32_t seed = esp_random();
+    uint32_t seed = esp_random(); // Random seed from ESP32 hardware
 
-    SetupSound();
+    SetupSound(); // Initialize I2S/DAC for sound
 #else
-    uint32_t seed = time(0);
+    uint32_t seed = time(0); // Time-based seed for PC
 #endif
 
-    // Set random seed
-    srand(seed);
+    srand(seed); // Seed the random number generator
 
 #ifdef _WIN64
     AttachConsoleWindow();
 
     // Config format (WAVEFORMATEX)
     wfx.wFormatTag = WAVE_FORMAT_PCM;
-    wfx.nChannels = 1; // Mono chanel
+    wfx.nChannels = 1; // Mono channel
     wfx.nSamplesPerSec = 44100;
-    wfx.wBitsPerSample = 8; // Bit/sample: 8-bit
-    wfx.nBlockAlign = wfx.nChannels * (wfx.wBitsPerSample / 8); // Block size (bytes)
-    wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign; // Data rate (bytes/sec)
+    wfx.wBitsPerSample = 8; // 8-bit PCM
+    wfx.nBlockAlign = wfx.nChannels * (wfx.wBitsPerSample / 8);
+    wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * wfx.nBlockAlign;
     wfx.cbSize = 0;
 
     // Open sound device
@@ -221,9 +225,11 @@ void InitData()
 #endif
 }
 
+// Background service processing
 void CommonServiceProcess()
 {
 #ifdef _WIN64
+    // Start a thread to read console input on PC
     std::thread([] {
         std::string inputConsole;
 
@@ -252,15 +258,17 @@ void CommonServiceProcess()
         }
         }).detach();
 #else
-    // Read data from serial
+    // Process serial commands and music tasks on ESP32
     if (Serial.available()) {
         String read = Serial.readStringUntil('\n');
+        // Handle incoming serial data if needed
     }
 
-    RunMusicTask();
+    RunMusicTask(); // Update music buffer/state
 #endif
 }
 
+// Wrapper for playing various sound effects
 void PlaySoundWrapper(SOUND_TYPE type)
 {
     if (SoundEnable.GetValue())
@@ -303,6 +311,7 @@ void PlaySoundWrapper(SOUND_TYPE type)
     }
 }
 
+// Lists music files from SD card or mock list
 std::vector<std::string> ExportListMusicFilesWrapper()
 {
 #ifdef _WIN64
@@ -312,6 +321,7 @@ std::vector<std::string> ExportListMusicFilesWrapper()
 #endif
 }
 
+// Starts playing a specific music track
 void PlayMusicWrapper(std::string name)
 {
 #ifndef _WIN64
@@ -320,6 +330,7 @@ void PlayMusicWrapper(std::string name)
 #endif
 }
 
+// Controls music playback state
 void SetMusicStateWrapper(MUSIC_STATE_TYPE state)
 {
 #ifndef _WIN64
@@ -348,6 +359,7 @@ void SetMusicStateWrapper(MUSIC_STATE_TYPE state)
     MusicState.SetValue(state);
 }
 
+// Returns the maximum volume level supported by the audio hardware
 uint8_t GetMusicMaxVolumeWrapper()
 {
 #ifdef _WIN64
@@ -357,6 +369,7 @@ uint8_t GetMusicMaxVolumeWrapper()
 #endif
 }
 
+// Sets the music volume
 void SetMusicVolumeWrapper(uint8_t vol)
 {
 #ifndef _WIN64
@@ -364,6 +377,7 @@ void SetMusicVolumeWrapper(uint8_t vol)
 #endif
 }
 
+// Calculates and updates the current track's playback progress
 uint8_t GetCurrentMusicPercentWrapper()
 {
 #ifndef _WIN64

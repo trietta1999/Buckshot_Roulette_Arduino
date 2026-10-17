@@ -6,26 +6,26 @@
 #ifdef _WIN64
 #include <iostream>
 #endif
-#include "ui.h"
-#include "ui_events.h"
-#include "../CommonData.h"
-#include "../CommonLibrary.h"
-#include "../CommonService.h"
-#include "../Entity.h"
+#include "ui.h" // UI header
+#include "ui_events.h" // Event handler header
+#include "../CommonData.h" // Shared game data
+#include "../CommonLibrary.h" // Utility library
+#include "../CommonService.h" // System services
+#include "../Entity.h" // Game entities (Player, Shotgun)
 
 // Entity
-static player::player_info_t* Player = nullptr;
-static shotgun::shotgun_info_t Shotgun = { };
+static player::player_info_t* Player = nullptr; // Pointer to the currently active player
+static shotgun::shotgun_info_t Shotgun = { }; // Global shotgun instance state
 
 // Internal variable
-static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<bool(player::player_info_t::player_slot_button_t&)>>> mapItemImg;
-static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton;
-static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN;
-static bool itemUsingState = false;
-static ITEM_TYPE itemUsingType = ITEM_TYPE::MIN;
-static uint64_t lastShotgunTime = 0;
-static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1;
-static uint32_t tempMusicIndex = 0;
+static std::unordered_map<ITEM_TYPE, std::pair<lv_img_dsc_t, std::function<bool(player::player_info_t::player_slot_button_t&)>>> mapItemImg; // Map items to their images and effect callbacks
+static std::vector<std::tuple<ITEM_TYPE, lv_img_dsc_t, lv_obj_t*>> listItemCardButton; // List of card buttons for the info screen
+static ITEM_TYPE currentPickItem = ITEM_TYPE::MIN; // Type of the item currently being picked
+static bool itemUsingState = false; // Flag to block multiple item actions simultaneously
+static ITEM_TYPE itemUsingType = ITEM_TYPE::MIN; // Type of the item currently in use
+static uint64_t lastShotgunTime = 0; // Timestamp of the last shotgun interaction
+static PLAYER_TYPE latestPlayer = PLAYER_TYPE::PLAYER1; // Tracks the last active player
+static uint32_t tempMusicIndex = 0; // Temporary index for music playlist navigation
 
 #pragma region Internal_functions
 static void ResetPlayerTable()
@@ -34,39 +34,40 @@ static void ResetPlayerTable()
 
     for (auto& player : player::listPlayer)
     {
-        player.Disable();
+        player.Disable(); // Disable UI elements for all players
     }
 
-    Shotgun.Disable();
+    Shotgun.Disable(); // Disable shotgun UI elements
 }
 
 static void ShowEjectedBullet()
 {
     debug_println_func("Eject bullet");
 
-    lv_obj_remove_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN); // Show ejected bullet image
+    lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN); // Hide trash bullet image
 
-    PlaySoundWrapper(SOUND_TYPE::DROP);
+    PlaySoundWrapper(SOUND_TYPE::DROP); // Play shell drop sound
 }
 
 static void ShowTrashBullet()
 {
     debug_println_func("Trash bullet");
 
-    lv_obj_remove_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN); // Show trash bullet image
+    lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN); // Hide ejected bullet image
 
-    PlaySoundWrapper(SOUND_TYPE::DROP);
+    PlaySoundWrapper(SOUND_TYPE::DROP); // Play shell drop sound
 }
 
 static void HideBulletInTable()
 {
     debug_println_func("Hide bullet");
 
-    lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_imgTrashBullet, LV_OBJ_FLAG_HIDDEN); // Hide trash bullet image
+    lv_obj_add_flag(ui_imgEjectedBullet, LV_OBJ_FLAG_HIDDEN); // Hide ejected bullet image
 }
+
 #pragma endregion
 
 #include "../FSM.h"
@@ -78,9 +79,9 @@ void Init()
 
     // Brightness
     Brightness.SetValue(100);
-    lv_slider_set_value(ui_sldBrightness, Brightness.GetValue(), LV_ANIM_OFF);
+    lv_slider_set_value(ui_sldBrightness, Brightness.GetValue(), LV_ANIM_OFF); // Update brightness slider UI
 
-    // Init image map
+    // Init image map with item types and their corresponding image assets and effect callbacks
     mapItemImg = {
         { ITEM_TYPE::BEER           , { ui_img_beer_png           , EFFECT_FUNCTION_CALLBACK(BEER)            } },
         { ITEM_TYPE::BURNERPHONE    , { ui_img_burnerphone_png    , EFFECT_FUNCTION_CALLBACK(BURNERPHONE)     } },
@@ -93,7 +94,7 @@ void Init()
         { ITEM_TYPE::ADRENALINE     , { ui_img_adrenaline_png     , EFFECT_FUNCTION_CALLBACK(ADRENALINE)      } },
     };
 
-    // Init card info button
+    // Init card info button list for the help/info screen
     listItemCardButton = {
         { ITEM_TYPE::BEER           , ui_img_beer_png           , ui_btnCard1 },
         { ITEM_TYPE::BURNERPHONE    , ui_img_burnerphone_png    , ui_btnCard2 },
@@ -110,16 +111,16 @@ void Init()
         { ITEM_TYPE::FADED_CHARGE   , ui_img_cchargeback_png    , ui_btnCard13 },
     };
 
-    // Init shotgun
-    Shotgun.objInTable = ui_imgbtnShotgunInTable;
-    Shotgun.objInside = ui_imgbtnShotgunInside;
-    Shotgun.objHand = ui_imgShotgunInHand;
-    Shotgun.objWndConfirm = ui_wndShotgunConfirm;
-    Shotgun.objTrashBullet = ui_imgTrashBullet;
+    // Init shotgun object references and bullet image mapping
+    Shotgun.objInTable = ui_imgbtnShotgunInTable; // Shotgun button on table
+    Shotgun.objInside = ui_imgbtnShotgunInside; // Inner view of shotgun
+    Shotgun.objHand = ui_imgShotgunInHand; // Shotgun in player's hand
+    Shotgun.objWndConfirm = ui_wndShotgunConfirm; // Shooting confirmation window
+    Shotgun.objTrashBullet = ui_imgTrashBullet; // Trash bullet visual
     Shotgun.mapBulletImg = {
-        { BULLET_TYPE::MIN, ui_img_empty_bullet_png },
-        { BULLET_TYPE::LIVE, ui_img_live_png },
-        { BULLET_TYPE::BLANK, ui_img_blank_png },
+        { BULLET_TYPE::MIN, ui_img_empty_bullet_png }, // Empty slot
+        { BULLET_TYPE::LIVE, ui_img_live_png }, // Live shell
+        { BULLET_TYPE::BLANK, ui_img_blank_png }, // Blank shell
     };
     Shotgun.listBulletImg = {
         ui_imgBullet1,
@@ -132,16 +133,16 @@ void Init()
         ui_imgBullet8,
     };
 
-    // Init player #1
+    // Init player #1 configuration
     player::player_info_t player1 = { };
-    player1.type = PLAYER_TYPE::PLAYER1;
-    player1.table = ui_conPlayerLeft;
-    player1.pickButton = ui_btnItemPick1;
-    player1.confirmButton = ui_btnPlayerLeftConfirm;
-    player1.gunfireEffect = ui_wndShotgunShotEffectLeft;
-    player1.adrenalinefEffect = ui_wndAdrenalineEffectLeft;
-    player1.imgSkip = ui_imgPlayer1Skip;
-    player1.listButtonInfo = {
+    player1.type = PLAYER_TYPE::PLAYER1; // Identifier
+    player1.table = ui_conPlayerLeft; // Table container
+    player1.pickButton = ui_btnItemPick1; // Item draw button
+    player1.confirmButton = ui_btnPlayerLeftConfirm; // Action confirm button
+    player1.gunfireEffect = ui_wndShotgunShotEffectLeft; // Gunshot screen flash
+    player1.adrenalinefEffect = ui_wndAdrenalineEffectLeft; // Adrenaline screen tint
+    player1.imgSkip = ui_imgPlayer1Skip; // Skip turn indicator
+    player1.listButtonInfo = { // Inventory slots
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot1, ui_imgItemSlot1, { 0 } },
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot2, ui_imgItemSlot2, { 0 } },
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot3, ui_imgItemSlot3, { 0 } },
@@ -149,23 +150,23 @@ void Init()
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot5, ui_imgItemSlot5, { 0 } },
         { PLAYER_TYPE::MIN, ITEM_TYPE::MIN, ui_btnItemSlot6, ui_imgItemSlot6, { 0 } },
     };
-    player1.listHPLevel1 = {
+    player1.listHPLevel1 = { // HP background labels
         ui_lblChargeBack1,
         ui_lblChargeBack2,
         ui_lblChargeBack3,
         ui_lblChargeBack4,
     };
-    player1.listHPLevel2 = {
+    player1.listHPLevel2 = { // HP foreground labels
         ui_lblCharge1,
         ui_lblCharge2,
         ui_lblCharge3,
         ui_lblCharge4,
     };
-    player1.hpLevel1 = MAX_HP;
-    player1.hpLevel2 = MAX_HP;
-    player1.angle = PLAYER1_ANGLE;
+    player1.hpLevel1 = MAX_HP; // Initial HP bg level
+    player1.hpLevel2 = MAX_HP; // Initial HP fg level
+    player1.angle = PLAYER1_ANGLE; // UI rotation/orientation
 
-    // Init player #2
+    // Init player #2 configuration
     player::player_info_t player2 = { };
     player2.type = PLAYER_TYPE::PLAYER2;
     player2.table = ui_conPlayerRight;
@@ -198,32 +199,33 @@ void Init()
     player2.hpLevel2 = MAX_HP;
     player2.angle = PLAYER2_ANGLE;
 
-    // Add player list
+    // Add player list to the global registry
     player::listPlayer = { player1, player2 };
 
-    // Init data
-    CurrentState.SetValue(STATE_TYPE::STARTUP);
-    MusicState.SetValue(MUSIC_STATE_TYPE::MIN);
-    CurrentMusicIndex.SetValue(-1);
+    // Init game state and music data
+    CurrentState.SetValue(STATE_TYPE::STARTUP); // Set initial FSM state
+    MusicState.SetValue(MUSIC_STATE_TYPE::MIN); // Reset music playback state
+    CurrentMusicIndex.SetValue(-1); // No music selected
 
-    PlaySoundWrapper(SOUND_TYPE::MIN);
+    PlaySoundWrapper(SOUND_TYPE::MIN); // Stop any playing sounds
 }
 
 void AutoUpdate()
 {
-#ifdef _WIN64 // Debug only
-    // Debug change player
+#ifdef _WIN64 // Debug and simulation logic for Windows builds
+    // Debug: Manually change the active player
     if (debug_data::CurrentPlayer.GetState())
     {
         for (auto& player : player::listPlayer)
         {
             if (player.type == debug_data::CurrentPlayer.GetValue())
             {
-                Player = &player;
+                Player = &player; // Assign active player pointer
                 break;
             }
         }
     }
+    // Debug: Manually update player HP levels
     if (debug_data::PlayerHP.GetState())
     {
         auto info = debug_data::PlayerHP.GetValue();
@@ -234,24 +236,25 @@ void AutoUpdate()
             {
                 if (std::get<1>(info) == 1)
                 {
-                    player.hpLevel1 = std::get<2>(info);
+                    player.hpLevel1 = std::get<2>(info); // Update bg HP
                 }
                 else if (std::get<1>(info) == 2)
                 {
-                    player.hpLevel2 = std::get<2>(info);
+                    player.hpLevel2 = std::get<2>(info); // Update fg HP
                 }
 
-                FSMTransit(STATE_TYPE::UPDATE_HP);
+                FSMTransit(STATE_TYPE::UPDATE_HP); // Trigger HP UI update in FSM
 
                 break;
             }
         }
     }
+    // Debug: Handle special text commands
     if (debug_data::SpecialCommand.GetState())
     {
         auto command = debug_data::SpecialCommand.GetValue();
 
-        if (command == "bulletbox")
+        if (command == "bulletbox") // Log all shells in the shotgun
         {
             std::queue<BULLET_TYPE> tempQueue = Shotgun.queueBullet;
 
@@ -262,7 +265,7 @@ void AutoUpdate()
                 tempQueue.pop();
             }
         }
-        else if (command == "gettotalitem")
+        else if (command == "gettotalitem") // Log total items held by each player
         {
             for (const auto& iPlayer : player::listPlayer)
             {
@@ -270,62 +273,64 @@ void AutoUpdate()
             }
         }
 
-        debug_data::SpecialCommand.SetValue("");
+        debug_data::SpecialCommand.SetValue(""); // Reset command state
     }
 #endif
 
-    // Pre-block check
+    // GUI Pre-block check: prevents user interaction during animations/logic
     if (GuiBlockState.GetState())
     {
         if (GuiBlockState.GetValue())
         {
             debug_println_func("GUI pre-block");
 
-            lv_obj_remove_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN); // Show blocker window
         }
         else
         {
             debug_println_func("GUI pre-unblock");
 
-            lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(ui_wndBlock, LV_OBJ_FLAG_HIDDEN); // Hide blocker window
         }
     }
 
-    FSM();
+    FSM(); // Execute core game logic state machine
 
+    // Music playback progress and auto-next handling
     if (MusicEnable.GetValue())
     {
         if ((MusicState.GetValue() == MUSIC_STATE_TYPE::RESUME) || (MusicState.GetValue() == MUSIC_STATE_TYPE::PLAY))
         {
-            auto percent = GetCurrentMusicPercentWrapper();
+            auto percent = GetCurrentMusicPercentWrapper(); // Get song progress
 
             if (CurrentMusicPercent.GetState())
             {
-                lv_arc_set_value(ui_arcTime, percent);
+                lv_arc_set_value(ui_arcTime, percent); // Update progress arc UI
             }
         }
-        else if (MusicState.GetValue() == MUSIC_STATE_TYPE::MSG_EOF)
+        else if (MusicState.GetValue() == MUSIC_STATE_TYPE::MSG_EOF) // End of file reached
         {
             MusicState.SetValue(MUSIC_STATE_TYPE::STOP);
 
-            // Auto next music
+            // Auto-play the next song in the playlist
             if (tempMusicIndex < Playlist.GetValue().size() - 1)
             {
                 debug_println_func("Auto next music");
 
                 auto currentMusicIndex = CurrentMusicIndex.GetValue();
 
-                PlayMusicWrapper(Playlist.GetValue()[++currentMusicIndex]);
-                lv_roller_set_selected(ui_rlMusicList, currentMusicIndex, LV_ANIM_OFF);
+                PlayMusicWrapper(Playlist.GetValue()[++currentMusicIndex]); // Play next file
+                lv_roller_set_selected(ui_rlMusicList, currentMusicIndex, LV_ANIM_OFF); // Update roller UI
 
                 MusicState.SetValue(MUSIC_STATE_TYPE::PLAY);
                 CurrentMusicIndex.SetValue(currentMusicIndex);
 
-                tempMusicIndex = currentMusicIndex;
+                tempMusicIndex = currentMusicIndex; // Keep internal index in sync
             }
         }
     }
 
+    // Music playback state UI updates
     if (MusicState.GetState())
     {
         auto state = MusicState.GetValue();
@@ -339,10 +344,10 @@ void AutoUpdate()
         {
             if (state == MUSIC_STATE_TYPE::PLAY)
             {
-                lv_label_set_text(ui_lblMusicTitle, Playlist.GetValue()[CurrentMusicIndex.GetValue()].c_str());
+                lv_label_set_text(ui_lblMusicTitle, Playlist.GetValue()[CurrentMusicIndex.GetValue()].c_str()); // Set title label
             }
 
-            lv_obj_add_state(ui_btnPlay, LV_STATE_CHECKED);
+            lv_obj_add_state(ui_btnPlay, LV_STATE_CHECKED); // Set play button to checked state (showing pause icon)
         }
         break;
         case MUSIC_STATE_TYPE::PAUSE:
@@ -350,10 +355,10 @@ void AutoUpdate()
         {
             if (state == MUSIC_STATE_TYPE::STOP)
             {
-                lv_label_set_text(ui_lblMusicTitle, "");
+                lv_label_set_text(ui_lblMusicTitle, ""); // Clear title label
             }
 
-            lv_obj_remove_state(ui_btnPlay, LV_STATE_CHECKED);
+            lv_obj_remove_state(ui_btnPlay, LV_STATE_CHECKED); // Set play button to unchecked state (showing play icon)
         }
         break;
         default:
@@ -361,7 +366,7 @@ void AutoUpdate()
         }
     }
 
-    // Post-block check
+    // GUI Post-block check: re-verifies if GUI should be blocked after FSM processing
     if (GuiBlockState.GetState())
     {
         if (GuiBlockState.GetValue())
@@ -381,21 +386,22 @@ void AutoUpdate()
 
 void OnBrightnessChange(lv_event_t* e)
 {
-    Brightness.SetValue(lv_slider_get_value(ui_sldBrightness));
+    Brightness.SetValue(lv_slider_get_value(ui_sldBrightness)); // Update global brightness variable from UI slider
 }
 
 #pragma region Screen_events
 void Start_OnLoaded(lv_event_t* e)
 {
-
+    // Occurs when the startup screen has finished loading
 }
 
 void Main_OnLoaded(lv_event_t* e)
 {
-    SetMusicStateWrapper(MUSIC_STATE_TYPE::STOP);
+    SetMusicStateWrapper(MUSIC_STATE_TYPE::STOP); // Ensure music is stopped on main screen
 
-    MusicEnable.SetValue(false);
+    MusicEnable.SetValue(false); // Disable music logic globally
 
+    // Restore sound state if sound toggle was not checked
     if ((lv_obj_get_state(ui_btnSound) & LV_STATE_CHECKED) != LV_STATE_CHECKED)
     {
         SoundEnable.SetValue(true);
@@ -404,32 +410,32 @@ void Main_OnLoaded(lv_event_t* e)
 
 void Music_OnLoaded(lv_event_t* e)
 {
-    // Get playlist
+    // Get playlist and initialize music settings if list is empty
     if (!Playlist.GetValue().size())
     {
         debug_println_func("Update playlist, update volume");
 
-        // Update playlist
+        // Populate playlist from filesystem
         Playlist.SetValue(ExportListMusicFilesWrapper());
         CurrentMusicIndex.SetValue(lv_roller_get_selected(ui_rlMusicList));
 
-        // Update volume slider
+        // Configure volume slider range and set default
         lv_slider_set_range(ui_sldVolume, 0, GetMusicMaxVolumeWrapper());
         lv_slider_set_value(ui_sldVolume, DEFAULT_VOLUME, LV_ANIM_OFF);
 
-        //Update playlist roller
+        // Populate playlist selection roller
         lv_roller_set_options(ui_rlMusicList, JoinString("\n", Playlist.GetValue()).c_str(), LV_ROLLER_MODE_NORMAL);
 
         SetMusicVolumeWrapper(DEFAULT_VOLUME);
     }
 
-    // Update current index
+    // Update current music selection index
     OnPlaylistChange(nullptr);
 
-    SoundEnable.SetValue(false);
-    MusicEnable.SetValue(true);
+    SoundEnable.SetValue(false); // Disable game sounds while in music menu
+    MusicEnable.SetValue(true); // Enable music logic
 
-    // Reset music time
+    // Reset music progress arc UI
     lv_arc_set_value(ui_arcTime, 0);
 }
 
@@ -437,6 +443,7 @@ void Info_OnLoaded(lv_event_t* e)
 {
     debug_println_func("Info screen loaded");
 
+    // Automatically select the first card when the info screen opens
     e->current_target = std::get<2>(listItemCardButton[0]);
 
     OnCardSelect(e);
@@ -450,7 +457,7 @@ void OnShotgunShot(lv_event_t* e)
 
     auto currentButton = (lv_obj_t*)(e->current_target);
 
-    // Set target player
+    // Set target player based on which confirm button was pressed
     for (auto& iPlayer : player::listPlayer)
     {
         if (currentButton == iPlayer.confirmButton)
@@ -462,11 +469,11 @@ void OnShotgunShot(lv_event_t* e)
 
     debug_println_func("Confirm target: " + map_PLAYER_TYPE[Shotgun.targetPlayer->type]);
 
-    lastShotgunTime = MILLISEC_GET;
+    lastShotgunTime = MILLISEC_GET; // Record action start time
 
-    Shotgun.state = 0;
+    Shotgun.state = 0; // Reset shotgun animation state
 
-    FSMTransit(STATE_TYPE::SHOTGUN_SHOT);
+    FSMTransit(STATE_TYPE::SHOTGUN_SHOT); // Trigger shooting sequence
 }
 
 void OnItemSelect(lv_event_t* e)
@@ -475,52 +482,57 @@ void OnItemSelect(lv_event_t* e)
 
     if (Player)
     {
-        // Get current slot button
+        // Get the specific inventory slot button that was clicked
         auto currentButton = (lv_obj_t*)(e->current_target);
 
+        // Scenario 1: Placing a newly drawn item into an inventory slot
         if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
         {
             debug_println_func("Item arrange");
 
+            // Find an empty slot that matches the clicked button
             auto resultButtonInfo = std::find_if(Player->listButtonInfo.begin(), Player->listButtonInfo.end(),
                 [currentButton](const decltype(Player->listButtonInfo.front())& item) {
-                    // Button has no assigned image
+                    // Button matches and has no item assigned (data_size == 0)
                     return ((item.button == currentButton) && (item.image.data_size == 0));
                 });
 
             if (resultButtonInfo != Player->listButtonInfo.end())
             {
-                auto& buttonInfo = (*resultButtonInfo); // Get button info
-                auto imgCardReview = lv_image_get_src(ui_imgCardReview); // Get image from card review
+                auto& buttonInfo = (*resultButtonInfo); // Get slot reference
+                auto imgCardReview = lv_image_get_src(ui_imgCardReview); // Get preview image
 
                 debug_println_func("Pick: " + map_ITEM_TYPE[currentPickItem]);
 
-                // Assign button
+                // Assign the item to the inventory slot
                 buttonInfo.Assign(Player->type, currentPickItem, imgCardReview);
 
-                // Update item count
+                // Increment held item counts
                 Player->pickItemCount++;
                 Player->totalItemCount++;
 
-                // Hide card review
+                // Hide the draw preview image
                 lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
 
-                FSMTransit(STATE_TYPE::PICK);
+                FSMTransit(STATE_TYPE::PICK); // Continue drawing items or end turn
             }
         }
+        // Scenario 2: Using an item from the inventory
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
         {
             debug_println_func("Item action");
 
+            // Sub-scenario: Stealing an item with ADRENALINE
             if (itemUsingType == ITEM_TYPE::ADRENALINE)
             {
                 debug_println_func("Current using is ADRENALINE");
 
+                // Look for the clicked button in ANY player's inventory
                 for (auto& iPlayer : player::listPlayer)
                 {
                     auto resultButtonInfo = std::find_if(iPlayer.listButtonInfo.begin(), iPlayer.listButtonInfo.end(),
                         [currentButton](const decltype(iPlayer.listButtonInfo.front())& item) {
-                            // Button has assigned image
+                            // Button matches and has an item assigned
                             return ((item.button == currentButton) && (item.image.data_size > 0));
                         });
 
@@ -528,31 +540,33 @@ void OnItemSelect(lv_event_t* e)
                     {
                         debug_println_func("Button found");
 
-                        auto& buttonInfo = (*resultButtonInfo); // Get button info
+                        auto& buttonInfo = (*resultButtonInfo); // Get target item reference
 
+                        // Logic: Cannot steal your own item, cannot steal adrenaline, and must not be busy
                         if ((buttonInfo.playerType != Player->type) && (buttonInfo.itemType != ITEM_TYPE::ADRENALINE) && (!itemUsingState))
                         {
                             debug_println_func("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
                             debug_println_func("From: " + map_PLAYER_TYPE[buttonInfo.playerType]);
 
                             auto itemType = buttonInfo.itemType;
-                            itemUsingState = true; // Block other action
+                            itemUsingState = true; // Lock interactions
 
-                            if (mapItemImg[itemType].second(buttonInfo)) // Call item effect
+                            // Execute stolen item's effect
+                            if (mapItemImg[itemType].second(buttonInfo)) 
                             {
                                 debug_println_func("Using done");
 
-                                itemUsingType = itemType;
+                                itemUsingType = itemType; // Set stolen item as currently using
 
-                                iPlayer.totalItemCount--;
+                                iPlayer.totalItemCount--; // Reduce target player's count
 
-                                player::DisableAllPlayerTableExcept(*Player);
+                                player::DisableAllPlayerTableExcept(*Player); // Re-focus on current player
 
-                                // Hide effect
+                                // Cleanup adrenaline UI effects
                                 lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN);
                                 lv_obj_add_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN);
 
-                                Shotgun.Enable();
+                                Shotgun.Enable(); // Re-enable shotgun after item usage
                             }
                         }
 
@@ -560,13 +574,14 @@ void OnItemSelect(lv_event_t* e)
                     }
                 }
             }
+            // Sub-scenario: Standard item usage from active player's inventory
             else
             {
                 debug_println_func("Current using is none");
 
                 auto resultButtonInfo = std::find_if(Player->listButtonInfo.begin(), Player->listButtonInfo.end(),
                     [currentButton](const decltype(Player->listButtonInfo.front())& item) {
-                        // Button has assigned image
+                        // Button matches and has an item assigned
                         return ((item.button == currentButton) && (item.image.data_size > 0));
                     });
 
@@ -574,18 +589,18 @@ void OnItemSelect(lv_event_t* e)
                 {
                     debug_println_func("Button found");
 
-                    auto& buttonInfo = (*resultButtonInfo); // Get button info
+                    auto& buttonInfo = (*resultButtonInfo); // Get item reference
 
                     if (!itemUsingState)
                     {
                         debug_println_func("Use: " + map_ITEM_TYPE[buttonInfo.itemType]);
 
-                        itemUsingType = buttonInfo.itemType; // Update item using
+                        itemUsingType = buttonInfo.itemType; // Set active item type
 
-                        itemUsingState = true; // Block other action
-                        mapItemImg[buttonInfo.itemType].second(buttonInfo); // Call item effect
+                        itemUsingState = true; // Lock interactions
+                        mapItemImg[buttonInfo.itemType].second(buttonInfo); // Execute item effect
 
-                        Player->totalItemCount--;
+                        Player->totalItemCount--; // Reduce inventory count
 
                         debug_println_func("Using done");
                     }
@@ -599,35 +614,38 @@ void OnShotgunSelect(lv_event_t* e)
 {
     debug_println_func("Shotgun select");
 
+    // Scenario 1: Transitioning from Shell Loading to Action Turn
     if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
     {
         debug_println_func("Shell loaded");
 
-        // Show bullet box cover
+        // Close bullet box UI
         lv_obj_remove_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
 
-        // Hide message
+        // Clear UI message
         lv_label_set_text(ui_lblMessage, "");
 
+        // Sound effect sequence for each shell loaded
         for (const auto& item : Shotgun.listBullet)
         {
             PlaySoundWrapper(SOUND_TYPE::DROP);
 #ifdef _WIN64
-            ::Sleep(500);
+            ::Sleep(500); // Wait between shell sounds (Windows simulation)
 #else
-            delay(500);
+            delay(500); // Wait between shell sounds (ESP32)
 #endif
         }
 
-        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL);
+        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL); // Final loading sound
 
-        FSMTransit(STATE_TYPE::ACTION_TURN);
+        FSMTransit(STATE_TYPE::ACTION_TURN); // Pass turn to action phase
     }
+    // Scenario 2: Selecting shotgun during turn to view/pick it up
     else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
     {
         debug_println_func("Show shotgun in hand");
 
-        Shotgun.ShowInHand(*Player);
+        Shotgun.ShowInHand(*Player); // Trigger shotgun pickup animation/UI
     }
 }
 
@@ -635,34 +653,35 @@ void OnItemPick(lv_event_t* e)
 {
     debug_println_func("Pick item");
 
-#ifdef _WIN64
+#ifdef _WIN64 // Debug support for manual item selection on Windows
     if ((uint8_t)debug_data::CurrentItemType.GetValue() > 0)
     {
         currentPickItem = debug_data::CurrentItemType.GetValue();
     }
     else
     {
-        currentPickItem = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
+        currentPickItem = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX); // Random item
     }
 
-    debug_data::CurrentItemType.SetValue(ITEM_TYPE::MIN);
+    debug_data::CurrentItemType.SetValue(ITEM_TYPE::MIN); // Reset debug state
 #else
-    currentPickItem = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX);
+    currentPickItem = RandomRangeEnum(ITEM_TYPE::MIN, ITEM_TYPE::MAX); // Standard random pick
 #endif
 
-    // Show and set image to card review
+    // Update and show card draw preview
     lv_obj_remove_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
     lv_image_set_src(ui_imgCardReview, &mapItemImg[currentPickItem].first);
 
     if (Player)
     {
-        Player->DisablePickButton();
+        Player->DisablePickButton(); // Prevent double drawing
 
+        // Check if player has finished drawing or inventory is full
         if ((Player->pickItemCount == MAX_PICK_ITEM_PER_ROUND) || (Player->totalItemCount == MAX_ITEM_NUM))
         {
             ResetPlayerTable();
 
-            // Set message
+            // Notify user of turn end reason
             if (Player->totalItemCount == MAX_ITEM_NUM)
             {
                 debug_println_func(MSG_OUT_OF_SPACE);
@@ -676,16 +695,16 @@ void OnItemPick(lv_event_t* e)
                 lv_label_set_text(ui_lblMessage, MSG_END_TURN);
             }
 
-            // Hide card review
+            // Cleanup preview
             lv_obj_add_flag(ui_imgCardReview, LV_OBJ_FLAG_HIDDEN);
 
-            // Reset pick item count, keep total count
+            // Mark drawing phase as complete
             Player->pickItemCount = 0;
             Player->isPickComplete = true;
 
-            // Show delayed message
+            // Delayed transition to next player/phase
             DelayCallback(MAKE_DELAY_CB{
-                // Hide message
+                // Clear message
                 lv_label_set_text(ui_lblMessage, "");
 
                 FSMTransit(STATE_TYPE::PLAYER_NEXT);
@@ -695,7 +714,7 @@ void OnItemPick(lv_event_t* e)
         {
             PlaySoundWrapper(SOUND_TYPE::PICK);
 
-            FSMTransit(STATE_TYPE::PLAYER_ITEM_ARRANGE);
+            FSMTransit(STATE_TYPE::PLAYER_ITEM_ARRANGE); // Wait for player to place item
         }
     }
 }
@@ -704,39 +723,43 @@ void OnShotgunInside(lv_event_t* e)
 {
     auto eventCode = lv_event_get_code(e);
 
+    // Event: User presses the shotgun barrel to inspect it
     if (eventCode == LV_EVENT_PRESSED)
     {
+        // Effect: MAGNIFYING GLASS shows the current shell type
         if (itemUsingType == ITEM_TYPE::MAGNIFYINGGLASS)
         {
             debug_println_func("Use Magnifying Glass");
 
-            // Show first bullet
+            // Display current shell (Live or Blank) in the inspection slot
             lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[Shotgun.queueBullet.front()]);
         }
+        // Effect: BURNER PHONE reveals information about a future shell
         else if (itemUsingType == ITEM_TYPE::BURNERPHONE)
         {
             debug_println_func("Use Burner Phone");
 
-            // Show message
+            // Show burner phone hint message
             lv_obj_remove_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
         }
 
-        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL);
+        PlaySoundWrapper(SOUND_TYPE::LOAD_SHELL); // Generic inspection sound
     }
+    // Event: User releases or moves away from inspection
     else
     {
         debug_println_func("Hide shotgun inside");
 
-        // Reset bullet slot
+        // Clear inspection slot image
         lv_image_set_src(ui_imgShotgunBullet, &Shotgun.mapBulletImg[BULLET_TYPE::MIN]);
 
-        // Hide shotgun inside
+        // Hide inner inspection UI
         lv_obj_add_flag(Shotgun.objInside, LV_OBJ_FLAG_HIDDEN);
 
-        // Hide message
+        // Clear hint message
         lv_obj_add_flag(ui_lblMessageInside, LV_OBJ_FLAG_HIDDEN);
 
-        itemUsingState = false;
+        itemUsingState = false; // Item action sequence complete
     }
 }
 
@@ -746,6 +769,7 @@ void OnCardSelect(lv_event_t* e)
 
     auto currentButton = (lv_obj_t*)(e->current_target);
 
+    // Find the item info associated with the clicked button on the info screen
     auto resultButtonInfo = std::find_if(listItemCardButton.begin(), listItemCardButton.end(),
         [currentButton](const decltype(listItemCardButton.front())& item) {
             return (std::get<2>(item) == currentButton);
@@ -757,12 +781,12 @@ void OnCardSelect(lv_event_t* e)
 
         debug_println_func("Select " + map_ITEM_TYPE[std::get<0>(item)]);
 
-        // Set text
+        // Update card info display (Title, Usage, Strategy)
         lv_label_set_text(ui_lblCardInfoTitle, mapCardInfoName[std::get<0>(item)].c_str());
         lv_label_set_text(ui_lblUsageInfo, JoinString("\n", mapCardInfoDesc[std::get<0>(item)].usageLines).c_str());
         lv_label_set_text(ui_lblStrategyInfo, JoinString("\n", mapCardInfoDesc[std::get<0>(item)].strategyLines).c_str());
 
-        // Set image
+        // Update preview image
         lv_image_set_src(ui_imgInfoCardReview, &std::get<1>(item));
 
         PlaySoundWrapper(SOUND_TYPE::PICK);
@@ -773,23 +797,24 @@ void OnAdrenalineCancel(lv_event_t* e)
 {
     debug_println_func("Adrenaline cancel");
 
-    itemUsingType = ITEM_TYPE::MIN;
+    itemUsingType = ITEM_TYPE::MIN; // Reset using type
 
-    player::DisableAllPlayerTableExcept(*Player);
+    player::DisableAllPlayerTableExcept(*Player); // Re-focus on active player
 
-    // Hide effect
+    // Hide adrenaline UI tints
     lv_obj_add_flag(ui_wndAdrenalineEffect, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(Player->adrenalinefEffect, LV_OBJ_FLAG_HIDDEN);
 
-    itemUsingState = false; // Unblock
+    itemUsingState = false; // Unlock interactions
 
-    Shotgun.Enable();
+    Shotgun.Enable(); // Re-enable main game actions
 
-    PlaySoundWrapper(SOUND_TYPE::BREAK);
+    PlaySoundWrapper(SOUND_TYPE::BREAK); // Play cancel/break sound
 }
 
 void OnButtonSound(lv_event_t* e)
 {
+    // Toggle global sound system based on checkbox state
     if ((lv_obj_get_state((lv_obj_t*)(e->current_target)) & LV_STATE_CHECKED) == LV_STATE_CHECKED)
     {
         SoundEnable.SetValue(false);
@@ -805,8 +830,10 @@ void OnMusicControl(lv_event_t* e)
     auto currentMusicIndex = CurrentMusicIndex.GetValue();
     auto playlist = Playlist.GetValue();
 
+    // Logic for Play/Pause button
     if (e->current_target == ui_btnPlay)
     {
+        // Play selected file if currently stopped or if roller selection changed
         if ((MusicState.GetValue() == MUSIC_STATE_TYPE::STOP) || (tempMusicIndex != CurrentMusicIndex.GetValue()))
         {
             debug_println_func("Play music");
@@ -821,12 +848,14 @@ void OnMusicControl(lv_event_t* e)
                 currentMusicIndex = tempMusicIndex;
             }
         }
+        // Resume from pause if checkbox is checked
         else if ((lv_obj_get_state(ui_btnPlay) & LV_STATE_CHECKED) == LV_STATE_CHECKED)
         {
             debug_println_func("Resume music");
 
             SetMusicStateWrapper(MUSIC_STATE_TYPE::RESUME);
         }
+        // Pause playback
         else
         {
             debug_println_func("Pause music");
@@ -834,6 +863,7 @@ void OnMusicControl(lv_event_t* e)
             SetMusicStateWrapper(MUSIC_STATE_TYPE::PAUSE);
         }
     }
+    // Logic for Previous song button
     else if (e->current_target == ui_btnPrev)
     {
         if (tempMusicIndex > 0)
@@ -850,6 +880,7 @@ void OnMusicControl(lv_event_t* e)
         }
 
     }
+    // Logic for Next song button
     else if (e->current_target == ui_btnNext)
     {
         if (tempMusicIndex < Playlist.GetValue().size() - 1)
@@ -866,16 +897,16 @@ void OnMusicControl(lv_event_t* e)
         }
     }
 
-    CurrentMusicIndex.SetValue(currentMusicIndex);
+    CurrentMusicIndex.SetValue(currentMusicIndex); // Update global music index
 }
 
 void OnVolumeChange(lv_event_t* e)
 {
-    SetMusicVolumeWrapper(lv_slider_get_value(ui_sldVolume));
+    SetMusicVolumeWrapper(lv_slider_get_value(ui_sldVolume)); // Update hardware/system volume
 }
 
 void OnPlaylistChange(lv_event_t* e)
 {
-    tempMusicIndex = lv_roller_get_selected(ui_rlMusicList);
+    tempMusicIndex = lv_roller_get_selected(ui_rlMusicList); // Sync temp index with UI selection
 }
 #pragma endregion

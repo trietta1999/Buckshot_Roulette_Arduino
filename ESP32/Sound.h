@@ -1,5 +1,5 @@
 /**
- * @brief Sound library
+ * @brief ESP32 hardware sound and music library using I2S and SD card
  */
 
 #ifndef _SOUND_H
@@ -7,46 +7,49 @@
 
 #ifndef _WIN64
 
-#include <Audio.h>
+#include <Audio.h> // ESP32-audioI2S library
 #include <SPI.h>
 #include <SD.h>
 #include <FS.h>
 
-#define SD_CS 10
-#define SPI_MOSI 11
-#define SPI_MISO 13
-#define SPI_SCK 12
+#define SD_CS 10 // SD card Chip Select pin
+#define SPI_MOSI 11 // SPI Master Out Slave In
+#define SPI_MISO 13 // SPI Master In Slave Out
+#define SPI_SCK 12 // SPI Clock
 
-#define I2S_DOUT 17  // Data Out
-#define I2S_BCLK 0   // Bit Clock
-#define I2S_LRC 18   // Word Select (WS) - Left/Right Clock (LRCK)
+#define I2S_DOUT 17  // I2S Data Out
+#define I2S_BCLK 0   // I2S Bit Clock
+#define I2S_LRC 18   // I2S Word Select (LRCK)
 #define I2S_PORT I2S_NUM_0
 
-#define CHUNK_SIZE 20000
+#define CHUNK_SIZE 20000 // Buffer size for manual PCM playback
 
-Audio audio;
-SPIClass hSPI(HSPI);
+Audio audio; // Audio object for MP3/AAC playback
+SPIClass hSPI(HSPI); // Dedicated SPI bus for SD card
 
+// Converts 8-bit sample data to 16-bit mono/stereo PCM for I2S
 uint16_t* GenerateSound(const uint8_t* sample, uint32_t size) {
   uint16_t* output = (uint16_t*)heap_caps_malloc(sizeof(uint16_t) * size * 2, MALLOC_CAP_SPIRAM);
 
   for (uint32_t i = 0; i < size; i++) {
-    output[2 * i] = (uint16_t)sample[i] * 128;      // Left chanel
-    output[2 * i + 1] = (uint16_t)sample[i] * 128;  // Right chaneld
+    output[2 * i] = (uint16_t)sample[i] * 128;      // Left channel (scaled to 16-bit)
+    output[2 * i + 1] = (uint16_t)sample[i] * 128;  // Right channel (scaled to 16-bit)
   }
 
   return output;
 }
 
+// Synchronously plays a raw sound sample via I2S
 void PlaySoundFromSample(const uint8_t* sample, uint32_t size) {
   auto output = GenerateSound(sample, size);
 
   i2s_channel_write(audio.getI2SHandle(), output, size * 2 * sizeof(uint16_t), nullptr, portMAX_DELAY);
-  audio.zeroI2Sbuff();
+  audio.zeroI2Sbuff(); // Clear buffer to prevent noise
 
   free(output);
 }
 
+// Asynchronously plays music from memory (Background task)
 void PlayMusicFromSample(const uint8_t* sample, uint32_t size) {
   struct sound_data_t {
     uint8_t* sample;
@@ -85,6 +88,7 @@ void PlayMusicFromSample(const uint8_t* sample, uint32_t size) {
     __FUNCTION__, 1024 * 10, data, 1, NULL, 1);
 }
 
+// Callback for audio library messages (e.g., end of file)
 void PrintAudioInfo(Audio::msg_t m) {
   // Only print important messages to reduce Serial clutter
   Serial.printf("%s: %s\n", m.s, m.msg);
@@ -94,6 +98,7 @@ void PrintAudioInfo(Audio::msg_t m) {
   }
 }
 
+// Filters files by supported audio extensions
 bool CheckMusicFile(String filename) {
   filename.toLowerCase();
   if (filename.endsWith(".aac")) return true;
@@ -105,6 +110,7 @@ bool CheckMusicFile(String filename) {
   return false;
 }
 
+// Scans SD card directory for audio files
 std::vector<std::string> GetListMusicFiles(fs::FS& fs, const char* dirname, uint8_t levels) {
   std::vector<std::string> playlist;
 
@@ -148,14 +154,17 @@ std::vector<std::string> GetListMusicFiles(fs::FS& fs, const char* dirname, uint
   return playlist;
 }
 
+// Public wrapper to list SD card music
 std::vector<std::string> ExportListMusicFiles() {
   return GetListMusicFiles(SD, "/", 0);  // Scan the root directory
 }
 
+// Starts playing a file from the SD card
 void PlayTrack(const char* name) {
   audio.connecttoFS(SD, name);
 }
 
+// Hardware initialization for sound system
 void SetupSound() {
   hSPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, SD_CS);
 
@@ -168,13 +177,14 @@ void SetupSound() {
   Audio::audio_info_callback = PrintAudioInfo;
 
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-  audio.forceMono(true);
+  audio.forceMono(true); // Downmix to mono for simple speakers
   audio.setVolume(DEFAULT_VOLUME);
-  audio.setAudioTaskCore(1);
+  audio.setAudioTaskCore(1); // Run audio processing on second core
 
-  PlayTrack("/sound/null.mp3");
+  PlayTrack("/sound/null.mp3"); // Load silent track to initialize
 }
 
+// Feed audio library in the main loop
 void RunMusicTask() {
   audio.loop();
 }

@@ -1,5 +1,5 @@
 /**
- * @brief Common data class
+ * @brief Common data class for handling state and value updates
  */
 
 #ifndef _CDATA_H
@@ -9,29 +9,29 @@ template<class T>
 class CData
 {
 private:
-    T value;
-    T oldValue;
-    bool state;
+    T value; // Current value of the data
+    T oldValue; // Previous value of the data
+    bool state; // Flag indicating if the value has changed
 
 public:
     CData()
     {
-        this->state = false;
+        this->state = false; // Initialize state as unchanged
     }
 
     ~CData() = default;
 
-    T GetValue()
+    T GetValue() // Returns the current value
     {
         return this->value;
     }
 
-    T GetOldValue()
+    T GetOldValue() // Returns the previous value
     {
         return this->oldValue;
     }
 
-    void SetValue(T value)
+    void SetValue(T value) // Updates the value and sets changed flag if different
     {
         if (value != this->value)
         {
@@ -41,16 +41,15 @@ public:
         }
     }
 
-    bool GetState()
+    bool GetState() // Returns true if the value has changed since last reset
     {
         return this->state;
     }
 
-    void ResetState()
+    void ResetState() // Resets the change flag
     {
         if (this->state)
         {
-            //this->oldValue = this->value;
             this->state = false;
         }
     }

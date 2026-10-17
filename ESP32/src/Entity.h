@@ -1,5 +1,5 @@
 /**
- * @brief Entity
+ * @brief Player and Shotgun entity definitions
  */
 
 #ifndef _ENTITY_H
@@ -14,18 +14,16 @@ namespace player
 {
     struct player_info_t
     {
-        struct player_slot_button_t
+        struct player_slot_button_t // UI logic for a single item slot in inventory
         {
-            // Type
-            PLAYER_TYPE playerType;
-            ITEM_TYPE itemType;
+            PLAYER_TYPE playerType; // Owner of the slot
+            ITEM_TYPE itemType; // Current item in slot
 
-            // UI
-            lv_obj_t* button;
-            lv_obj_t* buttonImg;
-            lv_img_dsc_t image;
+            lv_obj_t* button; // LVGL button container
+            lv_obj_t* buttonImg; // LVGL image object inside button
+            lv_img_dsc_t image; // Image description
 
-            void Assign(PLAYER_TYPE playerType, ITEM_TYPE itemType, const void* image)
+            void Assign(PLAYER_TYPE playerType, ITEM_TYPE itemType, const void* image) // Puts an item in the slot
             {
                 lv_image_set_src(this->buttonImg, image);
                 memcpy(&this->image, image, sizeof(lv_img_dsc_t));
@@ -35,7 +33,7 @@ namespace player
                 PlaySoundWrapper(SOUND_TYPE::ASSIGN);
             }
 
-            void Unassign()
+            void Unassign() // Clears the slot
             {
                 memset(&this->image, 0, sizeof(this->image));
                 lv_image_set_src(this->buttonImg, &ui_img_empty_png);
@@ -44,36 +42,33 @@ namespace player
             }
         };
 
-        // Type
-        PLAYER_TYPE type;
+        PLAYER_TYPE type; // Player identifier
 
-        // UI
-        lv_obj_t* table;
-        lv_obj_t* pickButton;
-        lv_obj_t* confirmButton;
-        lv_obj_t* gunfireEffect;
-        lv_obj_t* adrenalinefEffect;
-        lv_obj_t* imgSkip;
-        std::vector<lv_obj_t*> listHPLevel1;
-        std::vector<lv_obj_t*> listHPLevel2;
+        lv_obj_t* table; // Main table UI object
+        lv_obj_t* pickButton; // Button to draw items
+        lv_obj_t* confirmButton; // Button to confirm self-shot
+        lv_obj_t* gunfireEffect; // Flash effect when shot
+        lv_obj_t* adrenalinefEffect; // UI effect for adrenaline item
+        lv_obj_t* imgSkip; // Handcuff icon for skipped turn
+        std::vector<lv_obj_t*> listHPLevel1; // Primary health bar (red)
+        std::vector<lv_obj_t*> listHPLevel2; // Secondary health bar (blue/charge)
 
-        // Property
-        std::vector<player_slot_button_t> listButtonInfo;
-        uint8_t pickItemCount;
-        uint8_t totalItemCount;
-        uint8_t hpLevel2;
-        uint8_t hpLevel1;
-        uint16_t angle;
-        bool isPickComplete;
-        bool isSkip;
-        bool isNext;
+        std::vector<player_slot_button_t> listButtonInfo; // Inventory slot info
+        uint8_t pickItemCount; // Number of items picked this round
+        uint8_t totalItemCount; // Current total items in inventory
+        uint8_t hpLevel2; // Current secondary health points
+        uint8_t hpLevel1; // Current primary health points
+        uint16_t angle; // UI rotation angle for this player
+        bool isPickComplete; // True if player finished drawing items
+        bool isSkip; // True if player's turn is skipped (handcuffs)
+        bool isNext; // Internal flag for turn sequence management
 
         bool operator==(const player_info_t& other)
         {
             return (other.type == this->type);
         }
 
-        void Enable()
+        void Enable() // Visual highlighting and enabling input
         {
             lv_obj_add_state(this->table, LV_STATE_CHECKED);
 
@@ -83,7 +78,7 @@ namespace player
             }
         }
 
-        void Disable()
+        void Disable() // Dimming UI and disabling input
         {
             lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
             lv_obj_remove_state(this->table, LV_STATE_CHECKED);
@@ -104,7 +99,7 @@ namespace player
             lv_obj_add_state(this->pickButton, LV_STATE_DISABLED);
         }
 
-        void SetSkip(bool value)
+        void SetSkip(bool value) // Updates skip state and UI icon
         {
             this->isSkip = value;
 
@@ -119,8 +114,9 @@ namespace player
         }
     };
 
-    std::vector<player_info_t> listPlayer = { };
+    std::vector<player_info_t> listPlayer; // List of all game players
 
+    // Checks if all players have finished their item picking phase
     bool CheckAllPickComplete()
     {
         bool result = true;
@@ -147,6 +143,7 @@ namespace player
         return result;
     }
 
+    // Cycles to the next player in the list
     player_info_t& NextPlayer(const player_info_t& current)
     {
         for (auto& player : listPlayer)
@@ -160,6 +157,7 @@ namespace player
         return listPlayer[0]; // First player
     }
 
+    // Logic to visually toggle focus between players
     void EnableAllPlayerTableExcept(const player_info_t& current)
     {
         for (auto& player : listPlayer)
@@ -190,6 +188,7 @@ namespace player
         }
     }
 
+    // Updates health bar UI based on internal HP values
     void UpdateAllPlayerHP()
     {
         for (auto& player : listPlayer)
@@ -199,42 +198,37 @@ namespace player
             {
                 if (i < player.hpLevel1)
                 {
-                    if ((lv_obj_get_state(player.listHPLevel1[i]) & LV_STATE_DISABLED) == LV_STATE_DISABLED)
+                    if (CheckObjectState(player.listHPLevel1[i], LV_STATE_DISABLED))
                     {
                         lv_obj_remove_state(player.listHPLevel1[i], LV_STATE_DISABLED);
-
                         PlaySoundWrapper(SOUND_TYPE::HEALTH);
                     }
                 }
                 else
                 {
-                    if ((lv_obj_get_state(player.listHPLevel1[i]) & LV_STATE_DISABLED) != LV_STATE_DISABLED)
+                    if (!CheckObjectState(player.listHPLevel1[i], LV_STATE_DISABLED))
                     {
                         lv_obj_add_state(player.listHPLevel1[i], LV_STATE_DISABLED);
-
                         PlaySoundWrapper(SOUND_TYPE::HIT);
                     }
                 }
             }
 
-            // Update HP level 2
             for (uint8_t i = 0; i < player.listHPLevel2.size(); i++)
             {
                 if (i < player.hpLevel2)
                 {
-                    if ((lv_obj_get_state(player.listHPLevel2[i]) & LV_STATE_DISABLED) == LV_STATE_DISABLED)
+                    if (CheckObjectState(player.listHPLevel2[i], LV_STATE_DISABLED))
                     {
                         lv_obj_remove_state(player.listHPLevel2[i], LV_STATE_DISABLED);
-
                         PlaySoundWrapper(SOUND_TYPE::HEALTH);
                     }
                 }
                 else
                 {
-                    if ((lv_obj_get_state(player.listHPLevel2[i]) & LV_STATE_DISABLED) != LV_STATE_DISABLED)
+                    if (!CheckObjectState(player.listHPLevel2[i], LV_STATE_DISABLED))
                     {
                         lv_obj_add_state(player.listHPLevel2[i], LV_STATE_DISABLED);
-
                         PlaySoundWrapper(SOUND_TYPE::HIT);
                     }
                 }
@@ -258,26 +252,24 @@ namespace player
 
 namespace shotgun
 {
-    struct shotgun_info_t
+    struct shotgun_info_t // Logic and state for the shotgun weapon
     {
-        // UI
-        lv_obj_t* objInTable;
-        lv_obj_t* objInside;
-        lv_obj_t* objHand;
-        lv_obj_t* objWndConfirm;
-        lv_obj_t* objTrashBullet;
-        std::vector<lv_obj_t*> listBulletImg;
+        lv_obj_t* objInTable; // Icon on the table
+        lv_obj_t* objInside; // Shotgun in detail view
+        lv_obj_t* objHand; // Shotgun when being held
+        lv_obj_t* objWndConfirm; // Confirm selection window
+        lv_obj_t* objTrashBullet; // Discarded shell UI
+        std::vector<lv_obj_t*> listBulletImg; // Revealable bullets in box
 
-        // Property
-        std::unordered_map<BULLET_TYPE, lv_img_dsc_t> mapBulletImg;
-        std::vector<BULLET_TYPE> listBullet;
-        std::queue<BULLET_TYPE> queueBullet;
-        bool isCut;
-        bool isGunfire;
-        uint8_t state;
-        uint8_t currentBulletIndex;
-        player::player_info_t* targetPlayer;
-        player::player_info_t* currentPlayer;
+        std::unordered_map<BULLET_TYPE, lv_img_dsc_t> mapBulletImg; // Map bullet type to image
+        std::vector<BULLET_TYPE> listBullet; // Initial shell sequence
+        std::queue<BULLET_TYPE> queueBullet; // Working magazine
+        bool isCut; // True if handsaw was used
+        bool isGunfire; // True if last shot was 'Live'
+        uint8_t state; // Current animation/logic step in firing
+        uint8_t currentBulletIndex; // Progress in revealable box
+        player::player_info_t* targetPlayer; // Who the gun is pointed at
+        player::player_info_t* currentPlayer; // Who is holding the gun
 
         void Disable()
         {
@@ -289,6 +281,7 @@ namespace shotgun
             lv_obj_remove_state(this->objInTable, LV_STATE_DISABLED);
         }
 
+        // Conversions for data handling
         std::vector<BULLET_TYPE> QueueToVec()
         {
             std::vector<BULLET_TYPE> vec = { };
@@ -305,7 +298,7 @@ namespace shotgun
 
         void VecToQueue(std::vector<BULLET_TYPE> vec)
         {
-            this->queueBullet = std::queue<BULLET_TYPE>(); // Empty queue
+            this->queueBullet = std::queue<BULLET_TYPE>();
 
             for (const auto& item : vec)
             {
@@ -313,7 +306,7 @@ namespace shotgun
             }
         }
 
-        void Reset()
+        void Reset() // Clears saw modifications and visual state
         {
             // Update shotgun image
             lv_image_set_src(this->objInTable, &ui_img_shotgun_png);
@@ -323,7 +316,7 @@ namespace shotgun
             this->isGunfire = false;
         }
 
-        void Cut()
+        void Cut() // Applies handsaw effect
         {
             // Update shotgun image
             lv_image_set_src(this->objInTable, &ui_img_shotguncut_png);
@@ -334,7 +327,7 @@ namespace shotgun
             PlaySoundWrapper(SOUND_TYPE::BREAK);
         }
 
-        void ShowInHand(player::player_info_t& player)
+        void ShowInHand(player::player_info_t& player) // Triggers the aiming UI
         {
             lv_obj_remove_flag(this->objWndConfirm, LV_OBJ_FLAG_HIDDEN);
 
@@ -354,15 +347,13 @@ namespace shotgun
             PlaySoundWrapper(SOUND_TYPE::WEAPON_PICKUP);
         }
 
-        void Shot()
+        void Shot() // Multi-stage shot logic (rotate, fire, reset)
         {
-            // Rotate shotgun to target player
-            if (this->state == 0)
+            if (this->state == 0) // Stage 0: Rotate to target
             {
                 lv_image_set_rotation(this->objHand, this->targetPlayer->angle);
             }
-            // Show shot effect
-            else if (this->state == 1)
+            else if (this->state == 1) // Stage 1: Trigger pull
             {
                 this->currentBulletIndex++;
 
@@ -384,6 +375,7 @@ namespace shotgun
                     this->queueBullet.pop(); // Remove bullet
                     this->isGunfire = true;
 
+                    // Damage calculation (Double damage if cut)
                     if (this->isCut)
                     {
                         if (targetPlayer->hpLevel2 >= 2)
@@ -426,8 +418,7 @@ namespace shotgun
                     lv_obj_add_flag(ldata->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN);
                     }, this, EFFECT_WAIT_TIME);
             }
-            // Reset shotgun in hand
-            else if (this->state == 2)
+            else if (this->state == 2) // Stage 2: Cleanup
             {
                 lv_obj_add_flag(this->targetPlayer->gunfireEffect, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(this->objWndConfirm, LV_OBJ_FLAG_HIDDEN);

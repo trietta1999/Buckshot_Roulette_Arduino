@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+ * @brief Finite State Machine (FSM) implementation for game logic
+ */
+
+// Transitions to a new state and immediately processes it if changed
 void FSMTransit(STATE_TYPE next)
 {
     CurrentState.SetValue(next);
@@ -10,48 +15,49 @@ void FSMTransit(STATE_TYPE next)
     }
 }
 
+// Main FSM processor - handles game state transitions and logic
 void FSM()
 {
 #pragma region Common_state
-    // Startup state
+    // STARTUP: Initial screen where both players must 'check-in'
     if (CurrentState.GetValue() == STATE_TYPE::STARTUP)
     {
         if (CheckObjectState(ui_btnPlayer1Start, LV_STATE_CHECKED) && CheckObjectState(ui_btnPlayer2Start, LV_STATE_CHECKED))
         {
             debug_println_func("Change screen to Main");
 
-            // Change screen to main screen
+            // Change screen to main game interface
             _ui_screen_change(&ui_Main, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_Main_screen_init);
 
             FSMTransit(STATE_TYPE::PLAYER_NEXT);
         }
     }
 
-    // Shotgun shot
+    // SHOTGUN_SHOT: Sequence of firing the shotgun with timing for effects
     if (CurrentState.GetValue() == STATE_TYPE::SHOTGUN_SHOT)
     {
         if (MILLISEC_GET - lastShotgunTime >= EFFECT_WAIT_TIME)
         {
             debug_println_func("Shotgun shot stage " + std::to_string(Shotgun.state));
 
-            BlockGui();
+            BlockGui(); // Block interaction during shot animation
 
-            // End stage of shotgun
+            // Shot animation sequence finished (multiple stages for recoil/sound/smoke)
             if (Shotgun.state > 2)
             {
                 FSMTransit(STATE_TYPE::UPDATE_HP);
 
-                // Shotgun is fired or Target player is not current player
+                // If gun fired (Live) or user shot themselves (Blank and target is self), end turn
                 if ((Shotgun.isGunfire) || (Player != Shotgun.targetPlayer))
                 {
                     FSMTransit(STATE_TYPE::ACTION_TURN);
                 }
 
-                ShowTrashBullet();
+                ShowTrashBullet(); // Display discarded shell
 
                 Shotgun.Reset();
 
-                // Out of bullet
+                // If current magazine is empty, prepare next round loading
                 if (!Shotgun.queueBullet.size())
                 {
                     // Wait for transit to next round
@@ -60,15 +66,14 @@ void FSM()
                         }, nullptr, EFFECT_WAIT_TIME);
                 }
 
-                // Unblock all shotgun state
+                // Release GUI block for all stages of shot
                 for (int8_t i = Shotgun.state; i >= 0; i--)
                 {
                     UnblockGui();
                 }
             }
 
-            // Execute shotgun
-            Shotgun.Shot();
+            Shotgun.Shot(); // Execute current shot effect stage
             Shotgun.state++;
 
             lastShotgunTime = MILLISEC_GET;
@@ -76,18 +81,19 @@ void FSM()
     }
 #pragma endregion
 
+    // Process only if the state was just set
     if (CurrentState.GetState())
     {
         debug_println_func("State: " + map_STATE_TYPE[CurrentState.GetValue()]);
 
-        BlockGui();
+        BlockGui(); // Standard block for all major state transitions
 
-        // Update player sequence
+        // PLAYER_NEXT: Decides whether to load more shells or let next player pick items
         if (CurrentState.GetValue() == STATE_TYPE::PLAYER_NEXT)
         {
             ResetPlayerTable();
 
-            if (player::CheckAllPickComplete())
+            if (player::CheckAllPickComplete()) // If all players have picked their round items
             {
                 debug_println_func("All pick complete");
 
@@ -102,12 +108,11 @@ void FSM()
 
                 if (!Player)
                 {
-                    // Set player #1 as default
-                    Player = &player::listPlayer[0];
+                    Player = &player::listPlayer[0]; // Start with player 1
                 }
                 else
                 {
-                    Player = &player::NextPlayer(*Player);
+                    Player = &player::NextPlayer(*Player); // Toggle players
                 }
 
                 Player->Enable();
@@ -115,29 +120,30 @@ void FSM()
                 FSMTransit(STATE_TYPE::PICK);
             }
         }
-        // Item pick state
+        // PICK: Waiting for player to pick a random item from the box
         else if (CurrentState.GetValue() == STATE_TYPE::PICK)
         {
             Player->EnablePickButton();
         }
-        // Item arrange state
+        // PLAYER_ITEM_ARRANGE: Internal state for organizing inventory UI
         else if (CurrentState.GetValue() == STATE_TYPE::PLAYER_ITEM_ARRANGE)
         {
             Player->Enable();
         }
-        // Load shell state
+        // LOAD_SHELL: Shotgun loading sequence with randomized Live/Blank count
         else if (CurrentState.GetValue() == STATE_TYPE::LOAD_SHELL)
         {
             uint8_t bulletNum = RandomRangeNumber(MIN_BULLET, MAX_BULLET);
 
-            Shotgun.listBullet = CreateBulletList(bulletNum); // Random order
+            Shotgun.listBullet = CreateBulletList(bulletNum);
             Shotgun.VecToQueue(Shotgun.listBullet);
 
+            // Sort for the 'reveal' UI so Blanks are shown together
             std::vector<BULLET_TYPE> listBulletSort = Shotgun.listBullet;
             std::sort(listBulletSort.begin(), listBulletSort.end(), [](BULLET_TYPE a, BULLET_TYPE b)
                 {
                     return a < b;
-                }); // BLANK group is always on top (for view only)
+                });
 
             // Debug show real bullet group
             debug_println_func("Bullet box:");
@@ -146,7 +152,7 @@ void FSM()
                 debug_println_func(map_BULLET_TYPE[item]);
             }
 
-            // Show sort bullet group
+            // Update bullet revelation UI
             for (uint8_t i = 0; i < Shotgun.listBulletImg.size(); i++)
             {
                 if (i < bulletNum)
@@ -165,7 +171,6 @@ void FSM()
             lv_label_set_text(ui_lblMessage, MSG_TOUCH_SHOTGUN);
 
             HideBulletInTable();
-
             ResetPlayerTable();
 
             // Enable shotgun
@@ -174,11 +179,9 @@ void FSM()
             // Reset bullet index
             Shotgun.currentBulletIndex = 0;
 
-            // Hide bullet box cover
-            lv_obj_add_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN);
-
+            lv_obj_add_flag(ui_imgBulletBoxCover, LV_OBJ_FLAG_HIDDEN); // Show bullets
         }
-        // Action play turn state
+        // ACTION_TURN: Logic for switching active turns based on skip states (handcuffs)
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_TURN)
         {
             if (CurrentState.GetOldValue() != STATE_TYPE::LOAD_SHELL)
@@ -198,8 +201,9 @@ void FSM()
                     }
                     else if (Player->isSkip)
                     {
-                        // Ignore this player now, next turn will be allowed
-                        Player->isNext = true;
+                        Player->isNext = true; // Mark to be allowed next round
+
+
                         continue;
                     }
                     else
@@ -211,7 +215,7 @@ void FSM()
             }
             else
             {
-                // Move to latest player
+                // Ensure we stick to the latest player who should move after loading
                 while (Player->type != latestPlayer)
                 {
                     Player = &player::NextPlayer(*Player);
@@ -227,12 +231,12 @@ void FSM()
 
             FSMTransit(STATE_TYPE::ACTION_ITEM);
         }
-        // Action play item state
+        // ACTION_ITEM: Waiting for player interaction with shotgun or inventory items
         else if (CurrentState.GetValue() == STATE_TYPE::ACTION_ITEM)
         {
-            // Do nothing
+            // Passive wait for user action
         }
-        // Update HP state
+        // UPDATE_HP: Refresh UI health levels and check for game over
         else if (CurrentState.GetValue() == STATE_TYPE::UPDATE_HP)
         {
             player::UpdateAllPlayerHP();
@@ -246,10 +250,10 @@ void FSM()
                 FSMTransit(STATE_TYPE::ACTION_ITEM);
             }
         }
-        // Result state
+        // RESULT: Show winner/loser and end game
         else if (CurrentState.GetValue() == STATE_TYPE::RESULT)
         {
-            lv_obj_remove_flag(ui_wndResult, LV_OBJ_FLAG_HIDDEN); // Show result window
+            lv_obj_remove_flag(ui_wndResult, LV_OBJ_FLAG_HIDDEN);
 
             // Player #1 is dead
             if (!player::listPlayer[0].hpLevel1)
@@ -266,5 +270,5 @@ void FSM()
         UnblockGui();
     }
 
-    CurrentState.ResetState();
+    CurrentState.ResetState(); // Clear state flag to prevent loops
 }
