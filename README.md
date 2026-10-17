@@ -1,4 +1,4 @@
-# 1. Tổng quan
+﻿# 1. Tổng quan
 ## 1.1. Buckshot Roulette
 Buckshot Roulette không chỉ là một trò chơi, đó là một trải nghiệm tâm lý đầy nghẹt thở, nơi ranh giới giữa vận may rủi và tư duy chiến thuật bị xóa nhòa. Được nhào nặn bởi bàn tay của nhà phát triển tài năng Mike Klubnika, trò chơi đưa bạn vào một căn phòng u tối, ngột ngạt tại một câu lạc bộ đêm dưới lòng đất, nơi bạn phải đối đầu với The Dealer — một thực thể kỳ quái và lạnh lùng — trong một ván cược sinh tử.
 
@@ -40,122 +40,118 @@ Không giống các vật phẩm cầm tay trong túi đồ, sinh mạng của n
 Dự án này là một phiên bản phần cứng độc lập, đưa trải nghiệm sinh tử của Buckshot Roulette lên nền tảng vi điều khiển ESP32. Không cần đến phụ kiện rườm rà, toàn bộ trò chơi được gói gọn trong một thiết bị cầm tay với giao diện tương tác trực quan qua màn hình cảm ứng, mang lại sự tiện lợi tối đa mà vẫn giữ trọn vẹn sự kịch tính của bản gốc.
 
 ### **Giao Diện Trực Quan và Tương Tác Chạm**
-
 Trái tim của dự án là màn hình cảm ứng điện dung, nơi mọi thao tác từ chọn mục tiêu, sử dụng vật phẩm cho đến bóp cò đều được thực hiện qua những cú chạm. Giao diện được thiết kế với các phím bấm ảo có độ phản hồi hình ảnh sống động, giúp người chơi cảm nhận được sức nặng của từng quyết định.
 
 ### **Kho Vật Phẩm Kỹ Thuật Số (Virtual Items)**
-
-Thay vì sử dụng thẻ bài vật lý, hệ thống quản lý vật phẩm được tích hợp ngay trên màn hình. Mỗi người chơi sở hữu một khay trang bị gồm 6 ô chứa đồ:
-- Toàn bộ 9 vật phẩm chiến lược (*Kính lúp, Cưa tay, Lon bia, Bao thuốc, Điện thoại, Thuốc hết hạn, Còng tay, Đảo cực, Adrenaline*) hiện diện dưới dạng các ô chọn thông minh.
+Hệ thống quản lý vật phẩm được tích hợp ngay trên màn hình. Mỗi người chơi sở hữu một khay trang bị gồm 6 ô chứa đồ:
+- Toàn bộ 9 vật phẩm chiến lược hiện diện dưới dạng các ô chọn thông minh.
 - Mỗi vòng người chơi được nhấn nút rút ngẫu nhiên tối đa 3 món (tối đa 6 món dự trữ).
 - Chỉ với một cú chạm, hiệu ứng vật phẩm sẽ được thực thi ngay lập tức thông qua các hoạt ảnh (animation) trên màn hình và tác động trực tiếp vào các thông số trận đấu.
 
 ### **Cơ Chế Nạp Đạn & Quản Lý Máu Thông Minh**
-
 - **Số hóa sinh mạng:** Lượng máu của hai người chơi được hiển thị bằng các biểu tượng bộ khử rung tim (Defib) sắc nét 2 tầng (Level 1 và Level 2), tự động cập nhật và phát âm thanh sau mỗi phát súng hoặc lần hồi máu.
-- **Thuật toán nạp đạn:** Trước mỗi vòng, nắp hộp đạn ảo sẽ mở ra để công khai tổng số lượng đạn Thật (Live) và đạn Giả (Blank) được đưa vào súng (ngẫu nhiên từ 2 đến 8 viên, đảm bảo luôn có ít nhất 1 đạn thật). Sau đó, hộp đạn đậy nắp và thuật toán ngẫu nhiên của ESP32 sẽ xáo trộn buồng đạn, đảm bảo mỗi lần bóp cò là một khoảnh khắc đối mặt với vận may hoàn toàn công bằng và không thể đoán trước.
+- **Thuật toán nạp đạn:** Trước mỗi vòng, nắp hộp đạn ảo sẽ mở ra để công khai tổng số lượng đạn Thật (Live) và đạn Giả (Blank) được đưa vào súng (ngẫu nhiên từ 2 đến 8 viên). Sau đó, hộp đạn đậy nắp và thuật toán ngẫu nhiên của ESP32 sẽ xáo trộn buồng đạn, đảm bảo công bằng.
 
-Đây là sự kết hợp hoàn hảo giữa tính gọn nhẹ của công nghệ nhúng và sức hấp dẫn của lối chơi chiến thuật đỉnh cao, tạo nên một thiết bị giải trí độc đáo cho những tín đồ của dòng game kinh dị tâm lý.
-
-### **Màn hình hiển thị**
-
-Màn hình **Guition HMI W5 (JC8048W550)** là một bo mạch hiển thị thông minh (Smart Display/HMI) tích hợp vi điều khiển mạnh mẽ **ESP32-S3**. Với cấu hình bộ nhớ lớn và tấm nền IPS sắc nét, đây là phần cứng lý tưởng cho các dự án phát triển giao diện đồ họa nhúng (GUI) sử dụng thư viện như **LVGL**, đảm bảo hiệu năng mượt mà ở độ phân giải 800x480.
+### **Màn hình hiển thị Guition HMI W5**
+Dự án sử dụng màn hình **Guition HMI W5 (JC8048W550)**, một bo mạch thông minh tích hợp **ESP32-S3**. Với cấu hình bộ nhớ lớn và tấm nền IPS sắc nét, đây là phần cứng lý tưởng cho các dự án phát triển giao diện đồ họa nhúng (GUI) sử dụng thư viện như **LVGL**.
 
 ![](Images/hmi_front.jpg)
 ![](Images/hmi_back.jpg)
 
-### **1. Thông số cấu hình phần cứng chính**
+**Thông số cấu hình phần cứng chính:**
+* **MCU:** ESP32-S3-WROOM-1 (Dual-core Xtensa LX7, 240MHz).
+* **Bộ nhớ:** 16 MB Flash & 8 MB Octal PSRAM (giúp xử lý Framebuffer mượt mà).
+* **Màn hình:** 5.0 inch IPS, 800 x 480 pixels, giao tiếp 16-bit RGB (Driver ST7262).
+* **Cảm ứng:** Điện dung CTP (Chip GT911 qua I2C).
+* **Khả năng tương thích:** Hỗ trợ tốt LVGL, ESPHome, openHASP, Arduino IDE, ESP-IDF.
 
-**Bộ vi xử lý và bộ nhớ (Core & Memory)**
-
-* **MCU:** ESP32-S3-WROOM-1 (Dual-core Xtensa LX7, xung nhịp lên đến 240MHz, tích hợp tập lệnh tăng tốc vector cho AI/đồ họa).
-* **Flash:** 16 MB (N16) – Thoải mái lưu trữ firmware lớn, font chữ, và các file assets hình ảnh nhúng trực tiếp.
-* **PSRAM:** 8 MB Octal PSRAM (R8) – Chạy ở chế độ Octal tốc độ cao, đóng vai trò cực kỳ quan trọng để cấp phát bộ đệm khung hình (framebuffers) lớn cho màn hình 800x480 mà không lo tràn bộ nhớ tĩnh (SRAM).
-* **Kết nối không dây:** Wi-Fi 4 (802.11 b/g/n) và Bluetooth 5.0 (LE) / BLE.
-
-**Thông số màn hình và cảm ứng (Display & Touch)**
-
-* **Kích thước:** 5.0 inch.
-* **Công nghệ tấm nền:** IPS (Góc nhìn rộng, màu sắc trung thực và độ tương phản tốt hơn nhiều so với màn TN thông thường).
-* **Độ phân giải:** 800 x 480 pixels.
-* **Driver hiển thị:** ST7262 (Được kết nối qua giao tiếp **16-bit RGB** trực tiếp của ESP32-S3, tối ưu hóa tối đa tốc độ làm tươi màn hình).
-* **Độ sâu màu:** RGB 16-bit (65K màu - RGB565).
-* **Cảm ứng:** Cảm ứng điện dung (Capacitive Touch Panel - CTP), điều khiển qua chip GT911 (Giao tiếp I2C).
-
-### **2. Khả năng tương thích phần mềm phát triển**
-
-Mạch được hỗ trợ rất tốt bởi cộng đồng mã nguồn mở và các framework đồ họa nhúng:
-
-* **LVGL:** Nhờ có 8MB PSRAM kết nối qua bus Octal tốc độ cao, có thể dễ dàng cấu hình cơ chế Double Buffering (hoặc tối thiểu là 1/10 frame buffer trên PSRAM) trong LVGL để đạt tốc độ render tối đa và loại bỏ hoàn toàn hiện tượng xé hình (tearing). Tương thích tốt khi dùng kèm các thư viện driver như `Arduino_GFX` hoặc `LovyanGFX`.
-* **ESPHome:** Được hỗ trợ chính thức qua các cấu hình phần cứng có sẵn, cho phép kéo trực tiếp các thực thể từ Home Assistant lên màn hình thông qua mô-đun LVGL của ESPHome mà không cần code C++ thủ công.
-* **openHASP:** Hoạt động rất mượt mà (mã thiết bị: `JC8048W550`), giúp thiết kế nhanh giao diện điều khiển nhà thông minh thông qua các file cấu hình định dạng JSON.
-* **Môi trường lập trình:** Hỗ trợ toàn diện ESP-IDF, Arduino IDE, và MicroPython.
-
-### **Tìm hiểu thêm:**
-[Màn hình cảm ứng Guition HMI W5 ESP32-S3-N16R8 JC8048W550 5.0 inch IPS 800*480](https://www.surenoo.com/products/23291185)
-
-## **Tính Năng Mở Rộng: Trình Phát Nhạc Hi-Fi Từ Thẻ Nhớ**
-Không chỉ dừng lại ở một máy chơi game chuyên dụng, thiết bị tận dụng tối đa khả năng giải mã âm thanh số của ESP32 qua giao tiếp I2S để trở thành một trình phát nhạc chuyên nghiệp. Thông qua khe cắm thẻ nhớ micro-SD, người chơi có thể biến thiết bị thành một máy nghe nhạc cá nhân với những đặc điểm nổi bật:
-
-- **Quản Lý Thư Viện Nhạc Trực Quan:** Toàn bộ danh sách bài hát trong thẻ nhớ được quét tự động và hiển thị trên màn hình cảm ứng dưới dạng con lăn (Roller). Bạn có thể dễ dàng cuộn chọn bài, chuyển bài (Next/Previous), tạm dừng (Pause), theo dõi tiến trình bài hát qua vòng cung thời gian (Time Arc) hoặc điều chỉnh âm lượng chỉ với một cú chạm nhẹ.
-- **Định Dạng Âm Thanh Hỗ Trợ Đa Dạng:** Nhờ thư viện giải mã âm thanh I2S tối ưu, thiết bị hỗ trợ phát **6 định dạng âm thanh phổ biến**: `.mp3`, `.wav`, `.aac`, `.m4a`, `.flac`, `.ogg`. Bạn có thể tự tạo cho mình những danh sách nhạc mang phong cách *Industrial* hay *Dark Techno* để đồng bộ với không khí u tối của trò chơi, hoặc thưởng thức những bản nhạc chất lượng cao khi thư giãn.
-- **Tự Động Chuyển Bài (Auto Next):** Khi bài hát phát hết (`MSG_EOF`), hệ thống tự động nhận diện và chuyển sang phát bài tiếp theo trong danh sách mà không cần thao tác thủ công.
-- **Cá Nhân Hóa Trải Nghiệm:** Giao diện nghe nhạc được thiết kế tinh giản nhưng hiện đại, đồng bộ với phong cách thẩm mỹ tổng thể của thiết bị.
+### **Tính Năng Mở Rộng: Trình Phát Nhạc Hi-Fi Từ Thẻ Nhớ**
+Không chỉ dừng lại ở một máy chơi game, thiết bị tận dụng khả năng giải mã âm thanh I2S của ESP32 để trở thành trình phát nhạc từ thẻ micro-SD.
+- **Quản lý danh sách nhạc trực quan:** Cuộn chọn bài (Roller), theo dõi tiến trình thời gian qua cung đồ họa (Time Arc).
+- **Hỗ trợ 6 định dạng:** .mp3, .wav, .aac, .m4a, .flac, .ogg.
+- **Tự động chuyển bài (Auto Next):** Xử lý mượt mà khi kết thúc file (MSG_EOF).
 
 ## 1.4. LVGL & SquareLine Studio
-Giao diện người dùng của dự án được phát triển bằng **LVGL (Light and Versatile Graphics Library) phiên bản 9.1**, kết hợp cùng công cụ thiết kế giao diện trực quan **SquareLine Studio (v1.5.3)**.
-
-Điểm mạnh cốt lõi của giải pháp này:
-- **Light (Nhẹ nhàng & Tối ưu):** LVGL được tối ưu hóa sâu cho ESP32-S3 với bộ đệm vẽ DMA kết hợp tận dụng 8MB Octal PSRAM tốc độ cao, giúp loại bỏ hoàn toàn hiện tượng giật xé hình (tearing) ngay cả ở độ phân giải lớn 800x480.
-- **Versatile (Linh hoạt & Đa nền tảng):** Hỗ trợ đầy đủ widget hiện đại (Arc, Roller, Slider, Image Button, Modal Container...), hệ thống animation mượt mà và hoàn toàn độc lập với phần cứng nền tảng bên dưới.
-- **Phát triển trực quan:** SquareLine Studio cho phép thiết kế layout, quản lý assets hình ảnh/font chữ, cấu hình styling và xuất ra mã nguồn C chuẩn mực (`ESP32/src/ui/`), giúp tăng tốc tối đa quá trình phát triển và kiểm thử GUI.
+Giao diện người dùng của dự án được phát triển bằng **LVGL (Light and Versatile Graphics Library)**, kết hợp cùng công cụ thiết kế giao diện trực quan **SquareLine Studio**.
 
 ![](Images/lvgl_home_banner.jpg)
 
+- **LVGL:** Tối ưu hóa sâu cho ESP32-S3 với bộ đệm vẽ DMA kết hợp tận dụng 8MB Octal PSRAM tốc độ cao, loại bỏ hiện tượng giật xé hình (tearing) ở độ phân giải 800x480.
+- **SquareLine Studio:** Cho phép thiết kế layout, quản lý assets, cấu hình styling và xuất ra mã nguồn C chuẩn mực (ESP32/src/ui/), tăng tốc tối đa quá trình phát triển.
+
+---
+
 # 2. Phần mềm & Kiến trúc hệ thống
-Dự án được xây dựng dựa trên kiến trúc phân lớp hướng sự kiện và máy trạng thái hữu hạn (**FSM**), được thiết kế để tách biệt rõ ràng trách nhiệm giữa hiển thị giao diện, quản lý dữ liệu, quy tắc logic trò chơi và tầng giao tiếp phần cứng. Kiến trúc bao gồm 5 thành phần chính: **GUI, DATA, LIB, SER,** và **SIM**.
+Dự án áp dụng mô hình kiến trúc phân tầng kết hợp giữa **Máy Trạng Thái Hữu Hạn (FSM - Finite State Machine)** để xử lý logic trò chơi và kiến trúc **Event-Driven (Hướng sự kiện)** để tương tác với người dùng. Cấu trúc được tách biệt rõ ràng trách nhiệm giữa phần cứng, giao diện và logic game.
 
-## **1. GUI (Graphical User Interface - `ESP32/src/ui/`)**
-- **Trách nhiệm:** Đảm nhiệm toàn bộ khía cạnh hiển thị đồ họa và tương tác cảm ứng người dùng.
-- **Chức năng:** 
-  - Bao gồm 4 màn hình chính: Màn hình khởi động (`ui_Start`), Màn hình chính chơi game (`ui_Main`), Màn hình trợ giúp (`ui_Info`), và Màn hình nghe nhạc (`ui_Music`).
-  - Tích hợp các cửa sổ hộp thoại nổi (Modal Popups) trong trận đấu: Hộp thoại xác nhận bắn Shotgun (`ui_wndShotgunConfirm`), Cửa sổ soi nòng súng / nghe điện thoại (`ui_imgbtnShotgunInside`), Hộp thoại trộm đồ Adrenaline (`ui_wndAdrenalineEffect`), và Cửa sổ vinh danh kết quả (`ui_wndResult`).
-- **Tương tác:** Lắng nghe các sự kiện chạm từ màn hình cảm ứng điện dung GT911 (hoặc chuột trên PC), chuyển tiếp các yêu cầu tương tác sang `ui_events.cpp` để xử lý và cập nhật lại hiển thị dựa trên trạng thái từ **DATA**/**LIB**.
+## 2.1. Cấu trúc các tầng (Architecture Layers)
+Dự án được chia thành 5 thành phần cốt lõi:
 
-## **2. DATA (Reactive Data Layer - `CommonData.*`, `CommonDataType.*`, `CData.h`)**
-- **Trách nhiệm:** Định nghĩa cấu trúc dữ liệu cốt lõi và cung cấp cơ chế dữ liệu phản ứng (reactive state) dùng chung cho toàn bộ dự án.
-- **Chức năng:**
-  - Định nghĩa các kiểu dữ liệu và enumeration: `ITEM_TYPE` (9 vật phẩm), `BULLET_TYPE` (Live/Blank), `STATE_TYPE` (các trạng thái FSM), `PLAYER_TYPE`, `SOUND_TYPE`, `MUSIC_STATE_TYPE`.
-  - Triển khai lớp mẫu `CData<T>`: Đóng gói dữ liệu kèm cờ phát hiện biến động trạng thái (`state`), cho phép các tầng lắng nghe và phản ứng tự động mỗi khi dữ liệu trận đấu (máu, lượt chơi, độ sáng, danh sách bài hát, trạng thái FSM...) thay đổi.
+1. **Tầng Hardware/HAL (ESP32.ino, ui.c, LGFX class):**
+   - Khởi tạo cấu hình màn hình, cảm ứng GT911.
+   - Cấp phát bộ nhớ DMA cho buffer hiển thị của LVGL (sử dụng 1/10 kích thước màn hình).
+   - Khởi tạo dịch vụ I2S cho âm thanh.
+2. **Tầng Giao diện - GUI (src/ui/):**
+   - Mã nguồn C được sinh tự động bởi SquareLine Studio.
+   - Bao gồm các đối tượng màn hình chính: Khởi động (ui_Start), Game (ui_Main), Trợ giúp (ui_Info), Nhạc (ui_Music) và các modal popup trong game.
+3. **Tầng Liên kết UI-Logic (ui_events.cpp):**
+   - Đóng vai trò là **Controller**. Lắng nghe sự kiện cảm ứng (chọn đồ, bắn súng, kéo slider).
+   - Chuyển đổi các hành động thành sự thay đổi trạng thái hệ thống (FSMTransit) hoặc gọi trực tiếp API của game.
+4. **Tầng Logic Trò Chơi - LIB (FSM.h, Effect.h, Entity.h):**
+   - Không chứa code giao tiếp phần cứng. Hoàn toàn là logic thuần túy.
+   - Quản lý luật chơi, tính toán sát thương, sinh đạn ngẫu nhiên và vận hành máy trạng thái FSM.
+5. **Tầng Dữ liệu & Dịch vụ - DATA & SER (CommonData, CData<T>, CommonService):**
+   - Định nghĩa các kiểu dữ liệu chung (Enum) và mô hình dữ liệu phản ứng (Reactive Data) thông qua class CData<T>.
+   - Cung cấp các wrapper tương tác với phần cứng như phát âm thanh I2S/WinMM, đọc thẻ SD.
+6. **Môi trường Mô phỏng - SIM (Windows _WIN64):**
+   - Kiến trúc đa nền tảng cho phép biên dịch và chạy thẳng dự án trên Visual Studio dưới dạng ứng dụng Desktop.
+   - Hỗ trợ cửa sổ Debug Console cho phép giả lập các lệnh điều khiển như nhảy turn, bơm máu, thêm vật phẩm mà không cần nạp code xuống ESP32.
 
-## **3. LIB (Game Logic Library - `CommonLibrary.*`, `FSM.h`, `Entity.h`, `Effect.h`)**
-- **Trách nhiệm:** Chứa toàn bộ "trái tim" logic và quy tắc vận hành trò chơi, độc lập hoàn toàn với phần cứng và môi trường biên dịch.
-- **Chức năng:**
-  - **Máy trạng thái hữu hạn (FSM):** Điều phối toàn bộ chu trình ván đấu qua 10 trạng thái tuần tự: `STARTUP` (chờ 2 người chơi Ready) $\rightarrow$ `PLAYER_NEXT` $\rightarrow$ `PICK` (rút đồ) $\rightarrow$ `PLAYER_ITEM_ARRANGE` $\rightarrow$ `LOAD_SHELL` (nạp đạn) $\rightarrow$ `ACTION_TURN` (lượt bắn) $\rightarrow$ `ACTION_ITEM` (dùng vật phẩm) $\rightarrow$ `UPDATE_HP` $\rightarrow$ `SHOTGUN_SHOT` $\rightarrow$ `RESULT` (kết thúc trận).
-  - **Thuật toán sinh đạn ngẫu nhiên:** Hàm `CreateBulletList()` ngẫu nhiên số lượng đạn từ 2 đến 8 viên với tỉ lệ Thật/Giả bảo đảm luôn có ít nhất 1 đạn thật, sau đó xáo trộn ngẫu nhiên vào buồng súng.
-  - **Xử lý hiệu ứng vật phẩm:** File `Effect.h` hiện thực hóa chính xác chức năng của 9 vật phẩm chiến lược (soi đạn, cưa nòng x2 dame, đảo cực đạn, còng tay bỏ lượt, trộm đồ adrenaline, hồi máu, cược máu 50/50...).
-  - **Quản lý thực thể (`Entity.h`):** Quản lý thông số người chơi (`player_info_t`: bàn chơi, khay đồ 6 slot, 2 tầng máu, trạng thái skip) và khẩu súng (`shotgun_info_t`: hàng đợi đạn, trạng thái cưa nòng, góc xoay).
+![](Images/dummy_architecture_diagram.jpg)
 
-## **4. SER (Service Layer - `CommonService.*`, `Sound.h`)**
-- **Trách nhiệm:** Tầng trừu tượng hóa phần cứng (HAL) và dịch vụ hệ điều hành/hệ thống.
-- **Chức năng:**
-  - **Trên phần cứng ESP32 thực tế:**
-    - Điều khiển âm thanh chất lượng cao qua I2S DAC bằng thư viện `ESP32-audioI2S` (kênh âm thanh đơn/đa nhiệm cho hiệu ứng game và nhạc nền).
-    - Quản lý giao tiếp SPI với khe cắm thẻ nhớ micro-SD (`FS`/`SD`) để quét và nạp danh sách bài hát.
-    - Điều khiển độ sáng đèn nền màn hình TFT qua tín hiệu PWM (`analogWrite`).
-  - **Trên máy tính mô phỏng (PC Simulator):**
-    - Sử dụng Win32 Multimedia API (`waveOutOpen`, `waveOutWrite`) để phát âm thanh mẫu PCM thô.
-    - Khởi tạo cửa sổ Debug Console thời gian thực (`AllocConsole`), cho phép lập trình viên gõ các lệnh kiểm thử trực tiếp (`transit <state>`, `player <1|2>`, `setitem <id>`, `sethp <player> <level> <hp>`, `sound <id>`, `bulletbox`) mà không cần chờ phần cứng.
+## 2.2. Chi tiết Cơ chế Cốt lõi (Core Game Mechanics)
 
-## **5. SIM (Windows Desktop Simulator - `Simulator/`)**
-- **Trách nhiệm:** Môi trường mô phỏng đầy đủ chạy trên hệ điều hành Windows (qua Visual Studio), phục vụ việc thiết kế GUI, debug logic FSM và kiểm thử toàn bộ trò chơi trước khi triển khai lên chip ESP32.
-- **Chức năng:** Tích hợp driver hiển thị và con trỏ chuột của LVGL Windows (`lv_windows_create_display`) ở đúng độ phân giải chuẩn 800x480. Biên dịch và liên kết trực tiếp các module GUI, DATA và LIB của ESP32 sang mã máy x64, giúp lập trình viên phát triển nhanh gấp nhiều lần mà không phụ thuộc vào thời gian nạp flash của vi điều khiển.
+### Máy Trạng Thái FSM (FSM.h)
+Toàn bộ ván cờ sinh tử được vận hành qua một vòng lặp các trạng thái (STATE_TYPE), được xử lý bởi hàm FSM():
+- STARTUP: Trạng thái chờ 2 người chơi "Ready".
+- PLAYER_NEXT & PICK: Quản lý hệ thống Turn-based, cấp quyền bấm nút rút vật phẩm từ hộp.
+- LOAD_SHELL: Sinh đạn ngẫu nhiên (Live/Blank) từ 2-8 viên, cập nhật UI hộp đạn.
+- ACTION_TURN: Bắt đầu lượt đi, kiểm tra cờ bị khóa tay (Handcuffs) để quyết định có bỏ qua lượt hay không.
+- ACTION_ITEM: Trạng thái chờ tương tác tự do (soi súng, uống bia, sử dụng cưa...).
+- SHOTGUN_SHOT: Sequence bắn súng nhiều giai đoạn (Xoay súng vào mục tiêu $\rightarrow$ Khạc lửa/Báo đạn lép $\rightarrow$ Hoàn tất).
+- UPDATE_HP: Trừ máu, update UI thanh máu và kiểm tra điều kiện sinh tử.
+- RESULT: Kết thúc ván, hiển thị hình ảnh kết quả.
 
-### **Lợi ích của Kiến trúc này:**
-- **Phân tách trách nhiệm triệt để:** Mỗi lớp đảm nhận một nhiệm vụ riêng biệt, giữ mã nguồn gọn gàng, có tính module hóa cao và dễ dàng mở rộng.
-- **Tái sử dụng mã nguồn tối đa:** Toàn bộ logic trò chơi trong LIB, mô hình dữ liệu trong DATA và giao diện trong GUI được dùng chung 100% giữa ESP32 và Windows Simulator.
-- **Phát triển & Gỡ lỗi song song:** Giao diện và các quy tắc game có thể được hoàn thiện trên PC Simulator độc lập với tiến độ hàn mạch phần cứng hay nạp nạp firmware.
-- **Dễ dàng kiểm thử & Đảm bảo chất lượng:** Tách biệt logic vào LIB giúp dễ dàng viết các bài kiểm thử cho từng quy tắc của trò chơi Buckshot Roulette, trong khi console debug của SIM hỗ trợ test mọi kịch bản góc hẹp (edge cases) cực kỳ tiện lợi.
+### Hệ thống Thực thể (Entity.h)
+- **Người chơi (player_info_t):** Mỗi người chơi sở hữu một cấu trúc quản lý 2 tầng HP (Level 1, Level 2), mảng chứa đồ (6 slot), hệ thống tọa độ UI (để xoay nòng súng) và cờ trạng thái bị bỏ lượt (isSkip).
+- **Súng Shotgun (shotgun_info_t):** Cơ chế đạn được giả lập vật lý bằng std::queue (hàng đợi đạn thực tế) và std::vector (lưu trữ lịch sử để hiển thị). Quản lý cờ isCut để nhân đôi sát thương.
+
+### Hiệu ứng Vật phẩm (Effect.h)
+Được triển khai tinh gọn qua macro EFFECT_FUNCTION. Mỗi vật phẩm can thiệp trực tiếp vào bộ nhớ thực thể:
+- **Bia (Beer):** Rút phần tử đầu tiên khỏi queueBullet và phát animation văng đạn lép/đạn thật.
+- **Kính lúp / Điện thoại (Burnerphone):** Kiểm tra phần tử đầu hoặc ngẫu nhiên trong queue đạn và đẩy text/hình ảnh lên màn hình phụ.
+- **Đảo cực (Inverter):** Chuyển đổi trạng thái đạn đầu tiên từ LIVE sang BLANK và ngược lại.
+- **Adrenaline:** Khóa tương tác của người dùng hiện tại, cho phép bấm chọn slot vật phẩm trên bảng của đối phương.
+
+## 2.3. Luồng xử lý tổng quát (Control & Data Flow)
+
+1. **Khởi động (Boot):**
+   Hệ thống thiết lập bộ nhớ DMA, I2S Audio, và gắn kết bộ đệm hiển thị vào LVGL. Random Seed được khởi tạo để đảm bảo tỉ lệ đạn/đồ hoàn toàn ngẫu nhiên.
+2. **Vòng lặp chính (Main Loop):**
+   LVGL xử lý vẽ đồ họa qua lv_timer_handler(). Song song đó, CommonServiceProcess() giải quyết việc nạp buffer âm thanh I2S.
+3. **Cơ chế Đồng bộ Hóa (CData<T>):**
+   Class CData đóng gói các biến trạng thái, tự động bật cờ mỗi khi dữ liệu bị thay đổi thông qua hàm SetValue(). Hàm AutoUpdate() sẽ giám sát cờ này và cập nhật lên UI (ví dụ thay đổi bài hát, đổi độ sáng màn hình) mà không cần phải re-render toàn màn hình liên tục.
+4. **Xử lý Sự kiện Chạm (Touch Event Flow):**
+   Khi người chơi chạm bóp cò, ui_events.cpp bắt event và chuyển FSM sang trạng thái SHOTGUN_SHOT. Trò chơi ngay lập tức khóa màn hình (BlockGui()) để tránh spam touch. Các chuỗi animation bắn súng được điều phối nhờ hàm delay bất đồng bộ, mở khóa màn hình (UnblockGui()) khi chuyển sang trạng thái cập nhật kết quả.
+
+## 2.4. Đánh giá kỹ thuật & Tối ưu
+
+- **Tối ưu RAM/VRAM ESP32:** Việc khai báo Draw Buffer của LVGL vào vùng DMA RAM (chỉ sử dụng 1/10 kích thước màn hình) tạo ra sự cân bằng hoàn hảo giữa việc tiết kiệm bộ nhớ tĩnh và duy trì khung hình mượt mà (FPS cao) cho giao tiếp SPI/RGB.
+- **Safety Lock cho Giao diện:** Trong môi trường game cảm ứng tốc độ cao, hệ thống hàng đợi đếm (queueTimerExist) bên trong cơ chế BlockGui(). Điều này giúp ngăn chặn hoàn toàn lỗi dính phím/spam thao tác có thể làm sai lệch máy trạng thái FSM.
+- **Lưu ý bộ nhớ Heap:** Do trò chơi tái khởi tạo đạn và xáo trộn thường xuyên qua std::vector và std::queue, hệ thống đã được kiểm thử để giảm tối đa hiện tượng phân mảnh bộ nhớ (Heap Fragmentation), đảm bảo chạy ổn định khi mở rộng thêm các cấu kiện mới.
+- **Tránh nghẽn vòng lặp (Non-blocking I2S):** Hàm xử lý đọc mảng byte âm thanh thô (PlaySampleSound) được phân luồng xử lý cực ngắn, không can thiệp vào lv_timer_handler(), nhờ đó các animation rút đồ hay bắn súng vẫn trôi chảy ngay cả khi đang có nhạc nền.
+
+---
 
 # 3. Sản phẩm hoàn thiện
 Chi tiết về sản phẩm đã hoàn thiện cùng hình ảnh và hướng dẫn sử dụng các màn hình, xem tại [PRODUCT.md](PRODUCT.md)
